@@ -1,0 +1,31 @@
+.Language {
+    background: #F5F5F5;
+    border: 1px solid rgba(11, 33, 43, 0.2);
+    border-radius: 5px;
+    padding: 13px 17px;
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    &__text {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 15px;
+        color: #0B212B;
+        padding-right: 35px;
+        padding-left: 20px;
+        border-left: 1px solid rgb(11, 33, 43, 0.2);
+
+        &:first-child {
+            padding-left: 0;
+            border: none !important;
+        }
+    }
+
+    &__textactive {
+        color: #5627DC;
+    }
+}

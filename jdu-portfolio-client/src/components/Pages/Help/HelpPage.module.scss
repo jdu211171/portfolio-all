@@ -1,0 +1,204 @@
+.HelpPage {
+    &__container {
+        margin-top: 140px !important;
+        margin-left: 40px !important;
+
+        @media screen and (max-width:800px) {
+            margin-top: 80px !important;
+            margin-left: 20px !important;
+        }
+    }
+
+    &__title {
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 28px;
+        line-height: 38px;
+
+        color: #000000;
+        margin-bottom: 20px;
+
+    }
+
+    &__text {
+        font-family: 'Manrope';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 150%;
+        /* or 27px */
+
+        width: 100%;
+        max-width: 690px;
+        color: #000000;
+        margin-bottom: 114px;
+
+
+    }
+
+    &__faq {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 19px;
+
+        color: #000000;
+        margin-bottom: 24px;
+
+        &__wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            padding-bottom: 20px;
+            margin-bottom: 21px;
+            border-bottom: 1px solid #EEEEEE;
+            width: 100%;
+            max-width: 690px;
+            cursor: pointer;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+        }
+
+        &__title {
+            margin-top: 5px;
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 19px;
+
+            color: #000000;
+
+        }
+
+        &__text {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 19px;
+            color: #000000;
+
+            opacity: 0.6;
+            margin-top: 15px;
+        }
+
+        &__minus {
+            min-width: 24px;
+            height: 24px;
+            background: #EEEEEE;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            div {
+                width: 7.5px;
+                height: 1.5px;
+
+                background: #000000;
+            }
+        }
+
+    }
+
+    &__condition {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 19px;
+
+        color: #000000;
+        margin-top: 32px;
+        margin-bottom: 24px;
+
+        &__wrap {
+            background: #F7F7F8;
+            border-radius: 22px;
+            padding: 30px 40px;
+            padding-bottom: 69px;
+            width: 100%;
+            max-width: 690px;
+            margin-bottom: 100px;
+
+        }
+
+        &__left {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        &__div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 31px;
+        }
+
+        &__title {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 15px;
+            width: 100%;
+            max-width: 125px;
+            color: #000000;
+        }
+
+        &__text {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 18px;
+            color: #000000;
+
+            opacity: 0.7;
+            width: 100%;
+            max-width: 459px;
+        }
+    }
+
+    &__contact {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 690px;
+        flex-wrap: wrap;
+        margin-top: 63px;
+        margin-bottom: 40px;
+        gap: 20px;
+
+        &__div {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+        }
+
+        &__icon {
+            border-radius: 10px;
+            background: #F5F5F5;
+            padding: 8px 12px 12px 12px;
+        }
+
+        &__text {
+            color: #000;
+
+            font-family: Inter;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+    }
+}

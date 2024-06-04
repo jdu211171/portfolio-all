@@ -1,0 +1,29 @@
+.UserCheckBoz {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    label {
+        padding: 4px 8px;
+        padding-left: 5px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #101828;
+
+        &:hover {
+            border-radius: 4px;
+            background: rgba(86, 39, 220, 0.05);
+        }
+
+        p {
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+    }
+}

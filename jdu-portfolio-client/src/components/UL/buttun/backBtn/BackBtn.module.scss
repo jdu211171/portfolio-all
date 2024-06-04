@@ -1,0 +1,62 @@
+.BackBtn {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #344054;
+    width: 100%;
+    max-width: 779px;
+
+    background: #FFFFFF;
+    border: 1px solid rgba(168, 171, 179, 0.3);
+    border-radius: 4px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    div {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 10px;
+
+        @media screen and (max-width: 600px) {
+            padding: 5px;
+        }
+
+        &:hover {
+            border-radius: 4px;
+            background: #EFEFF4;
+
+        }
+    }
+
+    label {
+        a {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        border-radius: 5px;
+        border: 1px solid #E9E8EE;
+        background: #F5F5F5;
+        padding: 9px 16px;
+        width: 100%;
+        max-width: 220px;
+        color: #5627DC;
+        font-size: 14px;
+        font-family: Inter;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+
+        input {
+            display: none;
+        }
+    }
+}

@@ -1,0 +1,57 @@
+.AddMadal {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  overflow: scroll;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(16, 24, 40, 0.1);
+  top: 0;
+  left: 0;
+
+  &__upade {
+
+    @media screen and (max-width:600px) {
+
+      align-items: flex-start;
+    }
+  }
+
+
+  &__content {
+    width: 100%;
+    max-width: 540px;
+    background: #FFFFFF;
+    border-radius: 12px;
+
+    @media screen and (max-width:600px) {
+      width: 90%;
+      top: 0;
+    }
+  }
+
+  &__top {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #101828;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgb(16, 24, 40, 0.1);
+  }
+
+  &__inputs {
+    padding: 35px 40px 35px 45px;
+  }
+
+  &__btm {
+    display: flex;
+    padding: 20px 40px;
+    gap: 5px;
+    border-top: 1px solid rgb(16, 24, 40, 0.1);
+  }
+
+}

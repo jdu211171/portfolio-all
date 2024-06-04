@@ -1,0 +1,124 @@
+.Login {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+
+    &__content {
+        width: 50%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        z-index: 10;
+
+        @media only screen and (max-width:800px) {
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        &__top {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 16px;
+            width: 100%;
+            max-width: 319px;
+        }
+
+        &__title {
+            font-family: 'Inter';
+            color: #121212;
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 40px;
+
+            color: #121212;
+        }
+
+        &__text {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 16px;
+            line-height: 19px;
+
+            display: flex;
+            align-items: center;
+
+            color: #121212;
+
+            opacity: 0.6;
+        }
+    }
+
+    &__img {
+        width: 50%;
+        height: 100vh !important;
+        position: relative;
+        background-image: url('/Image/icons/loginMin.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        @media only screen and (max-width:800px) {
+            display: none;
+        }
+    }
+}
+
+.Form {
+    margin-top: 38px;
+    width: 100%;
+    max-width: 246px;
+
+    &__idtext {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 12px;
+        line-height: 15px;
+        color: #121212;
+        margin-bottom: 20px;
+    }
+
+    &__bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 30px;
+        margin-bottom: 10px;
+    }
+
+    &__label {
+        display: flex;
+        align-items: center;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 10px;
+        line-height: 12px;
+
+        color: #717171;
+    }
+
+    &__chechbox {
+        border: 1px solid #717171;
+        border-radius: 2px;
+        margin-right: 3px;
+        width: 11px;
+        height: 11px;
+    }
+
+    &__forget {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 600;
+        font-size: 10px;
+        line-height: 12px;
+        text-decoration-line: underline;
+        cursor: pointer;
+        color: #000000;
+        margin-bottom: 10px;
+    }
+}
