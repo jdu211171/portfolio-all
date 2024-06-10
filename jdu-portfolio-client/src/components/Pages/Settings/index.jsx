@@ -16,7 +16,7 @@ import { CanactGet, CanactUpdate, DecanUpdate, PersonDelete } from '../../../ser
 import { RecruitorUpdate } from '../../../services/recruter'
 import Loader from '../../UL/loader'
 import { StudentsUpdate } from '../../../services/student'
-import { SectionGet, TeacherUpdate } from '../../../services/teacher'
+import { TeacherUpdate } from '../../../services/teacher'
 import AddInput from '../../UL/input/AddInput'
 import { ImageUpload } from '../../../utils/imageUpload'
 import { FileRemove } from '../../../services/upload'
@@ -80,18 +80,6 @@ export default function SettingsPage({ data }) {
             const value = section.find(el => el?.name == section1)
             setSection2(value?.specialisations)
         }
-
-
-
-
-        const fetchData = async () => {
-            const data = await SectionGet()
-            setSection(data)
-        }
-        fetchData()
-            .then((err) => {
-                console.log(err);
-            })
 
         if (data?.role == "decan") {
             const fetchData = async () => {

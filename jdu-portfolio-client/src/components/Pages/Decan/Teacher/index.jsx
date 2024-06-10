@@ -15,7 +15,7 @@ import React, { useState } from 'react'
 import cls from "./Teacher.module.scss"
 import toast, { Toaster } from 'react-hot-toast';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
-import { SectionGet, TeacherAdd, TeacherAllAdd, Teacherdelete, TeacherGetById, TeacherUpdate } from '../../../../services/teacher'
+import { TeacherAdd, TeacherAllAdd, Teacherdelete, TeacherGetById, TeacherUpdate } from '../../../../services/teacher'
 import { useForm } from 'react-hook-form'
 import Loader from '../../../UL/loader'
 import ExalInput from '../../../UL/input/exal'
@@ -86,10 +86,6 @@ const TeacherPage = React.forwardRef(({ data }, ref) => {
         const fetchData = async () => {
             const res = await TeacherGetById(id);
             setSetUserRole(res?.role)
-            if (res?.role == "teacher") {
-                const data = await SectionGet()
-                setSection(data)
-            }
             if (res.role == "staff") {
                 setSection(SectionArr)
             }

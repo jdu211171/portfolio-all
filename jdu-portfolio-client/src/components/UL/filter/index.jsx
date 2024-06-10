@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { useGetWindowWidth } from '../../../hooks/useGetWindowWith.js'
-import { SectionGet2 } from '../../../services/teacher.js'
 import paramsToObject from '../../../utils/paramsToObject.js'
 import BackBtn from '../buttun/backBtn/index.jsx'
 import { CloseIcon, FilterIcon, LeftIcon, PlusIcon } from '../icons.jsx'
@@ -65,23 +64,6 @@ export default function Filter({ children, page, decan, back }) {
             }
         })
 
-        const fetchData = async () => {
-            const data2 = await SectionGet2()
-            SetData(data2)
-        }
-        fetchData()
-            .then((err) => {
-                console.log(err);
-            })
-        if (page == "student" || page == "student2") {
-            setHideChild(1440)
-        }
-        if (page == "staff") {
-            setHideChild(1240)
-        }
-        if (page == "recruiter") {
-            setHideChild(880)
-        }
 
     }, [params])
 

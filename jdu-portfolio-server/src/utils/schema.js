@@ -13,7 +13,6 @@ const studentSchema = Joi.object({
     email: Joi.string().email(),
     images: Joi.array().items(Joi.string().uri()),
     videos: Joi.array().items(Joi.string().uri()),
-    specialisationId: Joi.string().uuid().required(),
 })
 
 const recruitorSchema = Joi.object({
@@ -26,7 +25,6 @@ const recruitorSchema = Joi.object({
     email: Joi.string().email().required(),
     bio: Joi.string(),
     avatar: Joi.string().uri(),
-    specialisation: Joi.string().required()
 })
 
 module.exports = {

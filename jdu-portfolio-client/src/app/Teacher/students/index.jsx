@@ -3,7 +3,7 @@ import { useInfiniteQuery, useQuery } from "react-query";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useInView } from 'react-intersection-observer'
 
-import { SpecialisationsGet } from "../../../services/specialisations";
+
 import StudentTeachPage from "../../../components/Pages/Teacher/Student";
 import { GroupGetById } from "../../../services/gruop";
 import { StudentsGet } from "../../../services/student";

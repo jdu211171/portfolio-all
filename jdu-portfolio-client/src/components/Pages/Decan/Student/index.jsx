@@ -46,7 +46,7 @@ const Course = [
 
 
 
-const StudentPage = React.forwardRef(({ data, gruop }, ref) => {
+const StudentPage = React.forwardRef(({ data }, ref) => {
     const widthwindow = useGetWindowWidth()
 
     const queryClient = useQueryClient()
