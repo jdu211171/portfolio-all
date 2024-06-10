@@ -79,9 +79,6 @@ export default function Filter({ children, page, decan, back }) {
         if (page == "staff") {
             setHideChild(1240)
         }
-        if (page == "parent") {
-            setHideChild(1040)
-        }
         if (page == "recruiter") {
             setHideChild(880)
         }
@@ -306,72 +303,6 @@ export default function Filter({ children, page, decan, back }) {
                         </>
                     }
 
-                    {
-                        page == "parent" && <>
-                            <div className={cls.Filter__Select} onClick={() => {
-                                setY(true)
-                                setW(true)
-                            }}>
-                                <p className={cls.Filter__Select__p}>グループ</p>
-                                <img
-                                    src={'/Image/Icons.svg'}
-                                    width={16}
-                                    height={16}
-                                />
-                                <div className={`${cls.Filter__Select__dropdown} ${w ? "displayBlock" : "displayNone"}`}>
-                                    <input
-                                        className={cls.Filter__Select__dropdown__search}
-                                        type="text"
-                                        value={inoutVal}
-                                        placeholder='グループを入力'
-                                        onChange={(e) => {
-                                            setSearchParams({ ...paramsToObject(params.entries()), groups: e.target.value })
-                                            SetCahnegSet(false)
-                                            SetInoutVal(e.target.value)
-                                        }}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className={cls.Filter__Select} onClick={() => {
-                                setH(true)
-                                setY(true)
-                                SetCahnegSet(false)
-                            }}>
-                                <p className={cls.Filter__Select__p}>{yearRateText}</p>
-                                <img
-                                    src={'/Image/Icons.svg'}
-                                    width={16}
-                                    height={16}
-                                    objectFit="contain"
-                                />
-                                <div className={`${cls.Filter__Select__dropdown} ${h ? "displayBlock" : "displayNone"}`}>
-
-
-                                    {YearsRate?.map(e => (
-                                        <p
-                                            key={e?.id}
-                                            className={`${cls.Filter__Select__dropdown__text}  ${params.get('year') == e?.link && cls.Filter__Select__dropdown__textActive1}`}
-                                            onClick={() => {
-                                                setH(false)
-                                                setY(false)
-                                                setSearchParams({ ...paramsToObject(params.entries()), year: e?.link })
-                                                SetCahnegSet(false)
-
-                                            }}
-
-                                        >
-                                            {e.text}
-                                        </p>
-                                    ))
-                                    }
-
-                                </div>
-                            </div>
-
-
-                        </>
-                    }
                     {
                         page == "student" && <>
                             {

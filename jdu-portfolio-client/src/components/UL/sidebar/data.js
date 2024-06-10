@@ -36,12 +36,6 @@ export const navLinks = [
     icon: (e) => PersonIcon({ fill: e }),
   },
   {
-    id: 2,
-    link: "/parents",
-    label: "保護者",
-    icon: (e) => PersonIcon({ fill: e }),
-  },
-  {
     id: 5,
     link: "/courses",
     label: "Courses",
@@ -97,5 +91,3 @@ export const decanLink = [
   "保護者",
 ];
 export const studentLink = ["ホーム", "スケジュール", "プロフィール"];
-
-export const parentLink = ["ホーム", "生徒",];

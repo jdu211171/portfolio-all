@@ -361,14 +361,7 @@ class StudentServices {
 					},
 				});
 				if (student) {
-					const parent = await this.models.StudentParents.findOne({
-						where: { StudentId: student.id },
-					});
-					if (parent) {
-						student = { ...student.dataValues, parent: true };
-					} else {
-						student = { ...student.dataValues, parent: false };
-					}
+					student = { ...student.dataValues };				
 				}
 
 				return student?.isDeleted ? {} : student;
@@ -392,10 +385,6 @@ class StudentServices {
 					{
 						model: this.models.Group,
 						as: "group",
-					},
-					{
-						model: this.models.Parents,
-						through: { attributes: [] },
 					},
 				],
 				attributes: { exclude: ["password", "isDeleted"] },
@@ -601,7 +590,6 @@ class StudentServices {
 			await Promise.all([
 				updateAvatarToNull(this.models.Students, id),
 				updateAvatarToNull(this.models.Teachers, id),
-				updateAvatarToNull(this.models.Parents, id),
 				updateAvatarToNull(this.models.Decan, id),
 				updateAvatarToNull(this.models.Recruitors, id),
 			]);

@@ -5,7 +5,7 @@ import SmallExample from "../../exalTable/exalTable"
 import { CloseIcon1, FileIcons, XIcons } from "../../icons"
 import cls from "./exal.module.scss"
 
-export default function ExalInput({ onChange, setResolv, teacher, parent, exalError, resolv }) {
+export default function ExalInput({ onChange, setResolv, teacher, exalError, resolv }) {
 
     const [openMadal, setOpenMadal] = useState(false)
     const [data, setData] = useState([])
@@ -59,7 +59,7 @@ export default function ExalInput({ onChange, setResolv, teacher, parent, exalEr
                         </div>
                     </div>
 
-                    <SmallExample data={data} teacher={teacher} parent={parent || false} />
+                    <SmallExample data={data} teacher={teacher} />
 
                 </div>
             }

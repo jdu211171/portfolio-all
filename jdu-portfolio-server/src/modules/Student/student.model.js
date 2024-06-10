@@ -169,10 +169,6 @@ module.exports = (sequelize) => {
 				as: "japanLanguageTests",
 			});
 
-			models.Students.belongsToMany(models.Parents, {
-				through: models.StudentParents,
-			});
-
 			models.Students.hasOne(models.ItQualifications, {
 				foreignKey: {
 					name: "studentId",

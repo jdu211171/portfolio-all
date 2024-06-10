@@ -80,10 +80,6 @@ class DecanServices {
 					type: "リクルーター",
 					model: await this.models.Recruitors.findAll({ where }),
 				},
-				{
-					type: "保護者",
-					model: await this.models.Parents.findAll({ where }),
-				},
 			];
 
 			const result = dataModels.map((e) => {

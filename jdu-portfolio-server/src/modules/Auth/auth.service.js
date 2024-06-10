@@ -25,14 +25,6 @@ class AuthService {
 				return student;
 			}
 
-			const parent = await this.models.Parents.findOne({
-				where: { email: loginId, password, isDeleted: false },
-				attributes: ["firstName", "lastName", "loginId", "id", "role"],
-			});
-			if (parent) {
-				return parent;
-			}
-
 			const recruitor = await this.models.Recruitors.findOne({
 				where: { email: loginId, password, isDeleted: false },
 				attributes: [
@@ -115,18 +107,7 @@ class AuthService {
 			if (teacher) {
 				return teacher;
 			}
-
-			const parent = await this.models.Parents.findOne({
-				where: { id },
-				attributes: { exclude: ["password"] },
-				include: {
-					model: this.models.Students,
-					as: "Students",
-				},
-			});
-			if (parent) {
-				return parent;
-			}
+			
 		} catch (error) {
 			return SequelizeError(error);
 		}

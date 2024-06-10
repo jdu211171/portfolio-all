@@ -19,7 +19,6 @@ const routes = [
 	require("./info.router"),
 	require("./section.router"),
 	require("./validator.router"),
-	require("./parent.router"),
 	require("./excel.router"),
 	require("./position.router"),
 	require("./backup.router"),

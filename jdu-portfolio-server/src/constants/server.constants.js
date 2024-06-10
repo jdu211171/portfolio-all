@@ -15,7 +15,6 @@ const constants = {
 		DECAN: "decan",
 		TEACHER: "teacher",
 		STAFF: "staff",
-		PARENT: "parent",
 	},
 	years: {
 		FIRST: "First",
