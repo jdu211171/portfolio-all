@@ -26,25 +26,6 @@ module.exports = (sequelize) => {
             modelName: 'Semesters'
         })
 
-        Semester.associate = (models) => {
-            models.Semesters.hasMany(models.LessonResults, {
-                foreignKey: {
-                    name: 'semesterId',
-                    allowNull: false
-                },
-                as: 'results'
-            })
-
-            models.Semesters.belongsTo(models.Lessons, {
-                foreignKey: {
-                    name: 'lessonId',
-                    allowNull: false
-                },
-                as: 'lesson',
-                onDelete: 'cascade'
-            })
-        }
-
         return Semester
     } catch (error) {
         logger.error(error.message)

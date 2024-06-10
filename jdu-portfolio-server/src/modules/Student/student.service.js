@@ -73,13 +73,6 @@ class StudentServices {
 							{
 								model: this.models.Semesters,
 								as: "semesters",
-								include: [
-									{
-										model: this.models.LessonResults,
-										as: "results",
-										individualHooks: true,
-									},
-								],
 							},
 						],
 					},
