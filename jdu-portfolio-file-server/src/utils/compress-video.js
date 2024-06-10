@@ -24,7 +24,6 @@ process.on("message", (payload) => {
       console.log(`Processing: ${progress.timemark} done, file: ${outputPath}`);
     })
     .on("end", () => {
-      console.log('video compress ended');
       endProcess({ statusCode: 200, msg: { error: false, message: "Video successful compressed and save", url }, path: outputPath });
     })
     .on("error", (err) => {

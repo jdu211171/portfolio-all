@@ -86,7 +86,6 @@ class GroupServices {
 
 	async create(body) {
 		try {
-			console.log(body);
 			const group = await this.models.Group.create(body);
 			return group;
 		} catch (error) {

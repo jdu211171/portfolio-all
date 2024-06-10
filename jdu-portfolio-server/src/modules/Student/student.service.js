@@ -191,7 +191,6 @@ class StudentServices {
 
 	async findByLogin(id) {
 		try {
-			console.log(id);
 			if (id) {
 				let student = await this.models.Students.findOne({
 					where: {

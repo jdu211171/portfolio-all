@@ -230,8 +230,6 @@ class StudentController {
 		try {
 			const student = await StudentServices.delete(req.params.id);
 
-			console.log(student);
-
 			res.status(204).send({ error: false, message: "Deleted", data: null });
 		} catch (error) {
 			console.log(error);
@@ -240,7 +238,6 @@ class StudentController {
 
 	async findByLoginId(req, res) {
 		try {
-			console.log(req.params.id);
 			const student = await StudentServices.findByLogin(req?.params?.id);
 
 			res.status(200).send(student);

@@ -107,7 +107,6 @@ class TeacherServices {
 				where: { password: sha256(psw) },
 			});
 
-			console.log(psw);
 			return teacher;
 		} catch (error) {
 			return SequelizeError(error);

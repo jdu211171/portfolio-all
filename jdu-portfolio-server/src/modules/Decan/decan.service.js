@@ -46,7 +46,6 @@ class DecanServices {
 				returning: true,
 				individualHooks: true,
 			});
-			console.log(decan);
 			return decan?.[0];
 		} catch (error) {
 			return SequelizeError(error);
@@ -101,9 +100,6 @@ class DecanServices {
 			result.forEach((item) => {
 				item.percentage = ((item.count / totalCounts) * 100).toFixed(0);
 			});
-
-			console.log(result);
-
 			return result;
 		} catch (error) {
 			console.log(error);
