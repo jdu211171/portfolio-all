@@ -240,6 +240,7 @@ export default function HomePage({ user }) {
             </div>
 
             {openMadal && !user?.isActive &&
+            <div className={cls.overlay} style={{ display: openMadal ? 'block' : 'none' }}>
                 <AddMadal
                     role={"登録"}
                     update={true}
@@ -321,6 +322,7 @@ export default function HomePage({ user }) {
                         />
                     </div>
                 </AddMadal>
+                </div>
             }
             <Toaster />
             {loading && <Loader onClick={() => setLoading(false)} />}
