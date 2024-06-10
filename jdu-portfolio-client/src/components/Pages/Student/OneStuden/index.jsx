@@ -19,22 +19,9 @@ export default function OneStudent({ user, role }) {
 
 
     const newDate = new Date()
-    const [lessonId, setLessonId] = useState()
-    const [semestorId, setsemestorId] = useState()
     const [lassonsArr, setLessonArr] = useState([])
     const [openImg, setOpneImg] = useState(false)
-    useEffect(() => {
-        if (!lessonId) {
-            setLessonId(user.lessons?.[0]?.id)
-        }
-    }, [user.lessons])
 
-    useEffect(() => {
-        const arr = user.lessons?.find(e => e.id == lessonId)
-        setLessonArr(arr?.semesters)
-        setsemestorId(arr?.semesters?.[0]?.id)
-
-    }, [lessonId])
 
     return (
         <div className={cls.OneStudent}>

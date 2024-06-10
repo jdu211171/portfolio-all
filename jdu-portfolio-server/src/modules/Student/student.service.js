@@ -4,8 +4,6 @@ const StudentModel = require("./student.model.js");
 const SequelizeError = require("../../errors/sequelize.error.js");
 const JapanLanguageTestModel = require("../JapanLanguageTests/JapanLanguageTest.model.js");
 const ItQualificationModel = require("../ItQualifications/ItQualification.model.js");
-const lessonModel = require("../Lessons/lesson.model.js");
-const semesterModel = require("../Semesters/semester.model.js");
 const logger = require("../../services/logger.service.js");
 const { roles } = require("../../constants/server.constants.js");
 const { Op } = require("sequelize");
@@ -17,8 +15,6 @@ class StudentServices {
 		StudentModel(sequelize);
 		JapanLanguageTestModel(sequelize);
 		ItQualificationModel(sequelize);
-		lessonModel(sequelize);
-		semesterModel(sequelize);
 		this.models = sequelize.models;
 	}
 
@@ -63,16 +59,6 @@ class StudentServices {
 								model: this.models.ItQualificationResults,
 								as: "skills",
 								include: [{ model: this.models.Skills, as: "skill" }],
-							},
-						],
-					},
-					{
-						model: this.models.Lessons,
-						as: "lessons",
-						include: [
-							{
-								model: this.models.Semesters,
-								as: "semesters",
 							},
 						],
 					},

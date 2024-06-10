@@ -27,7 +27,6 @@ const studentSchema = Joi.object({
             skillId: Joi.string().uuid().required()
         }))
     }),
-    lessons: Joi.object()
 })
 
 const recruitorSchema = Joi.object({

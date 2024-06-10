@@ -183,14 +183,6 @@ module.exports = (sequelize) => {
 				onDelete: "SET NULL",
 			});
 
-			models.Students.hasMany(models.Lessons, {
-				foreignKey: {
-					name: "studentId",
-				},
-				as: "lessons",
-			});
-
-
 			models.Students.belongsToMany(models.Recruitors, {
 				through: models.SelectedStudents,
 				timestamps: false,
