@@ -32,13 +32,6 @@ module.exports = (sequelize) => {
                 as: 'semesters',
                 onDelete: 'cascade'
             })
-            models.LessonResults.belongsTo(models.Credits, {
-                foreignKey: {
-                    name: 'creditId',
-                    // allowNull: false
-                },
-                as: 'credits',
-            })
         }
 
         return LessonResult

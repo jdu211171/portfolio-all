@@ -8,7 +8,6 @@ const {
 	generatePassword,
 	generateLoginId,
 } = require("../../utils/generator.js");
-const createCv = require("../../utils/pdfGenerator.js");
 const StudentServices = require("./student.service.js");
 const XLSX = require("xlsx");
 const validate = require("../../utils/excelValidation");
@@ -286,35 +285,6 @@ class StudentController {
 		}
 	}
 
-	async generateCv(req, res) {
-		try {
-			let student = await StudentServices.findByPk(req.params.id);
-			student = student.dataValues;
-
-			let filename = `${student?.firstName} ${student?.lastName}`;
-			// Stripping special characters
-			filename = encodeURIComponent(filename) + ".pdf";
-			// Setting response to 'attachment' (download).
-			// If you use 'inline' here it will automatically open the PDF
-			res.setHeader(
-				"Content-disposition",
-				'attachment; filename="' + filename + '"',
-			);
-			res.setHeader("Content-type", "application/pdf");
-
-			await createCv({
-				res,
-				avatarUrl: student.avatar,
-				fullName: `${student?.firstName} ${student?.lastName}`,
-				id: student.loginId,
-				courseNumber: student.courseNumber,
-				email: student?.email,
-				bio: student.bio,
-				japanLanguageTest: student.japanLanguageTests,
-				itQualification: student?.itQualification,
-			});
-		} catch (error) {}
-	}
 
 	async createCertification(req, res) {
 		try {

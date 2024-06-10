@@ -25,7 +25,6 @@ const routes = [
 	decan,
 	FileUpload,
 	teacher,
-	require("./credit.router"),
 ];
 
 const combineRoutes = (app) => {

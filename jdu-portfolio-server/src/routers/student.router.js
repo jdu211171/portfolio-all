@@ -9,7 +9,6 @@ router.get("/students/top", Controller.getTopStudents);
 router.get("/students/archive", Controller.getArchiveStudents);
 router.get("/studentBy/:id", Controller.findByLoginId);
 router.get("/student/:id", Controller.findById);
-router.get("/student/cv/:id", Controller.generateCv);
 router.get("/students/certificates-count", Controller.getCertificatesCount);
 router.post("/student", Controller.createStudent);
 router.post("/students", excelcreate, Controller.createStudentWithExcel);

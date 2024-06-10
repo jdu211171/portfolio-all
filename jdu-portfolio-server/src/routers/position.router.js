@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const CreditController = require("../modules/Position/position.controller");
-const Controller = new CreditController();
+const PositionController = require("../modules/Position/position.controller");
+const Controller = new PositionController();
 
 router.get("/position", Controller.getAll);
 router.put("/position/:id", Controller.edit);
