@@ -10,7 +10,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import cls from "./SetStudent.module.scss"
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { FileUploadStudent, GetSkills, PhotoDeleteStudent, PhotoUploadStudent, StudentsUpdate } from '../../../../services/student'
+import { FileUploadStudent, PhotoDeleteStudent, PhotoUploadStudent, StudentsUpdate } from '../../../../services/student'
 import toast, { Toaster } from 'react-hot-toast'
 import Avatar from 'react-avatar'
 import Loader from '../../../UL/loader'

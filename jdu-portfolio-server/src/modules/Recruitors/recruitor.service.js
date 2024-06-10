@@ -149,21 +149,6 @@ class RecruitorService {
 						as: "students",
 						attributes: ["id", "firstName", "lastName", "avatar", "loginId"],
 						where: { isActive: true, isDeleted: false, isArchive: false },
-						include: [
-							{
-								model: this.models.ItQualifications,
-								as: "itQualification",
-								attributes: { exclude: ["studentId", "id"] },
-								include: [
-									{
-										model: this.models.ItQualificationResults,
-										as: "skills",
-										attributes: { exclude: ["ItQualificationId", "skillId"] },
-										include: [{ model: this.models.Skills, as: "skill" }],
-									},
-								],
-							},
-						],
 					},
 				],
 			});

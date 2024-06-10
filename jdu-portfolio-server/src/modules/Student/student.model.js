@@ -161,22 +161,6 @@ module.exports = (sequelize) => {
 			//     as: 'specialisation'
 			// })
 
-			models.Students.hasMany(models.JapanLanguageTests, {
-				foreignKey: {
-					name: "studentId",
-					allowNull: true,
-				},
-				as: "japanLanguageTests",
-			});
-
-
-			models.Students.hasOne(models.ItQualifications, {
-				foreignKey: {
-					name: "studentId",
-				},
-				as: "itQualification",
-			});
-
 			models.Students.belongsTo(models.Group, {
 				foreignKey: "groupId",
 				as: "group",

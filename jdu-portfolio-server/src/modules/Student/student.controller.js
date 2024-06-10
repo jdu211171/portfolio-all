@@ -191,13 +191,6 @@ class StudentController {
 					? JSON.parse(req.body.images)
 					: req.body.images;
 
-			if (typeof body?.japanLanguageTests === "string") {
-				body.japanLanguageTests = JSON.parse(body.japanLanguageTests);
-			}
-
-			if (typeof body?.itQualification === "string") {
-				body.itQualification = JSON.parse(body.itQualification);
-			}
 
 			if (
 				req.user.id === req.params.id ||
