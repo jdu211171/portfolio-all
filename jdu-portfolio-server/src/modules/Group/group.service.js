@@ -66,13 +66,6 @@ class GroupServices {
 							"jdu",
 							"jlpt",
 						],
-						include: [
-							{
-								model: this.models.UniversityPercentages,
-								as: "universityPercentage",
-								attributes: { exclude: ["studentId"] },
-							},
-						],
 					},
 				],
 			});

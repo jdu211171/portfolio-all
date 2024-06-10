@@ -196,10 +196,6 @@ class StudentController {
 				body.japanLanguageTests = JSON.parse(body.japanLanguageTests);
 			}
 
-			if (typeof body?.universityPercentage === "string") {
-				body.universityPercentage = JSON.parse(body.universityPercentage);
-			}
-
 			if (typeof body?.itQualification === "string") {
 				body.itQualification = JSON.parse(body.itQualification);
 			}
@@ -316,7 +312,6 @@ class StudentController {
 				bio: student.bio,
 				japanLanguageTest: student.japanLanguageTests,
 				itQualification: student?.itQualification,
-				universityPercentage: student?.universityPercentage,
 			});
 		} catch (error) {}
 	}

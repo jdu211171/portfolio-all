@@ -169,6 +169,7 @@ module.exports = (sequelize) => {
 				as: "japanLanguageTests",
 			});
 
+
 			models.Students.hasOne(models.ItQualifications, {
 				foreignKey: {
 					name: "studentId",
@@ -189,12 +190,6 @@ module.exports = (sequelize) => {
 				as: "lessons",
 			});
 
-			models.Students.hasOne(models.UniversityPercentages, {
-				foreignKey: {
-					name: "studentId",
-				},
-				as: "universityPercentage",
-			});
 
 			models.Students.belongsToMany(models.Recruitors, {
 				through: models.SelectedStudents,

@@ -165,7 +165,6 @@ const createCv = async ({
     bio = '',
     japanLanguageTest = [],
     itQualification = {},
-    universityPercentage = {},
     res
 }) => {
     try {
@@ -452,7 +451,6 @@ const createCv = async ({
         skill({
             doc,
             name: '出席',
-            procent: universityPercentage?.Attendee,
             color: '#000',
             startY: CreditHeight
         })
@@ -476,7 +474,7 @@ const createCv = async ({
         skill({
             doc,
             name: 'ITコース',
-            procent: universityPercentage?.ItCourse,
+
             color: '#000',
             startY: CreditHeight
         })
@@ -497,13 +495,6 @@ const createCv = async ({
             doc.addPage()
             CreditHeight = 40
         }
-        skill({
-            doc,
-            name: '日本語',
-            procent: universityPercentage?.JapanLanguage,
-            color: '#000',
-            startY: CreditHeight
-        })
 
         CreditHeight += 40
         if (CreditHeight + 19 > 806) {
@@ -521,13 +512,6 @@ const createCv = async ({
             doc.addPage()
             CreditHeight = 40
         }
-        skill({
-            doc,
-            name: '産能大学',
-            procent: universityPercentage?.SannoUniversity,
-            color: '#000',
-            startY: CreditHeight
-        })
 
         CreditHeight += 40
         if (CreditHeight + 19 > 806) {
@@ -545,13 +529,6 @@ const createCv = async ({
             doc.addPage()
             CreditHeight = 40
         }
-        skill({
-            doc,
-            name: '世界言語大学',
-            procent: universityPercentage?.UzSWLUniversity,
-            color: '#000',
-            startY: CreditHeight
-        })
 
 
         CreditHeight += 40
@@ -570,13 +547,6 @@ const createCv = async ({
             doc.addPage()
             CreditHeight = 40
         }
-        skill({
-            doc,
-            name: 'コワーキング',
-            procent: universityPercentage?.CoWork,
-            color: '#000',
-            startY: CreditHeight
-        })
 
         CreditHeight += 40
         if (CreditHeight + 19 > 806) {
@@ -594,13 +564,6 @@ const createCv = async ({
             doc.addPage()
             CreditHeight = 40
         }
-        skill({
-            doc,
-            name: 'すべてのマーク',
-            procent: universityPercentage?.AllMarks,
-            color: '#5627DC',
-            startY: CreditHeight
-        })
         doc.pipe(res)
         doc.end()
     } catch (error) {

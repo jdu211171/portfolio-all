@@ -20,14 +20,6 @@ const constants = {
             description: "",
             skills: []
         },
-        universityPercentage: {
-            Attendee: 0,
-            ItCourse: 0,
-            JapanLanguage: 0,
-            SannoUniversity: 0,
-            UzSWLUniversity: 0,
-            CoWork: 0
-        },
         lessons: [
             {
                 name: '日本語',

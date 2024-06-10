@@ -27,14 +27,6 @@ const studentSchema = Joi.object({
             skillId: Joi.string().uuid().required()
         }))
     }),
-    universityPercentage: Joi.object({
-        Attendee: Joi.alternatives(Joi.string().regex(/^\d+$/), Joi.number().min(0).max(100)),
-        ItCourse: Joi.alternatives(Joi.string().regex(/^\d+$/), Joi.number().min(0).max(100)),
-        JapanLanguage: Joi.alternatives(Joi.string().regex(/^\d+$/), Joi.number().min(0).max(100)),
-        SannoUniversity: Joi.alternatives(Joi.string().regex(/^\d+$/), Joi.number().min(0).max(100)),
-        UzSWLUniversity: Joi.alternatives(Joi.string().regex(/^\d+$/), Joi.number().min(0).max(100)),
-        CoWork: Joi.alternatives(Joi.string().regex(/^\d+$/), Joi.number().min(0).max(100))
-    }),
     lessons: Joi.object()
 })
 

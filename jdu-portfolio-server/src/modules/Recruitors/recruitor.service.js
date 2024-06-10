@@ -151,11 +151,6 @@ class RecruitorService {
 						where: { isActive: true, isDeleted: false, isArchive: false },
 						include: [
 							{
-								model: this.models.UniversityPercentages,
-								as: "universityPercentage",
-								attributes: { exclude: ["studentId"] },
-							},
-							{
 								model: this.models.ItQualifications,
 								as: "itQualification",
 								attributes: { exclude: ["studentId", "id"] },

@@ -6,7 +6,6 @@ const JapanLanguageTestModel = require("../JapanLanguageTests/JapanLanguageTest.
 const ItQualificationModel = require("../ItQualifications/ItQualification.model.js");
 const lessonModel = require("../Lessons/lesson.model.js");
 const semesterModel = require("../Semesters/semester.model.js");
-const UniversityPercentageModel = require("../UniversityPercentages/UniversityPercentage.model.js");
 const logger = require("../../services/logger.service.js");
 const { roles } = require("../../constants/server.constants.js");
 const { Op } = require("sequelize");
@@ -20,7 +19,6 @@ class StudentServices {
 		ItQualificationModel(sequelize);
 		lessonModel(sequelize);
 		semesterModel(sequelize);
-		UniversityPercentageModel(sequelize);
 		this.models = sequelize.models;
 	}
 
@@ -57,11 +55,6 @@ class StudentServices {
 				individualHooks: true,
 				include: [
 					{ model: this.models.JapanLanguageTests, as: "japanLanguageTests" },
-					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						individualHooks: true,
-					},
 					{
 						model: this.models.ItQualifications,
 						as: "itQualification",
@@ -169,22 +162,6 @@ class StudentServices {
 				},
 				include: [
 					// { model: this.models.JapanLanguageTests, as: 'japanLanguageTests', attributes: { exclude: ['studentId'] } },
-					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						attributes: ["AllMarks"],
-						where: {
-							...(rate && {
-								...(rate === "low" && { AllMarks: { [Op.between]: [0, 40] } }),
-								...(rate === "medium" && {
-									AllMarks: { [Op.between]: [40, 80] },
-								}),
-								...(rate === "high" && {
-									AllMarks: { [Op.between]: [80, 100] },
-								}),
-							}),
-						},
-					},
 					{
 						model: this.models.Group,
 						as: "group",
@@ -300,13 +277,6 @@ class StudentServices {
 				// }
 			}
 
-			if (body?.universityPercentage) {
-				await this.models.UniversityPercentages.update(
-					body?.universityPercentage,
-					{ where: { studentId: id }, individualHooks: true },
-				);
-			}
-
 			return student?.[0];
 		} catch (error) {
 			return SequelizeError(error);
@@ -378,11 +348,6 @@ class StudentServices {
 				where: { isDeleted: false, isArchive: false },
 				include: [
 					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						attributes: { exclude: ["studentId"] },
-					},
-					{
 						model: this.models.Group,
 						as: "group",
 					},
@@ -404,14 +369,6 @@ class StudentServices {
 			const topStudents = await this.models.Students.findAndCountAll({
 				where: { isDeleted: false, isActive: true, isArchive: false },
 				attributes: ["id", "firstName", "lastName", "avatar"],
-				order: [["universityPercentage", "AllMarks", "DESC"]],
-				include: [
-					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						attributes: ["AllMarks"],
-					},
-				],
 				offset: (page - 1) * limit,
 				limit,
 			});
