@@ -64,6 +64,23 @@ export default function Filter({ children, page, decan, back }) {
             }
         })
 
+        const fetchData = async () => {
+            const data2 = await SectionGet2()
+            SetData(data2)
+        }
+        fetchData()
+            .then((err) => {
+                console.log(err);
+            })
+        if (page == "student" || page == "student2") {
+            setHideChild(1440)
+        }
+        if (page == "staff") {
+            setHideChild(1240)
+        }
+        if (page == "recruiter") {
+            setHideChild(880)
+        }
 
     }, [params])
 
