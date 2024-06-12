@@ -3,14 +3,12 @@ import { useInfiniteQuery, useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import { useInView } from 'react-intersection-observer'
 
-import { SpecialisationsGet } from "../../../services/specialisations";
 import { StudentsGet } from "../../../services/student";
 import StudentPage from "../../../components/Pages/Decan/Student";
 
 export default function DecanStudent() {
   const { ref, inView } = useInView()
   const [params, setSearchParams] = useSearchParams()
-  const { data: specialisation } = useQuery('specialisation', SpecialisationsGet)
 
   const { data, isLoading: isNewsLoading, fetchNextPage, isFetchingNextPage, hasNextPage } = useInfiniteQuery(
     ['student', params.get('group'), params.get('groups'), params.get('rate'), params.get('jdu'), params.get('jlpt'), params.get('year'), params.get('search')],
@@ -43,7 +41,7 @@ export default function DecanStudent() {
 
   return (
     <>
-      <StudentPage data={students} Specialisation={specialisation} ref={ref} />
+      <StudentPage data={students} ref={ref} />
     </>
   )
 }

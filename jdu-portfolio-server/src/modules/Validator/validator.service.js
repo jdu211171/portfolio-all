@@ -20,7 +20,6 @@ class ValidatorService {
 				this.models.Students.findOne({ where: { loginId } }),
 				this.models.Decan.findOne({ where: { loginId } }),
 				this.models.Recruitors.findOne({ where: { loginId } }),
-				this.models.Parents.findOne({ where: { loginId } }),
 			]);
 			return results.every((result) => result === null);
 		} catch (error) {
@@ -35,7 +34,6 @@ class ValidatorService {
 				this.models.Students.findOne({ where: { email, isDeleted: false } }),
 				this.models.Decan.findOne({ where: { email, isDeleted: false } }),
 				this.models.Recruitors.findOne({ where: { email, isDeleted: false } }),
-				this.models.Parents.findOne({ where: { email, isDeleted: false } }),
 			]);
 			return results.every((result) => result === null);
 		} catch (error) {

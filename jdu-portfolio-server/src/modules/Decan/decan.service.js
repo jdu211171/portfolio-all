@@ -46,7 +46,6 @@ class DecanServices {
 				returning: true,
 				individualHooks: true,
 			});
-			console.log(decan);
 			return decan?.[0];
 		} catch (error) {
 			return SequelizeError(error);
@@ -80,10 +79,6 @@ class DecanServices {
 					type: "リクルーター",
 					model: await this.models.Recruitors.findAll({ where }),
 				},
-				{
-					type: "保護者",
-					model: await this.models.Parents.findAll({ where }),
-				},
 			];
 
 			const result = dataModels.map((e) => {
@@ -105,9 +100,6 @@ class DecanServices {
 			result.forEach((item) => {
 				item.percentage = ((item.count / totalCounts) * 100).toFixed(0);
 			});
-
-			console.log(result);
-
 			return result;
 		} catch (error) {
 			console.log(error);

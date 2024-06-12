@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 import { useForm } from 'react-hook-form'
 import { GetCertificates, GetStudentgroupRec } from '../../../../services/statistic'
-import { SectionGet, TeacherGet, TeacherUpdate } from '../../../../services/teacher'
+import { TeacherGet, TeacherUpdate } from '../../../../services/teacher'
 import Container from '../../../UL/container'
 import AddInput from '../../../UL/input/AddInput'
 import AvatarInput from '../../../UL/input/AvatarInput'
@@ -68,19 +68,6 @@ export default function HomeTechPage({ user }) {
 
     useEffect(() => {
 
-        const fetchData4 = async () => {
-            if (user?.role == "teacher") {
-                const res = await SectionGet();
-                setSection(res)
-            }
-            if (user?.role == "staff") {
-
-            }
-        }
-        fetchData4()
-            .then((err) => {
-                console.log(err);
-            })
 
         const fetchData = async () => {
             const res = await GetCertificates();
@@ -115,19 +102,6 @@ export default function HomeTechPage({ user }) {
 
 
     useEffect(() => {
-        const fetchData4 = async () => {
-            if (user?.role == "teacher") {
-                const res = await SectionGet();
-                setSection(res)
-            }
-            if (user?.role == "staff") {
-                setSection(SectionArr)
-            }
-        }
-        fetchData4()
-            .then((err) => {
-                console.log(err);
-            })
         setValue("firstName", user?.firstName)
         setValue("lastName", user?.lastName)
     }, [user])

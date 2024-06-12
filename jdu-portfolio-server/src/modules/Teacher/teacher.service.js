@@ -11,7 +11,7 @@ class TeacherServices {
 		this.models = sequelize.models;
 	}
 
-	async getAll({ page = 1, limit = 10, specialisation, search, role, position }) {
+	async getAll({ page = 1, limit = 10, search, role, position }) {
 		try {
 			// ---
 			const teachers = await this.models.Teachers.findAndCountAll({
@@ -24,9 +24,6 @@ class TeacherServices {
 							{ firstName: { [Op.iLike]: "%" + search + "%" } },
 							{ lastName: { [Op.iLike]: "%" + search + "%" } },
 						],
-					}),
-					...(specialisation && {
-						specialisation: { [Op.eq]: specialisation },
 					}),
 					...(position && {
 						position: { [Op.eq]: position },
@@ -107,7 +104,6 @@ class TeacherServices {
 				where: { password: sha256(psw) },
 			});
 
-			console.log(psw);
 			return teacher;
 		} catch (error) {
 			return SequelizeError(error);

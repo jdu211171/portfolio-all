@@ -8,7 +8,6 @@ const {
 	generatePassword,
 	generateLoginId,
 } = require("../../utils/generator.js");
-const createCv = require("../../utils/pdfGenerator.js");
 const StudentServices = require("./student.service.js");
 const XLSX = require("xlsx");
 const validate = require("../../utils/excelValidation");
@@ -192,17 +191,6 @@ class StudentController {
 					? JSON.parse(req.body.images)
 					: req.body.images;
 
-			if (typeof body?.japanLanguageTests === "string") {
-				body.japanLanguageTests = JSON.parse(body.japanLanguageTests);
-			}
-
-			if (typeof body?.universityPercentage === "string") {
-				body.universityPercentage = JSON.parse(body.universityPercentage);
-			}
-
-			if (typeof body?.itQualification === "string") {
-				body.itQualification = JSON.parse(body.itQualification);
-			}
 
 			if (
 				req.user.id === req.params.id ||
@@ -242,8 +230,6 @@ class StudentController {
 		try {
 			const student = await StudentServices.delete(req.params.id);
 
-			console.log(student);
-
 			res.status(204).send({ error: false, message: "Deleted", data: null });
 		} catch (error) {
 			console.log(error);
@@ -252,7 +238,6 @@ class StudentController {
 
 	async findByLoginId(req, res) {
 		try {
-			console.log(req.params.id);
 			const student = await StudentServices.findByLogin(req?.params?.id);
 
 			res.status(200).send(student);
@@ -290,36 +275,6 @@ class StudentController {
 		}
 	}
 
-	async generateCv(req, res) {
-		try {
-			let student = await StudentServices.findByPk(req.params.id);
-			student = student.dataValues;
-
-			let filename = `${student?.firstName} ${student?.lastName}`;
-			// Stripping special characters
-			filename = encodeURIComponent(filename) + ".pdf";
-			// Setting response to 'attachment' (download).
-			// If you use 'inline' here it will automatically open the PDF
-			res.setHeader(
-				"Content-disposition",
-				'attachment; filename="' + filename + '"',
-			);
-			res.setHeader("Content-type", "application/pdf");
-
-			await createCv({
-				res,
-				avatarUrl: student.avatar,
-				fullName: `${student?.firstName} ${student?.lastName}`,
-				id: student.loginId,
-				courseNumber: student.courseNumber,
-				email: student?.email,
-				bio: student.bio,
-				japanLanguageTest: student.japanLanguageTests,
-				itQualification: student?.itQualification,
-				universityPercentage: student?.universityPercentage,
-			});
-		} catch (error) {}
-	}
 
 	async createCertification(req, res) {
 		try {

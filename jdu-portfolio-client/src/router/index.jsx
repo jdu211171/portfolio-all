@@ -28,13 +28,10 @@ import StudentMe from '../app/Student/Me'
 import StuDStudentById from '../app/Student/id'
 import DecanGroups from '../app/Decan/Groups'
 import DecEmployees from '../app/Decan/Employees'
-import DecParents from '../app/Decan/Parents/indx'
 import TeacherHome from '../app/Teacher/home'
 import TecherGruop from '../app/Teacher/gruop'
 import Teachertudent from '../app/Teacher/students'
-import DecanPerantBuId from '../app/Decan/Parents/id'
 import DecanEmloyBuId from '../app/Decan/Employees/id'
-import ParentHome from '../app/Parant/home'
 
 export default function AppRouter() {
     const [topStudent, setTopStudent] = useState([])
@@ -75,8 +72,6 @@ export default function AppRouter() {
                 <Route path="/decan/recruitors/:id" element={< DecanRecruitorBuId />} />
                 <Route path="/decan/employees" element={< DecEmployees />} />
                 <Route path="/decan/employees/:id" element={< DecanEmloyBuId />} />
-                <Route path="/decan/parents" element={< DecParents />} />
-                <Route path="/decan/parents/:id" element={< DecanPerantBuId />} />
 
                 <Route path="/recruitor/home" element={<RecHome user={user} />} />
                 <Route path="/recruitor/students" element={<RecStudent role={user?.role} />} />
@@ -88,9 +83,6 @@ export default function AppRouter() {
                 <Route path="/student/students/:id" element={<StuDStudentById />} />
                 <Route path="/student/studentsSet/:id" element={< SetStudentpage role={user?.role} />} />
 
-                <Route path="/parent/home" element={<ParentHome user={user} />} />
-                <Route path="/parent/myChild" element={<StudentMe user={user?.Students?.[0]} role={user?.role} />} />
-                <Route path="/parent/students/:id" element={<StuDStudentById role={user?.role} />} />
 
                 <Route path="/teacher/home" element={<TeacherHome user={user} />} />
                 {/* <Route path="/teacher/groups" element={< TecherGruop role={user?.role} />} /> */}

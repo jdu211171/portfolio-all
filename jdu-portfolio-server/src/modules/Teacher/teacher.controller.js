@@ -114,8 +114,6 @@ class TeacherController {
 					const teacher = await TeacherService.checkPassword(
 						body.currentPassword,
 					);
-					console.log("teacher", teacher);
-					console.log("password", body?.currentPassword);
 					if (!teacher || teacher.error) {
 						res.status(400).send({
 							error: true,

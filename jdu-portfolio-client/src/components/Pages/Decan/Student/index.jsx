@@ -46,7 +46,7 @@ const Course = [
 
 
 
-const StudentPage = React.forwardRef(({ data, gruop }, ref) => {
+const StudentPage = React.forwardRef(({ data }, ref) => {
     const widthwindow = useGetWindowWidth()
 
     const queryClient = useQueryClient()
@@ -274,7 +274,6 @@ const StudentPage = React.forwardRef(({ data, gruop }, ref) => {
                     name={`${oneStuednt?.firstName} ${oneStuednt?.lastName}`}
                     avater={oneStuednt?.avatar}
                     role={'student'}
-                    progress={oneStuednt?.universityPercentage?.AllMarks}
                     years={`${+newDate.getFullYear() - oneStuednt.brithday?.split('-')[0]}歳 `}
                     remove={async () => {
                         setLoading(true)
@@ -309,7 +308,6 @@ const StudentPage = React.forwardRef(({ data, gruop }, ref) => {
                     role={'student'}
                     GroupChange={true}
                     defaultGruop={oneStuednt2?.groupId}
-                    progress={oneStuednt2?.universityPercentage?.AllMarks}
                     years={`${+newDate.getFullYear() - oneStuednt2.brithday?.split('-')[0]}際 `}
 
                     className={personId2 ? cls.openMadal : ''}

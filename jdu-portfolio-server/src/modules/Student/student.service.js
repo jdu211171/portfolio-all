@@ -2,11 +2,6 @@ const sha256 = require("sha256");
 const { sequelize } = require("../../services/sequelize.service.js");
 const StudentModel = require("./student.model.js");
 const SequelizeError = require("../../errors/sequelize.error.js");
-const JapanLanguageTestModel = require("../JapanLanguageTests/JapanLanguageTest.model.js");
-const ItQualificationModel = require("../ItQualifications/ItQualification.model.js");
-const lessonModel = require("../Lessons/lesson.model.js");
-const semesterModel = require("../Semesters/semester.model.js");
-const UniversityPercentageModel = require("../UniversityPercentages/UniversityPercentage.model.js");
 const logger = require("../../services/logger.service.js");
 const { roles } = require("../../constants/server.constants.js");
 const { Op } = require("sequelize");
@@ -16,11 +11,6 @@ const { removeFile } = require("../../services/file.service");
 class StudentServices {
 	constructor(sequelize) {
 		StudentModel(sequelize);
-		JapanLanguageTestModel(sequelize);
-		ItQualificationModel(sequelize);
-		lessonModel(sequelize);
-		semesterModel(sequelize);
-		UniversityPercentageModel(sequelize);
 		this.models = sequelize.models;
 	}
 
@@ -55,42 +45,6 @@ class StudentServices {
 
 			const student = await this.models.Students.create(body, {
 				individualHooks: true,
-				include: [
-					{ model: this.models.JapanLanguageTests, as: "japanLanguageTests" },
-					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						individualHooks: true,
-					},
-					{
-						model: this.models.ItQualifications,
-						as: "itQualification",
-						include: [
-							{
-								model: this.models.ItQualificationResults,
-								as: "skills",
-								include: [{ model: this.models.Skills, as: "skill" }],
-							},
-						],
-					},
-					{
-						model: this.models.Lessons,
-						as: "lessons",
-						include: [
-							{
-								model: this.models.Semesters,
-								as: "semesters",
-								include: [
-									{
-										model: this.models.LessonResults,
-										as: "results",
-										individualHooks: true,
-									},
-								],
-							},
-						],
-					},
-				],
 			});
 
 			return student;
@@ -168,23 +122,6 @@ class StudentServices {
 							: [],
 				},
 				include: [
-					// { model: this.models.JapanLanguageTests, as: 'japanLanguageTests', attributes: { exclude: ['studentId'] } },
-					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						attributes: ["AllMarks"],
-						where: {
-							...(rate && {
-								...(rate === "low" && { AllMarks: { [Op.between]: [0, 40] } }),
-								...(rate === "medium" && {
-									AllMarks: { [Op.between]: [40, 80] },
-								}),
-								...(rate === "high" && {
-									AllMarks: { [Op.between]: [80, 100] },
-								}),
-							}),
-						},
-					},
 					{
 						model: this.models.Group,
 						as: "group",
@@ -222,90 +159,6 @@ class StudentServices {
 					individualHooks: true,
 				},
 			);
-			// if (status === 0) return SequelizeError(new Error("Student not found"));
-
-			if (Array.isArray(body?.japanLanguageTests)) {
-				await Promise.all(
-					body?.japanLanguageTests?.map(async (test) => {
-						try {
-							const prevTest = await this.models.JapanLanguageTests.findOne({
-								where: { studentId: id, id: test?.id || null },
-							});
-							if (prevTest) {
-								await this.models.JapanLanguageTests.update(test, {
-									where: { id: test.id || null },
-								});
-							} else {
-								await this.models.JapanLanguageTests.create({
-									...test,
-									studentId: id,
-								});
-							}
-						} catch (error) {
-							logger.error(error.message);
-						}
-					}),
-				);
-			}
-
-			if (body?.itQualification) {
-				let itQualification = await this.models.ItQualifications.findOne({
-					where: { studentId: id },
-				});
-				await this.models.ItQualifications.update(
-					{ description: body?.itQualification?.description },
-					{ where: { studentId: id }, returning: true },
-				);
-
-				// if (Array.isArray(body?.itQualification?.skills)) {
-				// 	await Promise.all(
-				// 		body?.itQualification?.skills?.map(async (skill) => {
-				// 			try {
-				// 				const result = await this.models.ItQualificationResults.findOne(
-				// 					{
-				// 						where: {
-				// 							[Op.and]: [
-				// 								{ ItQualificationId: itQualification?.dataValues?.id },
-				// 								{ skillId: skill?.skillId },
-				// 							],
-				// 						},
-				// 					},
-				// 				);
-
-				// 				if (result) {
-				// 					await this.models.ItQualificationResults.update(
-				// 						{ procent: skill?.procent },
-				// 						{
-				// 							where: {
-				// 								[Op.and]: [
-				// 									{
-				// 										ItQualificationId: itQualification?.dataValues?.id,
-				// 									},
-				// 									{ skillId: skill?.skillId },
-				// 								],
-				// 							},
-				// 						},
-				// 					);
-				// 				} else {
-				// 					await this.models.ItQualificationResults.create({
-				// 						...skill,
-				// 						ItQualificationId: itQualification?.dataValues?.id,
-				// 					});
-				// 				}
-				// 			} catch (error) {
-				// 				logger.error(error.message);
-				// 			}
-				// 		}),
-				// 	);
-				// }
-			}
-
-			if (body?.universityPercentage) {
-				await this.models.UniversityPercentages.update(
-					body?.universityPercentage,
-					{ where: { studentId: id }, individualHooks: true },
-				);
-			}
 
 			return student?.[0];
 		} catch (error) {
@@ -338,7 +191,6 @@ class StudentServices {
 
 	async findByLogin(id) {
 		try {
-			console.log(id);
 			if (id) {
 				let student = await this.models.Students.findOne({
 					where: {
@@ -361,14 +213,7 @@ class StudentServices {
 					},
 				});
 				if (student) {
-					const parent = await this.models.StudentParents.findOne({
-						where: { StudentId: student.id },
-					});
-					if (parent) {
-						student = { ...student.dataValues, parent: true };
-					} else {
-						student = { ...student.dataValues, parent: false };
-					}
+					student = { ...student.dataValues };				
 				}
 
 				return student?.isDeleted ? {} : student;
@@ -385,25 +230,12 @@ class StudentServices {
 				where: { isDeleted: false, isArchive: false },
 				include: [
 					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						attributes: { exclude: ["studentId"] },
-					},
-					{
 						model: this.models.Group,
 						as: "group",
-					},
-					{
-						model: this.models.Parents,
-						through: { attributes: [] },
 					},
 				],
 				attributes: { exclude: ["password", "isDeleted"] },
 			});
-			student.japanLanguageTests = [
-				student.japanLanguageTests?.find((e) => e.name === "JLPT"),
-				student.japanLanguageTests?.find((e) => e.name === "NAT"),
-			];
 			return student?.isDeleted ? {} : student;
 		} catch (error) {
 			return SequelizeError(error);
@@ -415,14 +247,6 @@ class StudentServices {
 			const topStudents = await this.models.Students.findAndCountAll({
 				where: { isDeleted: false, isActive: true, isArchive: false },
 				attributes: ["id", "firstName", "lastName", "avatar"],
-				order: [["universityPercentage", "AllMarks", "DESC"]],
-				include: [
-					{
-						model: this.models.UniversityPercentages,
-						as: "universityPercentage",
-						attributes: ["AllMarks"],
-					},
-				],
 				offset: (page - 1) * limit,
 				limit,
 			});
@@ -432,50 +256,6 @@ class StudentServices {
 		}
 	}
 
-	async getCertificatesCount() {
-		try {
-			const N1 = await this.models.JapanLanguageTests.count({
-				where: { name: "JLPT", level: "N1" },
-			});
-			const N2 = await this.models.JapanLanguageTests.count({
-				where: { name: "JLPT", level: "N2" },
-			});
-			const N3 = await this.models.JapanLanguageTests.count({
-				where: { name: "JLPT", level: "N3" },
-			});
-			const N4 = await this.models.JapanLanguageTests.count({
-				where: { name: "JLPT", level: "N4" },
-			});
-			const N5 = await this.models.JapanLanguageTests.count({
-				where: { name: "JLPT", level: "N5" },
-			});
-
-			const Q1 = await this.models.JapanLanguageTests.count({
-				where: { name: "NAT" },
-			});
-			const Q2 = await this.models.JapanLanguageTests.count({
-				where: { name: "NAT", level: "Q2" },
-			});
-			const Q3 = await this.models.JapanLanguageTests.count({
-				where: { name: "NAT", level: "Q3" },
-			});
-			const Q4 = await this.models.JapanLanguageTests.count({
-				where: { name: "NAT", level: "Q4" },
-			});
-
-			const students = await this.models.Students.count({
-				where: { isDeleted: false },
-			});
-
-			return {
-				JLPT: { N1, N2, N3, N4, N5 },
-				NAT: { Q1, Q2, Q3, Q4 },
-				students,
-			};
-		} catch (error) {
-			return SequelizeError(error);
-		}
-	}
 
 	async createSertification(datas) {
 		try {
@@ -601,7 +381,6 @@ class StudentServices {
 			await Promise.all([
 				updateAvatarToNull(this.models.Students, id),
 				updateAvatarToNull(this.models.Teachers, id),
-				updateAvatarToNull(this.models.Parents, id),
 				updateAvatarToNull(this.models.Decan, id),
 				updateAvatarToNull(this.models.Recruitors, id),
 			]);

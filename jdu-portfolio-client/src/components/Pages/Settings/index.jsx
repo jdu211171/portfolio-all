@@ -16,8 +16,7 @@ import { CanactGet, CanactUpdate, DecanUpdate, PersonDelete } from '../../../ser
 import { RecruitorUpdate } from '../../../services/recruter'
 import Loader from '../../UL/loader'
 import { StudentsUpdate } from '../../../services/student'
-import { SectionGet, TeacherUpdate } from '../../../services/teacher'
-import { ParentUpdate } from '../../../services/parent'
+import { TeacherUpdate } from '../../../services/teacher'
 import AddInput from '../../UL/input/AddInput'
 import { ImageUpload } from '../../../utils/imageUpload'
 import { FileRemove } from '../../../services/upload'
@@ -81,18 +80,6 @@ export default function SettingsPage({ data }) {
             const value = section.find(el => el?.name == section1)
             setSection2(value?.specialisations)
         }
-
-
-
-
-        const fetchData = async () => {
-            const data = await SectionGet()
-            setSection(data)
-        }
-        fetchData()
-            .then((err) => {
-                console.log(err);
-            })
 
         if (data?.role == "decan") {
             const fetchData = async () => {
@@ -220,29 +207,6 @@ export default function SettingsPage({ data }) {
             }
             if (data?.role == 'student') {
                 await StudentsUpdate(formData, data?.id)
-                    .then((data) => {
-                        router('/student/home')
-                        setLoager(false)
-                    })
-                    .catch(err => {
-                        if (err.response.data.message.includes('current')) {
-                            setError('currentPassword', { type: 'custom', message: "現在のパスワードは正しくありません" })
-                        }
-                        if (err.response.data.message === "email must be unique") {
-                            setError('email', { type: 'custom', message: "電子メールは一意である必要があります" })
-                        }
-                        if (err.response.data.message === "Validation len on password failed") {
-                            setError('password', { type: 'custom', message: "パスワードの最小の長さは 8 文字である必要があります" })
-                        }
-                        if (err.response.data.message.includes('confirm')) {
-                            setError('confirmPassword', { type: 'custom', message: "パスワードが正しくないことを確認する" })
-                        }
-                        setLoager(false)
-                    })
-
-            }
-            if (data?.role == 'parent') {
-                await ParentUpdate(formData, data?.id)
                     .then((data) => {
                         router('/student/home')
                         setLoager(false)
@@ -489,17 +453,6 @@ export default function SettingsPage({ data }) {
 
                                     alert={errors.brithday?.message}
                                     onChange={() => clearErrors("brithday")}
-                                />
-                            }
-                            {data?.role == "parent" &&
-                                <SettingsInput
-                                    className={cls.SettingsPage__inputs__wrap}
-                                    type={"text"}
-                                    label={"電話番号"}
-                                    placeholder={"電話番号"}
-                                    register={{ ...register("phoneNumber", { required: "電話番号は必要です！" }) }}
-                                    alert={errors.phoneNumber?.message}
-                                    onChange={() => clearErrors("phoneNumber")}
                                 />
                             }
                             <SettingsInput

@@ -9,9 +9,7 @@ const checkProperties = (data, who) => {
 	for (const item of data) {
 		const properties = Object.keys(item);
 		let expectedProperties;
-		if (who == "parent") {
-			expectedProperties = ["id", "model", "color", "size", "code", "count"];
-		} else if (who == "student") {
+		if (who == "student") {
 			expectedProperties = ["studentId", "email"];
 		}
 
@@ -29,9 +27,7 @@ const checkProperties = (data, who) => {
 const checkValue = (data, who) => {
 	const alphabet = "ABCDEFGHIJKLMOPQRSTUVWXYZ";
 	let expectedProperties;
-	if (who == "parent") {
-		expectedProperties = ["id", "model", "color", "size", "code", "count"];
-	} else if (who == "student") {
+	if (who == "student") {
 		expectedProperties = ["studentId", "email"];
 	}
 

@@ -153,51 +153,11 @@ module.exports = (sequelize) => {
 		);
 
 		Student.associate = (models) => {
-			// models.Students.belongsTo(models.Specialisations, {
-			//     foreignKey: {
-			//         name: 'specialisationId',
-			//         allowNull: true
-			//     },
-			//     as: 'specialisation'
-			// })
-
-			models.Students.hasMany(models.JapanLanguageTests, {
-				foreignKey: {
-					name: "studentId",
-					allowNull: true,
-				},
-				as: "japanLanguageTests",
-			});
-
-			models.Students.belongsToMany(models.Parents, {
-				through: models.StudentParents,
-			});
-
-			models.Students.hasOne(models.ItQualifications, {
-				foreignKey: {
-					name: "studentId",
-				},
-				as: "itQualification",
-			});
 
 			models.Students.belongsTo(models.Group, {
 				foreignKey: "groupId",
 				as: "group",
 				onDelete: "SET NULL",
-			});
-
-			models.Students.hasMany(models.Lessons, {
-				foreignKey: {
-					name: "studentId",
-				},
-				as: "lessons",
-			});
-
-			models.Students.hasOne(models.UniversityPercentages, {
-				foreignKey: {
-					name: "studentId",
-				},
-				as: "universityPercentage",
 			});
 
 			models.Students.belongsToMany(models.Recruitors, {

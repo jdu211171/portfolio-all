@@ -207,52 +207,6 @@ const StudentTeachPage = React.forwardRef(({ data, role }, ref) => {
                         setOpenMadal(false)
                     }}>
 
-                    {/* <div className={cls.StudentPage__checkBox}>
-                        <label>
-                            <input
-                                name='role'
-                                type={"radio"}
-                                value={"JLPT & JDU"}
-                                checked={Sunject == "JLPT & JDU" ? true : false}
-                                onChange={(e) => setSunject(e.target.value)}
-                            />
-                            <p>  JLPT & JDU</p>
-                        </label>
-                        <label>
-                            <input
-                                name='role'
-                                type={"radio"}
-                                value={"Credits"}
-                                checked={Sunject == "Credits" ? true : false}
-                                onChange={(e) => setSunject(e.target.value)}
-                            />
-                            <p>Credits</p>
-                        </label>
-                    </div> */}
-
-                    {
-                        Sunject == "Credits" ? <div className={cls.StudentPage__addInputs}>
-                            <AddInput
-                                // register={{ ...register('specialisation', { required: true }) }}
-                                type={"select"}
-                                label={"Semester"}
-                                placeholder={"Semester"}
-                                style={{ marginBottom: "20px" }}
-                                disabled={exal ? true : false}
-
-                            />
-                            <AddInput
-                                // register={{ ...register('specialisation', { required: true }) }}
-                                type={"select"}
-                                label={"Science"}
-                                placeholder={"Science"}
-                                style={{ marginBottom: "20px" }}
-
-                                disabled={exal ? true : false}
-                            />
-                        </div> : ""
-                    }
-
                     <ExalInput
                         setResolv={setexal}
                         resolv={exal}

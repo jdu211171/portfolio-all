@@ -54,14 +54,6 @@ export const StudentsGetByloginId = async (id) => {
     }
 }
 
-export const GetSkills = async () => {
-    try {
-     const res = await api.get('/skills', {withCredentials: true})
-     return res.data
-    } catch (error) {
-     console.log(error.response.data.message);
-    }
-}
 export const StudentsAllAdd = async (data) => { 
     const response = await api.post('/students', data, {
         headers: {
