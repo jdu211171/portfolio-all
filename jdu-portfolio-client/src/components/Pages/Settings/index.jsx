@@ -449,7 +449,7 @@ export default function SettingsPage({ data }) {
                                     type={"date"}
                                     label={"生年月日"}
                                     placeholder={"生年月日"}
-                                    register={{ ...register("生年月日", { required: "電話番号は必要です！" }) }}
+                                    register={{ ...register("brithday", { required: "電話番号は必要です！" }) }}
 
                                     alert={errors.brithday?.message}
                                     onChange={() => clearErrors("brithday")}
