@@ -11,7 +11,6 @@ const config = {
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'portfolio',
     logging: false,
-    operatorsAliases: false
   },
   production: {
     dialect: 'postgres',
@@ -21,8 +20,15 @@ const config = {
     password: process.env.DB_PASSWORD_PROD || 'your_prod_password',
     database: process.env.DB_NAME_PROD || 'your_production_database',
     logging: false,
-    operatorsAliases: false
   }
 };
 
-module.exports = config[env];
+module.exports = {
+  [env]: config[env],
+  sequelizeOptions: {
+    define: {
+      timestamps: true,
+      underscored: true, // Use snake_case for automatically added attributes (createdAt, updatedAt)
+    },
+  }
+};
