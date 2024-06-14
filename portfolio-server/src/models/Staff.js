@@ -1,7 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const bcrypt = require('bcrypt');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Staff extends Model {
     /**
@@ -13,16 +13,54 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
+
   Staff.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    date_of_birth: DataTypes.DATE,
-    photo: DataTypes.STRING
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    photo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Staff',
+    hooks: {
+      beforeCreate: async (staff) => {
+        if (staff.password) {
+          const salt = await bcrypt.genSalt(10);
+          staff.password = await bcrypt.hash(staff.password, salt);
+        }
+      },
+      beforeUpdate: async (staff) => {
+        if (staff.password) {
+          const salt = await bcrypt.genSalt(10);
+          staff.password = await bcrypt.hash(staff.password, salt);
+        }
+      },
+    },
   });
+
   return Staff;
 };

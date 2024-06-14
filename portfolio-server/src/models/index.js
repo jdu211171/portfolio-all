@@ -17,6 +17,12 @@ const db = {};
 
 // Load models
 db.Admin = require('./Admin')(sequelize, Sequelize);
+db.Recruiter = require('./Recruiter')(sequelize, Sequelize);
+db.Staff = require('./Staff')(sequelize, Sequelize);
+db.Student = require('./Student')(sequelize, Sequelize);
+db.Bookmark = require('./Bookmark')(sequelize, Sequelize);
+db.QA = require('./QA')(sequelize, Sequelize);
+
 // Load other models here if needed
 // db.User = require('./User')(sequelize, Sequelize);
 

@@ -1,7 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const bcrypt = require('bcrypt');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Recruiter extends Model {
     /**
@@ -13,20 +13,73 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
+
   Recruiter.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    company_name: DataTypes.STRING,
-    phone_number: DataTypes.STRING,
-    company_description: DataTypes.TEXT,
-    company_photo: DataTypes.STRING,
-    photo: DataTypes.STRING,
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    date_of_birth: DataTypes.DATE
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    company_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phone_number: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isNumeric: true,
+      },
+    },
+    company_description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    company_photo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    photo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: 'Recruiter',
+    hooks: {
+      beforeCreate: async (recruiter) => {
+        if (recruiter.password) {
+          const salt = await bcrypt.genSalt(10);
+          recruiter.password = await bcrypt.hash(recruiter.password, salt);
+        }
+      },
+      beforeUpdate: async (recruiter) => {
+        if (recruiter.password) {
+          const salt = await bcrypt.genSalt(10);
+          recruiter.password = await bcrypt.hash(recruiter.password, salt);
+        }
+      },
+    },
   });
+
   return Recruiter;
 };

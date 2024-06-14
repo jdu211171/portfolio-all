@@ -11,14 +11,28 @@ module.exports = (sequelize, DataTypes) => {
       Bookmark.belongsTo(models.Student, { foreignKey: 'studentId', as: 'student' });
     }
   }
-  
+
   Bookmark.init({
-    userId: DataTypes.INTEGER,
-    studentId: DataTypes.INTEGER
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Users', // Assuming the User model is named 'Users'
+        key: 'id'
+      }
+    },
+    studentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Students', // Assuming the Student model is named 'Students'
+        key: 'id'
+      }
+    }
   }, {
     sequelize,
     modelName: 'Bookmark',
   });
-  
+
   return Bookmark;
 };

@@ -1,7 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+// const bcrypt = require('bcrypt');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Admin extends Model {
     /**
@@ -14,15 +14,52 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Admin.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    first_name: DataTypes.STRING,
-    last_name: DataTypes.STRING,
-    date_of_birth: DataTypes.DATE,
-    photo: DataTypes.STRING
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    first_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    last_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date_of_birth: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    photo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Admin',
+    hooks: {
+      beforeCreate: async (admin) => {
+        if (admin.password) {
+          const salt = await bcrypt.genSalt(10);
+          admin.password = await bcrypt.hash(admin.password, salt);
+        }
+      },
+      beforeUpdate: async (admin) => {
+        if (admin.password) {
+          const salt = await bcrypt.genSalt(10);
+          admin.password = await bcrypt.hash(admin.password, salt);
+        }
+      },
+    },
   });
+
   return Admin;
 };
