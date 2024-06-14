@@ -1,6 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
+const authRoute = require('./routes/authRoute');
+const authMiddleware = require('./middlewares/authMiddleware');
+
 const adminRoute = require('./routes/adminRoute'); // Import your route handler
 const PORT = process.env.PORT || 5000;
 
@@ -11,12 +14,17 @@ const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+// Middleware to parse URL-encoded bodies
+app.use(express.urlencoded({ extended: true }));
 
 // Example middleware (you can define middleware functions in middlewares folder)
 // app.use(require('./middlewares/authMiddleware'));
 
-// Use your imported route
-app.use('/api/admin', adminRoute); 
+// Auth routes
+app.use('/api/auth', authRoute);
+
+// Protected routes
+app.use('/api/admin', authMiddleware, adminRoute);
 
 
 // Start the server
