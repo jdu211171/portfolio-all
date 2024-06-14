@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "migrate": "npx sequelize-cli db:migrate --config src/config/config.js"
+    "migrate": "npx sequelize-cli db:migrate --config src/config/config.js",
+    "seed":"npx sequelize-cli db:seed:all --config src/config/config.js"
   },
   "keywords": [],
   "author": "",
