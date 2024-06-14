@@ -15,16 +15,6 @@ const config = {
     logging: false,
     operatorsAliases: false
   },
-  test: {
-    dialect: 'postgres',
-    host: process.env.DB_HOST_TEST || 'localhost',
-    port: process.env.DB_PORT_TEST || 5432,
-    username: process.env.DB_USER_TEST || 'your_test_user',
-    password: process.env.DB_PASSWORD_TEST || 'your_test_password',
-    database: process.env.DB_NAME_TEST || 'your_test_database',
-    logging: false,
-    operatorsAliases: false
-  },
   production: {
     dialect: 'postgres',
     host: process.env.DB_HOST_PROD || 'localhost',
