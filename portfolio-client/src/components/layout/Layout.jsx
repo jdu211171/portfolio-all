@@ -1,26 +1,13 @@
 import React from "react";
-import { useState } from "react";
-
-import { Outlet, Link } from "react-router-dom";
-
+import { Outlet, NavLink } from "react-router-dom";
 import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
 import { ReactComponent as StudentIcon } from "../../assets/icons/student.svg";
 import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg";
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
-import { ReactComponent as HelpIcon } from "../../assets/icons/home.svg";
-// import BookmarkIcon from './assets/icons/bookmark.svg';
-
+import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 import style from "./layout.module.css";
 
 const Layout = () => {
-  const [activeLink, setActiveLink] = useState("/");
-
-  const handleClick = (link) => {
-    console.log(link)
-    setActiveLink(link);
-  };
-
-  
   return (
     <div>
       <div className={style.topBar}>
@@ -38,51 +25,68 @@ const Layout = () => {
             <ul>
               <span className={style.navGroup}>GENERAL</span>
               <li>
-                <Link to="/" onClick={ ()=> handleClick("/")} className={activeLink === "/" ? style.active : ""}>
+                <NavLink 
+                  to="/" 
+                  className={({ isActive }) => isActive ? style.active : ""}
+                >
                   <HomeIcon />
                   <div>Home</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link onClick={ ()=> handleClick("/student")} to="/student" className={activeLink === "/student" ? style.active : ""}>
+                <NavLink 
+                  to="/student" 
+                  className={({ isActive }) => isActive ? style.active : ""}
+                >
                   <StudentIcon />
                   <div>学生検索</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/student">
+                <NavLink 
+                  to="/staff" 
+                  className={({ isActive }) => isActive ? style.active : ""}
+                >
                   <UserPlusIcon />
                   <div>職員</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/student">
+                <NavLink 
+                  to="/recruiter" 
+                  className={({ isActive }) => isActive ? style.active : ""}
+                >
                   <UserPlusIcon />
                   <div>リクレーター</div>
-                </Link>
+                </NavLink>
               </li>
             </ul>
 
             <ul>
               <span className={style.navGroup}>PREFERENCES</span>
               <li>
-                <Link to="/">
+                <NavLink 
+                  to="/settings" 
+                  className={({ isActive }) => isActive ? style.active : ""}
+                >
                   <SettingsIcon />
                   <div>設定</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/student">
+                <NavLink 
+                  to="/help" 
+                  className={({ isActive }) => isActive ? style.active : ""}
+                >
                   <HelpIcon />
                   <div>ヘルプ</div>
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </nav>
         </header>
         <main className={style.right}>
-          <Outlet />{" "}
-          {/* This is where the routed components will be rendered */}
+          <Outlet /> {/* This is where the routed components will be rendered */}
         </main>
       </div>
     </div>
