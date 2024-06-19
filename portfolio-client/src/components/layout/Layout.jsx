@@ -1,10 +1,14 @@
 import React from "react";
 import { Outlet, NavLink } from "react-router-dom";
+
+//icons
+import { ReactComponent as NavButtonIcon } from "../../assets/icons/navButton.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
 import { ReactComponent as StudentIcon } from "../../assets/icons/student.svg";
 import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg";
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
+
 import style from "./layout.module.css";
 
 const Layout = () => {
@@ -17,7 +21,11 @@ const Layout = () => {
             <div>JDU Portfolio</div>
           </div>
         </div>
-        <div className={style.right}>2</div>
+        <div className={style.right}>
+          <div className={style.navButton}>
+            <NavButtonIcon />
+          </div>
+        </div>
       </div>
       <div className={style.sideBar}>
         <header className={style.left}>

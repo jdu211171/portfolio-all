@@ -22,7 +22,7 @@
 
 .logo {
   height: 100%;
-  width: 250px;
+  min-width: 250px;
   display: flex;
   justify-content: center;
   gap: 10px;
@@ -35,13 +35,28 @@
   color: #333;
 }
 
+.navButton {
+  position: relative;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.navButton:active {
+  scale: 0.95;
+}
+
 .left nav {
-  width: 250px;
+  width: 100%;
+  min-width: 250px;
 }
 
 .left nav ul {
   margin-top: 20px;
-  width: 250px;
   padding: 20px;
   list-style-type: none;
 }
