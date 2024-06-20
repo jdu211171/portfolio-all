@@ -9,6 +9,7 @@ import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg"
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 
+import logo from '/src/assets/logo.png';
 import style from "./layout.module.css";
 
 const Layout = () => {
@@ -37,7 +38,9 @@ const Layout = () => {
       <div className={style.topBar}>
         <div className={style.left}>
           <div className={style.logo}>
-            <div>Logo</div>
+            <div>
+             <img src={logo} alt="Logo" />
+            </div>
             <div>JDU Portfolio</div>
           </div>
         </div>
@@ -114,8 +117,7 @@ const Layout = () => {
           </nav>
         </header>
         <main className={style.right} id={style.main}>
-          <Outlet />{" "}
-          {/* This is where the routed components will be rendered */}
+          <Outlet />
         </main>
       </div>
     </div>
