@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 
 //icons
@@ -12,8 +12,28 @@ import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 import style from "./layout.module.css";
 
 const Layout = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const handleResize = () => {
+    setIsMenuOpen(window.innerWidth > 768);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    // Initial check
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const handleNavButtonClick = () => {
+    setIsMenuOpen((prevState) => !prevState);
+  };
+
   return (
-    <div className={style.menuOpen}>
+    <div className={isMenuOpen ? style.menuOpen : style.menuClose}>
       <div className={style.topBar}>
         <div className={style.left}>
           <div className={style.logo}>
@@ -22,7 +42,7 @@ const Layout = () => {
           </div>
         </div>
         <div className={style.right}>
-          <div className={style.navButton}>
+          <div className={style.navButton} onClick={handleNavButtonClick}>
             <NavButtonIcon />
           </div>
         </div>
@@ -33,36 +53,36 @@ const Layout = () => {
             <ul>
               <span className={style.navGroup}>GENERAL</span>
               <li>
-                <NavLink 
-                  to="/" 
-                  className={({ isActive }) => isActive ? style.active : ""}
+                <NavLink
+                  to="/"
+                  className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <HomeIcon />
                   <div>Home</div>
                 </NavLink>
               </li>
               <li>
-                <NavLink 
-                  to="/student" 
-                  className={({ isActive }) => isActive ? style.active : ""}
+                <NavLink
+                  to="/student"
+                  className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <StudentIcon />
                   <div>学生検索</div>
                 </NavLink>
               </li>
               <li>
-                <NavLink 
-                  to="/staff" 
-                  className={({ isActive }) => isActive ? style.active : ""}
+                <NavLink
+                  to="/staff"
+                  className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <UserPlusIcon />
                   <div>職員</div>
                 </NavLink>
               </li>
               <li>
-                <NavLink 
-                  to="/recruiter" 
-                  className={({ isActive }) => isActive ? style.active : ""}
+                <NavLink
+                  to="/recruiter"
+                  className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <UserPlusIcon />
                   <div>リクレーター</div>
@@ -73,18 +93,18 @@ const Layout = () => {
             <ul>
               <span className={style.navGroup}>PREFERENCES</span>
               <li>
-                <NavLink 
-                  to="/settings" 
-                  className={({ isActive }) => isActive ? style.active : ""}
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <SettingsIcon />
                   <div>設定</div>
                 </NavLink>
               </li>
               <li>
-                <NavLink 
-                  to="/help" 
-                  className={({ isActive }) => isActive ? style.active : ""}
+                <NavLink
+                  to="/help"
+                  className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <HelpIcon />
                   <div>ヘルプ</div>
@@ -94,7 +114,8 @@ const Layout = () => {
           </nav>
         </header>
         <main className={style.right} id={style.main}>
-          <Outlet /> {/* This is where the routed components will be rendered */}
+          <Outlet />{" "}
+          {/* This is where the routed components will be rendered */}
         </main>
       </div>
     </div>
