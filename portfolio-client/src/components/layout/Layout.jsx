@@ -13,7 +13,7 @@ import style from "./layout.module.css";
 
 const Layout = () => {
   return (
-    <div>
+    <div className={style.menuOpen}>
       <div className={style.topBar}>
         <div className={style.left}>
           <div className={style.logo}>
