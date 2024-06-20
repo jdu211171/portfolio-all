@@ -93,7 +93,7 @@ const Layout = () => {
             </ul>
           </nav>
         </header>
-        <main className={style.right}>
+        <main className={style.right} id={style.main}>
           <Outlet /> {/* This is where the routed components will be rendered */}
         </main>
       </div>
