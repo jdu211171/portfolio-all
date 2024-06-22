@@ -1,36 +1,54 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Outlet, NavLink } from "react-router-dom";
 
-import { Outlet, Link } from "react-router-dom";
-
+//icons
+import { ReactComponent as NavButtonIcon } from "../../assets/icons/navButton.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
 import { ReactComponent as StudentIcon } from "../../assets/icons/student.svg";
 import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg";
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
-import { ReactComponent as HelpIcon } from "../../assets/icons/home.svg";
-// import BookmarkIcon from './assets/icons/bookmark.svg';
+import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 
+import logo from '/src/assets/logo.png';
 import style from "./layout.module.css";
 
 const Layout = () => {
-  const [activeLink, setActiveLink] = useState("/");
-
-  const handleClick = (link) => {
-    console.log(link)
-    setActiveLink(link);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const handleResize = () => {
+    setIsMenuOpen(window.innerWidth > 768);
   };
 
-  
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    // Initial check
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const handleNavButtonClick = () => {
+    setIsMenuOpen((prevState) => !prevState);
+  };
+
   return (
-    <div>
+    <div className={isMenuOpen ? style.menuOpen : style.menuClose}>
       <div className={style.topBar}>
         <div className={style.left}>
           <div className={style.logo}>
-            <div>Logo</div>
+            <div>
+             <img src={logo} alt="Logo" />
+            </div>
             <div>JDU Portfolio</div>
           </div>
         </div>
-        <div className={style.right}>2</div>
+        <div className={style.right}>
+          <div className={style.navButton} onClick={handleNavButtonClick}>
+            <NavButtonIcon />
+          </div>
+        </div>
       </div>
       <div className={style.sideBar}>
         <header className={style.left}>
@@ -38,51 +56,68 @@ const Layout = () => {
             <ul>
               <span className={style.navGroup}>GENERAL</span>
               <li>
-                <Link to="/" onClick={ ()=> handleClick("/")} className={activeLink === "/" ? style.active : ""}>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
                   <HomeIcon />
                   <div>Home</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link onClick={ ()=> handleClick("/student")} to="/student" className={activeLink === "/student" ? style.active : ""}>
+                <NavLink
+                  to="/student"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
                   <StudentIcon />
                   <div>学生検索</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/student">
+                <NavLink
+                  to="/staff"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
                   <UserPlusIcon />
                   <div>職員</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/student">
+                <NavLink
+                  to="/recruiter"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
                   <UserPlusIcon />
                   <div>リクレーター</div>
-                </Link>
+                </NavLink>
               </li>
             </ul>
 
             <ul>
               <span className={style.navGroup}>PREFERENCES</span>
               <li>
-                <Link to="/">
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
                   <SettingsIcon />
                   <div>設定</div>
-                </Link>
+                </NavLink>
               </li>
               <li>
-                <Link to="/student">
+                <NavLink
+                  to="/help"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
                   <HelpIcon />
                   <div>ヘルプ</div>
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </nav>
         </header>
-        <main className={style.right}>
-          <Outlet />{" "}
-          {/* This is where the routed components will be rendered */}
+        <main className={style.right} id={style.main}>
+          <Outlet />
         </main>
       </div>
     </div>
