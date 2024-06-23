@@ -1,46 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { Container, TextField, Button, Avatar, Grid, Box, IconButton } from "@mui/material";
-import "./Setting.scss";
+import { PhotoCamera } from "@mui/icons-material"; // Import the icon for the button
+import jduLogo from "../../assets/logo.png";
+import SettingStyle from "./Setting.module.scss";
 
 const Setting = () => {
+  const [avatarImage, setAvatarImage] = useState(jduLogo); // Initial avatar image
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return; // Handle empty file upload
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAvatarImage(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
-    <Container maxWidth="md" className="setting-container">
-      <Box display="flex" alignItems="center" justifyContent="space-between" className="header">
-        <Box display="flex" alignItems="center">
-          <Avatar
-            alt="Jerome Bell"
-            src="https://via.placeholder.com/200"
-            className="avatar"
-          />
-          <Box ml={2}>
-            <h1>Jerome Bell</h1>
-          </Box>
+    <Container maxWidth="md" className={SettingStyle["setting-container"]}>
+       <Box display="flex" alignItems="center" justifyContent="space-between" className={SettingStyle["header"]}>
+        <Box display="inline-flex" alignItems="center" position="relative">
+          <Avatar alt="Jerome Bell" src={avatarImage} sx={{ width: 100, height: 100 }} />
+          <label htmlFor="avatar-upload">
+            <IconButton color="primary" aria-label="upload picture" component="span" size="small" style={{ position: 'absolute', bottom: 4, right: 4, backgroundColor: 'white' }}>
+              <PhotoCamera />
+            </IconButton>
+          </label>
+          <input accept="image/*" id="avatar-upload" type="file" style={{ display: 'none' }} onChange={handleAvatarChange} />
         </Box>
-        <Box>
-          <Button variant="outlined" color="primary" className="cancel-button">
+        <Box ml={2}>
+          <h1 className={SettingStyle["h1"]}>Monkey D. Luffy</h1>
+        </Box>
+        <Box display="flex" alignItems="center" className={SettingStyle["button-group"]}>
+          <Button variant="outlined" color="primary" className={SettingStyle["cancel-button"]} style={{ marginRight: '10px' }}>
             キャンセル
           </Button>
-          <Button variant="contained" color="primary" className="save-button">
+          <Button variant="contained" color="primary" className={SettingStyle["save-button"]}>
             保存
           </Button>
         </Box>
       </Box>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={6}>
-          <TextField label="名" variant="outlined" fullWidth defaultValue="Jerome Bell" />
+          <TextField label="名" variant="outlined" fullWidth defaultValue="Default Admin" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField label="姓" variant="outlined" fullWidth defaultValue="Jerome Bell" />
+          <TextField label="姓" variant="outlined" fullWidth defaultValue="Default Admin" />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField label="電話番号" variant="outlined" fullWidth defaultValue="998 93 456 67 85" />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField label="メール" variant="outlined" fullWidth defaultValue="jerome_bell@gmail.com" />
+          <TextField label="メール" variant="outlined" fullWidth defaultValue="admin@gmail.com" />
         </Grid>
       </Grid>
-      <Box className="section">
-        <h2>パスワード</h2>
+      <Box className={SettingStyle["section"]}>
+        <h2 className={SettingStyle["h2"]}>パスワード</h2>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <TextField label="現在のパスワード" variant="outlined" fullWidth type="password" defaultValue="*********" />
@@ -53,8 +70,8 @@ const Setting = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box className="section">
-        <h2>JDU問い合わせ</h2>
+      <Box className={SettingStyle["section"]}>
+        <h2 className={SettingStyle["h2"]}>JDU問い合わせ</h2>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField label="メール" variant="outlined" fullWidth defaultValue="test@jdu.uz" />
@@ -75,3 +92,5 @@ const Setting = () => {
 };
 
 export default Setting;
+
+            

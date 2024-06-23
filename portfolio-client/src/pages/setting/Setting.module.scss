@@ -9,21 +9,26 @@
     align-items: center;
   }
   
-  .avatar {
-    width: 100px;
-    height: 100px;
+  .button-group {
+    display: flex;
+    align-items: center;
+    width: 40%;
   }
-  
+
   .section {
     margin-top: 40px;
     margin-bottom: 40px;
   }
   
-  .cancel-button {
-    margin-right: 10px;
+  .h1 {
+    margin: 0;
   }
   
-  .save-button {
-    margin-top: 10px;
+  .h2 {
+    margin-bottom: 20px;
+  }
+  
+  .MuiTextField-root {
+    margin-bottom: 16px;
   }
   
