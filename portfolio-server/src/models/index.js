@@ -34,5 +34,10 @@ db.QA = require('./QA')(sequelize, Sequelize);
 module.exports = {
   sequelize,
   Sequelize,
-  db
+  Admin: db.Admin,
+  Recruiter: db.Recruiter,
+  Staff: db.Staff,
+  Student: db.Student,
+  Bookmark: db.Bookmark,
+  QA: db.QA,
 };

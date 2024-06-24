@@ -9,11 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // Define association with Recruiter model
-      QA.belongsTo(models.Recruiter, { foreignKey: 'userId', as: 'user' });
+      // Define association with Student model
+      QA.belongsTo(models.Student, { foreignKey: 'studentId', as: 'student' });
     }
   }
-  
+
   QA.init({
     category: {
       type: DataTypes.STRING,
@@ -27,11 +27,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    userId: {
+    studentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Recruiters', // Assuming the Recruiter model is named 'Recruiters'
+        model: 'Students', // Assuming the Student model is named 'Students'
         key: 'id'
       }
     }
@@ -39,6 +39,6 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'QA',
   });
-  
+
   return QA;
 };
