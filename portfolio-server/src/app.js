@@ -1,10 +1,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
-const authRoute = require('./routes/authRoute');
-const authMiddleware = require('./middlewares/authMiddleware');
+const authRoute = require('./routes/auth-route');
+const authMiddleware = require('./middlewares/auth-middleware');
 
-const adminRoute = require('./routes/adminRoute'); // Import your route handler
+const adminRoute = require('./routes/admins-route'); // Import your route handler
 const PORT = process.env.PORT || 5000;
 
 // Load environment variables from .env file
