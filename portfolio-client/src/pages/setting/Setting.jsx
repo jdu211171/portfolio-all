@@ -88,13 +88,13 @@ const Setting = () => {
       </Grid>
       <Box className={SettingStyle["section"]}>
         <h2 className={SettingStyle["h2"]}>パスワード</h2>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} >
           <Grid item xs={12} sm={4}>
             <TextField
               label="現在のパスワード"
               variant="outlined"
               fullWidth
-              type={showCurrentPassword ? "text" : "password"}
+              type={showCurrentPassword ? "password" : "text"}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               InputProps={{
