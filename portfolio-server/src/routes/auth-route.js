@@ -3,19 +3,19 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { db } = require('../models');
+const { Admin } = require('../models');
 const router = express.Router();
 
 // Register
 router.post('/register', async (req, res) => {
   const { email, password, first_name, last_name, date_of_birth, photo } = req.body;
   try {
-    const existingUser = await db.Admin.findOne({ where: { email } });
+    const existingUser = await Admin.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: 'Email already exists' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await db.Admin.create({
+    const newUser = await Admin.create({
       email,
       password: hashedPassword,
       first_name,
@@ -34,10 +34,11 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password)
   try {
-    const user = await db.Admin.findOne({ where: { email } });
+    const user = await Admin.findOne({ where: { email } });
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     let a = await bcrypt.hash("admin", 10)
     console.log(a, password, user.password, isMatch)

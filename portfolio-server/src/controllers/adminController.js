@@ -1,28 +1,44 @@
-// src/controllers/userController.js
-
 const AdminService = require('../services/adminService');
 
-const AdminController = {
-  async getAllAdmins(req, res) {
+class AdminController {
+  static async create(req, res) {
     try {
-      const users = await AdminService.getAllAdmins();
-      res.json(users);
+      const admin = await AdminService.createAdmin(req.body);
+      res.status(201).json(admin);
     } catch (error) {
-      console.error('Error fetching users:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  },
-
-  async createAdmin(req, res) {
-    const { username, email } = req.body;
-    try {
-      const newUser = await AdminService.createUser(username, email);
-      res.json(newUser);
-    } catch (error) {
-      console.error('Error creating user:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(400).json({ error: error.message });
     }
   }
-};
+
+  static async getById(req, res) {
+    try {
+      const admin = await AdminService.getAdminById(req.params.id);
+      if (!admin) {
+        return res.status(404).json({ error: 'Admin not found' });
+      }
+      res.status(200).json(admin);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  static async update(req, res) {
+    try {
+      const admin = await AdminService.updateAdmin(req.params.id, req.body);
+      res.status(200).json(admin);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  static async delete(req, res) {
+    try {
+      await AdminService.deleteAdmin(req.params.id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+}
 
 module.exports = AdminController;
