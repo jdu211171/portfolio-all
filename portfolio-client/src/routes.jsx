@@ -10,6 +10,7 @@ import Home from './pages/home/Home';
 import Student from './pages/student/Student';
 import Login from './pages/login/Login';
 import NotFound from './pages/NotFound';
+import FirstLoginPage from './pages/FirstLoginPage/FirstLoginPage'
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/FirstloginPage" element={<FirstLoginPage />} />
       </Routes>
     </Router>
   );
