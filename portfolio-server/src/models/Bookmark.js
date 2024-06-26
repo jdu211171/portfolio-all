@@ -4,8 +4,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Bookmark extends Model {
     static associate(models) {
-      // Define association with User model
-      Bookmark.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+      // Define association with Recruiter model
+      Bookmark.belongsTo(models.Recruiter, { foreignKey: 'recruiterId', as: 'recruiter' });
 
       // Define association with Student model
       Bookmark.belongsTo(models.Student, { foreignKey: 'studentId', as: 'student' });
@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Bookmark.init({
-    userId: {
+    recruiterId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users', // Assuming the User model is named 'Users'
+        model: 'Recruiters', 
         key: 'id'
       }
     },
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Students', // Assuming the Student model is named 'Students'
+        model: 'Students',
         key: 'id'
       }
     }

@@ -1,28 +1,30 @@
-// src/services/adminService.js
+const { Admin } = require('../models');
 
-const { db } = require('../models'); // Importing the db object which includes all models
-
-const AdminService = {
-  async getAllAdmins() {
-    try {
-      const admins = await db.Admin.findAll();
-      return admins;
-    } catch (error) {
-      console.error('Error fetching admins:', error);
-      throw error; // Propagate the error
-    }
-  },
-
-  async createAdmin(username, email) {
-    try {
-      const newAdmin = await db.Admin.create({ username, email });
-      console.log('New admin created:', newAdmin);
-      return newAdmin;
-    } catch (error) {
-      console.error('Error creating admin:', error);
-      throw error; // Propagate the error
-    }
+class AdminService {
+  static async createAdmin(data) {
+    return await Admin.create(data);
   }
-};
+
+  static async getAdminById(id) {
+    return await Admin.findByPk(id);
+  }
+
+  static async updateAdmin(id, data) {
+    const admin = await Admin.findByPk(id);
+    if (!admin) {
+      throw new Error('Admin not found');
+    }
+    return await admin.update(data);
+  }
+
+  static async deleteAdmin(id) {
+    const admin = await Admin.findByPk(id);
+    if (!admin) {
+      throw new Error('Admin not found');
+    }
+    await admin.destroy();
+    return admin;
+  }
+}
 
 module.exports = AdminService;

@@ -43,9 +43,15 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   }, {
     sequelize,
     modelName: 'Staff',
+    tableName: 'Staff',
     hooks: {
       beforeCreate: async (staff) => {
         if (staff.password) {

@@ -1,10 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
-const authRoute = require('./routes/authRoute');
-const authMiddleware = require('./middlewares/authMiddleware');
+const configureRoutes = require('./routes');
 
-const adminRoute = require('./routes/adminRoute'); // Import your route handler
 const PORT = process.env.PORT || 5000;
 
 // Load environment variables from .env file
@@ -20,11 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 // Example middleware (you can define middleware functions in middlewares folder)
 // app.use(require('./middlewares/authMiddleware'));
 
-// Auth routes
-app.use('/api/auth', authRoute);
-
-// Protected routes
-app.use('/api/admin', authMiddleware, adminRoute);
+// Configure routes
+configureRoutes(app);
 
 
 // Start the server
