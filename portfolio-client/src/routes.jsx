@@ -8,6 +8,8 @@ import Home from './pages/home/Home';
 import Setting from './pages/setting/Setting';
 import Student from './pages/student/Student';
 import Login from './pages/login/Login';
+import FAQ from './pages/faq/Faq';
+
 import NotFound from './pages/NotFound';
 
 const AppRoutes = () => {
@@ -18,7 +20,8 @@ const AppRoutes = () => {
           <Route element={<ProtectedLayout />}>
             <Route index element={<Home />} />
             <Route path="/student" element={<Student />} />
-            <Route path='/settings' element ={<Setting />} />
+            <Route path="/settings" element ={<Setting />} />
+            <Route path="/help" element= {<FAQ />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Route>
