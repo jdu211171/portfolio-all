@@ -10,7 +10,7 @@ import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg"
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 
 import logo from '/src/assets/logo.png';
-import style from "./layout.module.css";
+import style from "./Layout.module.css";
 
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
