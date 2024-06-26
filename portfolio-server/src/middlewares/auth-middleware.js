@@ -1,13 +1,12 @@
-
-
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
-  const token = String(req.header('Authorization')).replace('Bearer ', '');
-  // console.log(req.header('Authorization'))
+  const token = req.cookies.token; // Retrieve token from cookies
+
   if (!token) {
     return res.status(401).json({ error: 'No token, authorization denied' });
   }
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
