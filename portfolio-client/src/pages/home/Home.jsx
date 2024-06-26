@@ -25,7 +25,9 @@ const Home = () => {
           <p className={styles.textParagraph}>
             2020年に日本資本がウズベキスタンに設立し運営している正式な私立大学です。ウズベキスタンにあるサテライトキャンパスをJDUと呼びます。ウズベキスタンの学生は、提携している日本の大学の授業にオンラインで参加し、日本の大学の試験を経て単位取得、卒業を目指します。（日本とウズベキスタン両面の学位を取得し卒業することが可能です）卒業時には日本企業への就職を目指し、勉学に励む学生がたくさん入学しています。
           </p>
-          <button className={styles.button} onClick={handleClick}>次へ</button>
+          <div className={styles.buttonContainer}>
+            <button className={styles.button} onClick={handleClick}>次へ➜</button>
+          </div>
         </div>
         <div className={styles.imageSection}>
           <img src={Photo1} alt="Large class photo" />
