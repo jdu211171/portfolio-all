@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 import styles from './Login.module.css';
 import logo from '../../assets/logo.png';
 import universityImage from '../../assets/university.png';
@@ -24,6 +25,12 @@ const Login = () => {
       const response = await axios.post('/api/auth/login', { email, password });
 
       const { userType } = response.data;
+      const token = Cookies.get('token');
+      // Set token and userType as cookies (ensure these are set properly)
+      Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
+      Cookies.set('userType', userType, { expires: 1, secure: true, sameSite: 'Strict' });
+
+      sessionStorage.setItem("token", token)
       sessionStorage.setItem("role", userType)
       navigate('/');
     } catch (err) {
