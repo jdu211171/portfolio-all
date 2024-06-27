@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 import styles from './Login.module.css';
 import logo from '../../assets/logo.png';
 import universityImage from '../../assets/university.png';
