@@ -8,6 +8,7 @@ import { ReactComponent as StudentIcon } from "../../assets/icons/student.svg";
 import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg";
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
+import { ReactComponent as LogOutIcon } from "../../assets/icons/logOut.svg";
 
 import logo from '/src/assets/logo.png';
 import style from "./Layout.module.css";
@@ -111,6 +112,18 @@ const Layout = () => {
                 >
                   <HelpIcon />
                   <div>ヘルプ</div>
+                </NavLink>
+              </li>
+            </ul>
+
+            <ul className={style.NavbarBottom}>
+              <li>
+                <NavLink
+                  to="/logout"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
+                  <LogOutIcon />
+                  <div>ログアウト</div>
                 </NavLink>
               </li>
             </ul>
