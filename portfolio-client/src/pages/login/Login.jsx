@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import styles from './Login.module.css';
 import logo from '../../assets/logo.png';
 import universityImage from '../../assets/university.png';
@@ -20,23 +22,13 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await axios.post('/api/auth/login', { email, password });
 
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
+      const { userType } = response.data;
+      sessionStorage.setItem("role", userType)
       navigate('/');
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || 'Login failed');
     }
   };
 

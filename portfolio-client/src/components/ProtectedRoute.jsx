@@ -1,15 +1,26 @@
-// src/components/ProtectedRoute.js
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
+  const [token, setToken] = useState(null);
 
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const tokenFromCookies = await Cookies.get('token');
+        setToken(tokenFromCookies);
+        if (!token) {
+          return <Navigate to="/login" />;
+        }
+      } catch (error) {
+        console.error('Error fetching token:', error);
+      } 
+    };
 
+    fetchToken();
+  }, []);
+  
   return children;
 };
 

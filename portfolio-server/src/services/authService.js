@@ -19,7 +19,7 @@ class AuthService {
 
           // Set the JWT token and userType as cookies
           res.cookie('token', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
             expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 1000), // Convert expiresIn to milliseconds
           });
