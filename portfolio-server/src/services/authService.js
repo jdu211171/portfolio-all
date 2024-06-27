@@ -42,7 +42,7 @@ class AuthService {
   static async logout(res) {
     // Clear cookies by setting them to empty and setting expiry in the past
     res.clearCookie('token', {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       expires: new Date(0),
     });
