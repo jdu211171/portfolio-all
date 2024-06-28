@@ -115,24 +115,24 @@
 
 .forgot-password-button {
   font-weight: 700;
-  text-decoration: none; /* Remove default underline */
-  color: black; /* Change text color to black */
-  background-color: transparent; /* Remove background */
-  border: none; /* Remove border */
-  padding: 0; /* Remove padding */
-  position: relative; /* To position the underline */
-  cursor: pointer; /* Pointer cursor on hover */
-  font-size: 1rem; /* Adjust font size if needed */
+  text-decoration: none;
+  color: black;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  position: relative;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .forgot-password-button::after {
   content: '';
   position: absolute;
-  bottom: -2px; /* Adjust the position of the underline */
+  bottom: -2px;
   left: 0;
   width: 100%;
-  height: 1px; /* Thickness of the underline */
-  background-color: black; /* Color of the underline */
+  height: 1px;
+  background-color: black;
 }
 
 .login-form .submit-button {
@@ -145,11 +145,11 @@
   cursor: pointer;
   font-family: 'Inter', sans-serif;
   font-weight: 500;
-  margin-bottom: 1rem; /* Add margin between buttons */
+  margin-bottom: 1rem;
 }
 
 .login-form .submit-button:last-child {
-  margin-bottom: 0; /* Remove margin from the last button */
+  margin-bottom: 0;
 }
 
 .login-form .submit-button:hover {
