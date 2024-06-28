@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, TextField, Button, Avatar, Grid, Box, IconButton, InputAdornment } from "@mui/material";
 import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material"; // Icon lar
 import jduLogo from "../../assets/logo.png";
-import SettingStyle from "./Setting.module.scss";
+import SettingStyle from "./Setting.module.css";
 
 const Setting = () => {
   const [avatarImage, setAvatarImage] = useState(jduLogo); // xozirgi default image *fayldan olingan rasm
