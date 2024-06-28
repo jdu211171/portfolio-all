@@ -14,7 +14,6 @@ class RecruiterService {
   // Service method to retrieve all recruiters
   static async getAllRecruiters() {
     try {
-        console.log(Recruiter)
       const recruiters = await Recruiter.findAll();
       return recruiters;
     } catch (error) {
