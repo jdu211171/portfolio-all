@@ -154,7 +154,7 @@ const EnhancedTable = ({ tableProps }) => {
                               src={row[header.id]}
                             />
                             <div>
-                              <div>Botirov Saydiakhror</div>
+                              <div>{row.first_name + " " + row.last_name}</div>
                               <Chip
                                 label={"T19b0007"}
                                 color="success"
