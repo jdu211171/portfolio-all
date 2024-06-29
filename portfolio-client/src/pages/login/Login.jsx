@@ -124,6 +124,7 @@ const Login = () => {
             <button type="submit" className={`${styles['button-custom']} ${styles['submit-button']}`}>ログイン</button>
           </form>
         ) : (
+          // Forgot Password mode
           <form onSubmit={handleForgotPassword}>
             <div className={styles['input-group']}>
               <label>メールアドレス</label>
