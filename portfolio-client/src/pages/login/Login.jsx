@@ -28,8 +28,10 @@ const Login = () => {
       const { userType } = response.data;
       const token = Cookies.get('token');
       // Set token and userType as cookies (ensure these are set properly)
-      Cookies.set('token', token, { expires: 1, secure: true, sameSite: 'Strict' });
-      Cookies.set('userType', userType, { expires: 1, secure: true, sameSite: 'Strict' });
+      const expiresAt = new Date();
+      expiresAt.setTime(expiresAt.getTime() + (1 * 60 * 60 * 1000)); //expires at 1h
+      Cookies.set('token', token, { expires: expiresAt, secure: true, sameSite: 'Strict' });
+      Cookies.set('userType', userType, { expires: expiresAt, secure: true, sameSite: 'Strict' });
 
       sessionStorage.setItem("token", token)
       sessionStorage.setItem("role", userType)
@@ -124,6 +126,7 @@ const Login = () => {
             <button type="submit" className={`${styles['button-custom']} ${styles['submit-button']}`}>ログイン</button>
           </form>
         ) : (
+          // Forgot Password mode
           <form onSubmit={handleForgotPassword}>
             <div className={styles['input-group']}>
               <label>メールアドレス</label>

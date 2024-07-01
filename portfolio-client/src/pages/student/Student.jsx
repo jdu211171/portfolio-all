@@ -21,13 +21,13 @@ const Home = () => {
       type: "status",
     },
     {
-      id: "faculty",
+      id: "email",
       numeric: true,
       disablePadding: false,
       label: "学部",
     },
     {
-      id: "japanese",
+      id: "jlpt",
       numeric: true,
       disablePadding: false,
       label: "日本語能力試験",
@@ -42,7 +42,7 @@ const Home = () => {
 
   const props = {
     headers: headers,
-    data: "/api/students",
+    dataLink: "/api/students",
   };
 
   return (
