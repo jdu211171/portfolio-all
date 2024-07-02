@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
 
+import UserAvatar from "./avatar/UserAvatar";
+
 import style from "./Table.module.css";
+
 import {
   Box,
   Table,
@@ -147,26 +150,11 @@ const EnhancedTable = ({ tableProps }) => {
                         padding={header.disablePadding ? "none" : "normal"}
                       >
                         {header.type === "avatar" ? (
-                          <div className={style.avatarContainer}>
-                            <Avatar
-                              sx={{ width: 48, height: 48 }}
-                              alt={row.name}
-                              src={row[header.id]}
-                            />
-                            <div className={style.nameIdContainer}>
-                              <div>{row.first_name + " " + row.last_name}</div>
-                              {row.student_id ? (
-                                <Chip
-                                  label={row.student_id}
-                                  color="success"
-                                  variant="outlined"
-                                  size="small"
-                                />
-                              ) : (
-                                ""
-                              )}
-                            </div>
-                          </div>
+                          <UserAvatar
+                            photo={row.photo}
+                            name={row.first_name + " " + row.last_name}
+                            studentId={row.student_id}
+                          />
                         ) : header.type === "status" ? (
                           <Chip
                             label={row[header.id]}
