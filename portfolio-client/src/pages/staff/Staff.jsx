@@ -10,7 +10,7 @@ const Home = () => {
       id: "name",
       numeric: false,
       disablePadding: true,
-      label: "レクレーター",
+      label: "職員",
       type: "avatar",
     },
     {
@@ -41,7 +41,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Student Page</h1>
+      <h1>Staff Page</h1>
       <Box sx={{ width: "100%" }}>
         <>here should be filter</>
       </Box>
