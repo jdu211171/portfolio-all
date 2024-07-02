@@ -47,7 +47,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Student Page</h1>
+      <h1>Recruiter Page</h1>
       <Box sx={{ width: "100%" }}>
         <>here should be filter</>
       </Box>
