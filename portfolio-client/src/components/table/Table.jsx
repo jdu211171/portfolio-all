@@ -157,12 +157,8 @@ const EnhancedTable = ({ tableProps }) => {
                           />
                         ) : header.type === "status" ? (
                           <Chip
-                            label={row[header.id]}
-                            color={
-                              row[header.id] === "Active"
-                                ? "primary"
-                                : "default"
-                            }
+                            label={row[header.id] ? "○" : "×"}
+                            color={row[header.id] ? "primary" : "default"}
                           />
                         ) : (
                           row[header.id]
