@@ -153,14 +153,18 @@ const EnhancedTable = ({ tableProps }) => {
                               alt={row.name}
                               src={row[header.id]}
                             />
-                            <div>
+                            <div className={style.nameIdContainer}>
                               <div>{row.first_name + " " + row.last_name}</div>
-                              <Chip
-                                label={"T19b0007"}
-                                color="success"
-                                variant="outlined"
-                                size="small"
-                              />
+                              {row.student_id ? (
+                                <Chip
+                                  label={row.student_id}
+                                  color="success"
+                                  variant="outlined"
+                                  size="small"
+                                />
+                              ) : (
+                                ""
+                              )}
                             </div>
                           </div>
                         ) : header.type === "status" ? (
