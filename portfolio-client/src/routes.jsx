@@ -9,7 +9,6 @@ import Setting from "./pages/setting/Setting";
 import Student from "./pages/student/Student";
 import Recruiter from "./pages/recruiter/Recruiter";
 import Staff from "./pages/staff/Staff";
-import StudentDetail from "./pages/student/StudentDetail"; // Импортируем компонент страницы студента
 
 import LogOut from "./components/LogOut";
 import NotFound from "./pages/NotFound";
