@@ -17,9 +17,6 @@ import Profile from "./pages/profile/Profile/Profile"; // Импортируем
 import Top from "./pages/profile/Top/Top"; // Импортируем компонент Top
 import Qa from "./pages/profile/Qa/Qa"; // Импортируем компонент Qa
 import Stats from "./pages/profile/Stats/Stats"; // Импортируем компонент Stats
-import Home from './pages/home/Home';
-import Setting from './pages/setting/Setting';
-import Student from './pages/student/Student';
 import Login from './pages/login/Login';
 import FAQ from './pages/faq/Faq';
 
