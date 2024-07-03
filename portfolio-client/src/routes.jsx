@@ -10,8 +10,6 @@ import Student from "./pages/student/Student";
 import Recruiter from "./pages/recruiter/Recruiter";
 import Staff from "./pages/staff/Staff";
 import StudentDetail from "./pages/student/StudentDetail"; // Импортируем компонент страницы студента
-import Login from "./pages/login/Login";
-import FAQ from "./pages/faq/Faq";
 
 import LogOut from "./components/LogOut";
 import NotFound from "./pages/NotFound";
@@ -20,6 +18,11 @@ import Profile from "./pages/profile/Profile/Profile"; // Импортируем
 import Top from "./pages/profile/Top/Top"; // Импортируем компонент Top
 import Qa from "./pages/profile/Qa/Qa"; // Импортируем компонент Qa
 import Stats from "./pages/profile/Stats/Stats"; // Импортируем компонент Stats
+import Home from './pages/home/Home';
+import Setting from './pages/setting/Setting';
+import Student from './pages/student/Student';
+import Login from './pages/login/Login';
+import FAQ from './pages/faq/Faq';
 
 const AppRoutes = () => {
   return (
@@ -31,7 +34,6 @@ const AppRoutes = () => {
             <Route path="/student" element={<Student />} />
             <Route path="/recruiter" element={<Recruiter />} />
             <Route path="/staff" element={<Staff />} />
-            <Route path="/student/:id" element={<StudentDetail />} />
             <Route path="/settings" element={<Setting />} />
             <Route path="/help" element={<FAQ />} />
             <Route path="/profile" element={<Profile />}>
