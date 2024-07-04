@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'; //useState эрор
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProfileOverview from '../../../components/profile/ProfileOverview';
 import { Box, Tabs, Tab } from '@mui/material';
@@ -7,6 +7,7 @@ import { Box, Tabs, Tab } from '@mui/material';
 const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(
     location.pathname.includes('/profile/qa') ? 1 :
       location.pathname.includes('/profile/stats') ? 2 : 0
@@ -27,6 +28,8 @@ const Profile = () => {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+    const paths = ['/profile/top', '/profile/qa', '/profile/stats'];
+    navigate(paths[newValue]);
   };
 
   const handleSaveSkills = async (updatedSkills) => {

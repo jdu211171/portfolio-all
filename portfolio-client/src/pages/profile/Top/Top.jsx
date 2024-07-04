@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { Tabs, Tab, Box } from '@mui/material';
 import SelfIntroduction from '../../../components/profile/SelfIntroduction';
 import axios from 'axios';
+import styles from './Top.module.css';
 
 const Top = () => {
   const { profileData, setProfileData } = useOutletContext();
@@ -22,8 +23,8 @@ const Top = () => {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Tabs value={value} onChange={handleChange} aria-label="Top Tabs">
+    <Box className={styles.container}>
+      <Tabs className={styles.tabs} value={value} onChange={handleChange} aria-label="Top Tabs">
         <Tab label="自己PR" />
         <Tab label="成果物" />
       </Tabs>
