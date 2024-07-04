@@ -15,7 +15,6 @@ import Profile from './pages/profile/Profile/Profile';
 import Top from './pages/profile/Top/Top';
 import Qa from './pages/profile/Qa/Qa';
 import Stats from './pages/profile/Stats/Stats';
-import Home from "./pages/home/Home";
 import Setting from "./pages/setting/Setting";
 import Student from "./pages/student/Student";
 import Recruiter from "./pages/recruiter/Recruiter";
