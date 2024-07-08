@@ -1,0 +1,31 @@
+const skills = [
+    { name: 'HTML', color: '#4caf50' },
+    { name: 'CSS', color: '#2196f3' },
+    { name: 'JS', color: '#ffeb3b' },
+    { name: 'Python', color: '#ffc107' },
+    { name: 'JAVA', color: '#8bc34a' },
+    { name: 'SQL', color: '#009688' },
+    { name: 'Bootstrap', color: '#f44336' },
+    { name: 'Next', color: '#ff5722' },
+    { name: 'TypeScript', color: '#ff9800' },
+    { name: 'AfterEffect', color: '#795548' },
+    { name: 'Figma', color: '#e91e63' },
+    { name: 'React', color: '#61dafb' },
+    { name: 'Angular', color: '#dd1b16' },
+    { name: 'Vue', color: '#41b883' },
+    { name: 'Node.js', color: '#68a063' },
+    { name: 'Express', color: '#000000' },
+    { name: 'MongoDB', color: '#4db33d' },
+    { name: 'Docker', color: '#2496ed' },
+    { name: 'Kubernetes', color: '#326ce5' },
+    { name: 'AWS', color: '#ff9900' },
+    { name: 'Azure', color: '#007fff' },
+    { name: 'GCP', color: '#4285f4' },
+    { name: 'MySQL', color: '#00758f' },
+    { name: 'PostgreSQL', color: '#336791' },
+    { name: 'Redis', color: '#d82c20' },
+    { name: 'GraphQL', color: '#e535ab' },
+  ];
+  
+  export default skills;
+  

@@ -1,0 +1,41 @@
+.container {
+    padding: 16px;
+}
+
+.avatarContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.infoContainer {
+    margin-left: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.mainTitle {
+    display: flex;
+    align-items: center;
+}
+
+.email {
+    color: #0094FF;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-left: 100px;
+}
+
+.emailIcon {
+    margin-right: 4px;
+    font-size: 16px; /* Уменьшение размера иконки */
+}
+
+.chipContainer {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}

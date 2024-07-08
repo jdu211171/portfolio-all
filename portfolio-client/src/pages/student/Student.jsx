@@ -1,59 +1,64 @@
-import React from "react";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Box } from '@mui/material';
+import Table from '../../components/table/Table';
 
-import { Box } from "@mui/material";
-
-import Table from "../../components/table/Table";
-
-const Home = () => {
+const Student = () => {
   const headers = [
     {
-      id: "name",
+      id: 'name',
       numeric: false,
       disablePadding: true,
-      label: "学生",
-      type: "avatar",
+      label: '学生',
+      type: 'avatar',
     },
     {
-      id: "grade",
+      id: 'grade',
       numeric: true,
       disablePadding: false,
-      label: "学年",
-      type: "status",
+      label: '学年',
+      type: 'status',
     },
     {
-      id: "email",
+      id: 'email',
       numeric: true,
       disablePadding: false,
-      label: "学部",
+      label: '学部',
     },
     {
-      id: "jlpt",
+      id: 'jlpt',
       numeric: true,
       disablePadding: false,
-      label: "日本語能力試験",
+      label: '日本語能力試験',
     },
     {
-      id: "action",
+      id: 'action',
       numeric: true,
       disablePadding: false,
-      label: "アクション",
+      label: 'アクション',
     },
   ];
 
   const props = {
     headers: headers,
-    dataLink: "/api/students",
+    dataLink: '/api/students',
+  };
+
+  const navigate = useNavigate();
+
+  const handleRowClick = (studentId) => {
+    navigate(`/profile/${studentId}`);
   };
 
   return (
     <div>
       <h1>Student Page</h1>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: '100%' }}>
         <>here should be filter</>
       </Box>
-      <Table tableProps={props} />
+      <Table tableProps={props} onRowClick={handleRowClick} />
     </div>
   );
 };
 
-export default Home;
+export default Student;
