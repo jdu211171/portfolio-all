@@ -20,7 +20,7 @@ const configureRoutes = (app) => {
   app.use('/api/staff',authMiddleware, staffRoute);
   app.use('/api/students', studentRoute);
   app.use('/api/bookmarks',authMiddleware, bookmarkRoute);
-  app.use('/api/qa',authMiddleware, qaRoute);
+  app.use('/api/qa', qaRoute);
 };
 
 module.exports = configureRoutes;

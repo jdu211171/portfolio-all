@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import UserAvatar from "./avatar/UserAvatar";
 
@@ -30,6 +31,7 @@ const EnhancedTable = ({ tableProps }) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -64,15 +66,7 @@ const EnhancedTable = ({ tableProps }) => {
   };
 
   const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, id];
-    } else {
-      newSelected = selected.filter((item) => item !== id);
-    }
-    setSelected(newSelected);
+    navigate(`/profile/${id}`);
   };
 
   const handleChangePage = (event, newPage) => {
