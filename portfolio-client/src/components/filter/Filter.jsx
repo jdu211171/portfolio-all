@@ -72,8 +72,12 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
                     <Checkbox
                       checked={(filterState[field.key] || []).includes(option)}
                       onChange={(e) => {
-                        const newValue = (filterState[field.key] || []).includes(option)
-                          ? (filterState[field.key] || []).filter(item => item !== option)
+                        const newValue = (
+                          filterState[field.key] || []
+                        ).includes(option)
+                          ? (filterState[field.key] || []).filter(
+                              (item) => item !== option
+                            )
                           : [...(filterState[field.key] || []), option];
                         handleChange(field.key, newValue);
                       }}
@@ -92,11 +96,12 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    handleClick();
     console.log("Form Submitted with State:", filterState);
   };
 
-  const handleClick = () => {
-    if (!open) {
+  const handleClick = (onSearch = false) => {
+    if (!open && onSearch) {
       setOpen(true);
       setCollapse(true);
     } else {
