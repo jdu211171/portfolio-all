@@ -96,12 +96,6 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
   };
 
   const handleClick = () => {
-    const element = document.getElementById("filter");
-    if (element) {
-      const width = element.offsetWidth;
-      console.log("Element width:", width);
-    }
-
     if (!open) {
       setOpen(true);
       setCollapse(true);
