@@ -1,5 +1,4 @@
 const StudentService = require('../services/studentService');
-const { validationResult } = require('express-validator');
 
 class StudentController {
   // Controller method to create a new student
@@ -16,7 +15,8 @@ class StudentController {
   // Controller method to get all students
   static async getAllStudents(req, res, next) {
     try {
-      const students = await StudentService.getAllStudents();
+      const filter = req.query;
+      const students = await StudentService.getAllStudents(filter);
       res.status(200).json(students);
     } catch (error) {
       next(error);

@@ -22,9 +22,13 @@ import style from "./Filter.module.css";
 const Filter = ({ fields, filterState, onFilterChange }) => {
   const [open, setOpen] = useState(false);
   const [collapse, setCollapse] = useState(false);
+  const [localFilterState, setLocalFilterState] = useState(filterState);
 
   const handleChange = (key, value) => {
-    onFilterChange(key, value);
+    setLocalFilterState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
   };
 
   const renderField = (field, index) => {
@@ -41,7 +45,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
           >
             <FormLabel component="legend">{field.label}</FormLabel>
             <RadioGroup
-              value={filterState[field.key] || ""}
+              value={localFilterState[field.key] || ""}
               onChange={(e) => handleChange(field.key, e.target.value)}
             >
               {field.options.map((option) => (
@@ -70,15 +74,17 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
                   key={option}
                   control={
                     <Checkbox
-                      checked={(filterState[field.key] || []).includes(option)}
+                      checked={(localFilterState[field.key] || []).includes(
+                        option
+                      )}
                       onChange={(e) => {
                         const newValue = (
-                          filterState[field.key] || []
+                          localFilterState[field.key] || []
                         ).includes(option)
-                          ? (filterState[field.key] || []).filter(
+                          ? (localFilterState[field.key] || []).filter(
                               (item) => item !== option
                             )
-                          : [...(filterState[field.key] || []), option];
+                          : [...(localFilterState[field.key] || []), option];
                         handleChange(field.key, newValue);
                       }}
                     />
@@ -96,8 +102,8 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    onFilterChange(localFilterState); // Update filterState with localFilterState
     handleClick();
-    console.log("Form Submitted with State:", filterState);
   };
 
   const handleClick = (onSearch = false) => {
@@ -150,9 +156,9 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
           <FormControl fullWidth>
             <TextField
               className={style.textfield}
-              label="名前"
-              value={filterState.name || ""}
-              onChange={(e) => handleChange("name", e.target.value)}
+              label="サーチ"
+              value={localFilterState.search || ""}
+              onChange={(e) => handleChange("search", e.target.value)}
             />
           </FormControl>
         </Grid>

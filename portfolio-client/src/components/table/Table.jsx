@@ -24,7 +24,7 @@ import {
 
 import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
 
-const EnhancedTable = ({ tableProps }) => {
+const EnhancedTable = ({ tableProps, filter }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
   const [selected, setSelected] = useState([]);
@@ -33,12 +33,14 @@ const EnhancedTable = ({ tableProps }) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  console.log(filter)
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchUserData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(tableProps.dataLink);
+        const response = await axios.get(tableProps.dataLink, {
+          params: filter,
+        });
         setRows(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
@@ -48,8 +50,8 @@ const EnhancedTable = ({ tableProps }) => {
       }
     };
 
-    fetchStudents();
-  }, [tableProps.dataLink]);
+    fetchUserData();
+  }, [tableProps.dataLink, filter]);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";

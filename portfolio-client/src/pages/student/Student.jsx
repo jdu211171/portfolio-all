@@ -44,7 +44,7 @@ const Student = () => {
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
     {
-      key: "japanese_levels",
+      key: "jlpt",
       label: "日本語能力試験",
       type: "checkbox",
       options: ["N1", "N2", "N3", "N4", "N5"],
@@ -127,11 +127,8 @@ const Student = () => {
     filter: filterState,
   };
 
-  const handleFilterChange = (key, value) => {
-    setFilterState((prevState) => ({
-      ...prevState,
-      [key]: value,
-    }));
+  const handleFilterChange = (value) => {
+    setFilterState(value)
   };
 
   const navigate = useNavigate();
@@ -142,15 +139,14 @@ const Student = () => {
 
   return (
     <div>
-      <h1>Student Page</h1>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", height: "100px" }}>
         <Filter
           fields={filterProps}
           filterState={filterState}
           onFilterChange={handleFilterChange}
         />
       </Box>
-      <Table tableProps={props} onRowClick={handleRowClick} />
+      <Table tableProps={props} onRowClick={handleRowClick} filter={filterState} />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 // services/studentService.js
-
+const { Op } = require('sequelize');
 const { Student } = require('../models');
 const { sendEmail } = require('../utils/emailService');
 
@@ -15,9 +15,38 @@ class StudentService {
   }
 
   // Service method to retrieve all students
-  static async getAllStudents() {
+  static async getAllStudents(filter) {
     try {
-      const students = await Student.findAll();
+      let query = {}; // Initialize an empty query object
+      const searchableColumns = ['email', 'first_name', 'last_name', 'self_introduction', 'hobbies', 'skills', 'it_skills', 'jlpt']; // Example list of searchable columns
+
+      // Iterate through filter keys
+      Object.keys(filter).forEach(key => {
+        if (filter[key]) {
+          // Handle different types of filter values
+          if (key === 'search') {
+            // Search across all searchable columns
+            query[Op.or] = searchableColumns.map(column => ({
+              [column]: { [Op.iLike]: `%${filter[key]}%` } // Use Op.iLike for case insensitive search
+            }));
+          } else if (Array.isArray(filter[key])) {
+            // If filter value is an array, use $in operator
+            query[key] = { [Op.in]: filter[key] };
+          } else if (typeof filter[key] === 'string') {
+            // If filter value is a string, use $like operator for partial match
+            query[key] = { [Op.like]: `%${filter[key]}%` };
+          } else {
+            // Handle other types of filter values as needed
+            query[key] = filter[key];
+          }
+        }
+      });
+
+      // Execute the query to fetch students
+      const students = await Student.findAll({
+        where: query,
+      });
+
       return students;
     } catch (error) {
       throw error;
