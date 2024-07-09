@@ -5,6 +5,7 @@ import Table from '../../components/table/Table';
 import Filter from '../../components/filter/Filter'
 
 const Student = () => {
+  const [filterState, setFilterState] = useState({});
   const headers = [
     {
       id: 'name',
@@ -123,6 +124,14 @@ const Student = () => {
   const props = {
     headers: headers,
     dataLink: '/api/students',
+    filter: filterState,
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilterState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
   };
 
   const navigate = useNavigate();
@@ -134,8 +143,12 @@ const Student = () => {
   return (
     <div>
       <h1>Student Page</h1>
-      <Box sx={{ width: '100%' }}>
-        <Filter props={filterProps} />
+      <Box sx={{ width: "100%" }}>
+        <Filter
+          fields={filterProps}
+          filterState={filterState}
+          onFilterChange={handleFilterChange}
+        />
       </Box>
       <Table tableProps={props} onRowClick={handleRowClick} />
     </div>

@@ -12,35 +12,36 @@ import {
   Box,
   Grid,
   ButtonGroup,
+  IconButton,
+  Collapse,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import style from "./Filter.module.css";
 
-import styles from "./Filter.module.css";
-
-const Filter = ({ props }) => {
-  const [formState, setFormState] = useState({});
+const Filter = ({ fields, filterState, onFilterChange }) => {
+  const [open, setOpen] = useState(false);
+  const [collapse, setCollapse] = useState(false);
 
   const handleChange = (key, value) => {
-    setFormState({
-      ...formState,
-      [key]: value,
-    });
+    onFilterChange(key, value);
   };
 
-  const renderField = (field) => {
+  const renderField = (field, index) => {
     const width = field.minWidth || "160px";
 
     switch (field.type) {
       case "radio":
         return (
           <FormControl
-            key={field.key}
+            key={field.key + index}
             component="fieldset"
             sx={{ m: 1 }}
             style={{ width }}
           >
             <FormLabel component="legend">{field.label}</FormLabel>
             <RadioGroup
-              value={formState[field.key] || ""}
+              value={filterState[field.key] || ""}
               onChange={(e) => handleChange(field.key, e.target.value)}
             >
               {field.options.map((option) => (
@@ -57,7 +58,7 @@ const Filter = ({ props }) => {
       case "checkbox":
         return (
           <FormControl
-            key={field.key}
+            key={field.key + index}
             component="fieldset"
             sx={{ m: 1 }}
             style={{ width }}
@@ -69,15 +70,11 @@ const Filter = ({ props }) => {
                   key={option}
                   control={
                     <Checkbox
-                      checked={(formState[field.key] || []).includes(option)}
+                      checked={(filterState[field.key] || []).includes(option)}
                       onChange={(e) => {
-                        const newValue = (formState[field.key] || []).includes(
-                          option
-                        )
-                          ? (formState[field.key] || []).filter(
-                              (item) => item !== option
-                            )
-                          : [...(formState[field.key] || []), option];
+                        const newValue = (filterState[field.key] || []).includes(option)
+                          ? (filterState[field.key] || []).filter(item => item !== option)
+                          : [...(filterState[field.key] || []), option];
                         handleChange(field.key, newValue);
                       }}
                     />
@@ -95,38 +92,85 @@ const Filter = ({ props }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted with State:", formState);
+    console.log("Form Submitted with State:", filterState);
+  };
+
+  const handleClick = () => {
+    const element = document.getElementById("filter");
+    if (element) {
+      const width = element.offsetWidth;
+      console.log("Element width:", width);
+    }
+
+    if (!open) {
+      setOpen(true);
+      setCollapse(true);
+    } else {
+      setCollapse(false);
+      setTimeout(() => {
+        setOpen(false);
+      }, 300);
+    }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <Grid container spacing={1}>
-        <Grid item xs={2} sx={{ p: 1 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      className={open ? style.open : style.closed}
+      id="filter"
+    >
+      <Grid
+        container
+        spacing={1}
+        className={style.filterBar}
+        justifyContent="space-between"
+      >
+        <Grid item xs={2}>
           <ButtonGroup fullWidth>
             <Button
-              className={styles.submitButton}
               variant="contained"
               color="primary"
               type="submit"
-              sx={{ m: 1 }}
+              sx={{
+                fontSize: {
+                  xs: "0.75rem", // Small screen
+                  sm: "1rem", // Medium and larger screens
+                },
+                padding: {
+                  xs: "0px 0px", // Small screen
+                  sm: "0px 0px", // Medium and larger screens
+                },
+              }}
             >
               検索
             </Button>
           </ButtonGroup>
         </Grid>
         <Grid item xs={10} sx={{ p: 1 }}>
-          <FormControl key="id" sx={{ m: 1 }} fullWidth>
+          <FormControl fullWidth>
             <TextField
-              className={styles.textfield}
+              className={style.textfield}
               label="名前"
-              value=""
+              value={filterState.name || ""}
               onChange={(e) => handleChange("name", e.target.value)}
             />
           </FormControl>
         </Grid>
       </Grid>
-
-      {props.map((field) => renderField(field))}
+      <Grid item xs={12}>
+        <IconButton
+          onClick={handleClick}
+          style={{ width: "100%", height: "5px", padding: "0 10px" }}
+        >
+          {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
+      </Grid>
+      <Collapse in={collapse} timeout={300}>
+        <Grid container spacing={1} className={style.filterFields}>
+          {fields.map((field, index) => renderField(field, index))}
+        </Grid>
+      </Collapse>
     </Box>
   );
 };
