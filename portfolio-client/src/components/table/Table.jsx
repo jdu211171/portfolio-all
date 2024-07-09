@@ -4,10 +4,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import UserAvatar from "./avatar/UserAvatar";
-
-
-import style from "./Table.module.css";
-
 import {
   Box,
   Table,
@@ -19,39 +15,39 @@ import {
   TableRow,
   TableSortLabel,
   Chip,
-  Avatar,
+  LinearProgress
 } from "@mui/material";
 
 import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
 
-const EnhancedTable = ({ tableProps, filter }) => {
+const EnhancedTable = ({ tableProps }) => {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // Initialize loading state
   const navigate = useNavigate();
-  console.log(filter)
+
   useEffect(() => {
     const fetchUserData = async () => {
-      setLoading(true);
+      setLoading(true); // Start loading indicator
       try {
         const response = await axios.get(tableProps.dataLink, {
-          params: filter,
+          params: tableProps.filter,
         });
         setRows(response.data);
       } catch (error) {
         console.error("Error fetching students:", error);
         // Handle error: Set error state, display error message, etc.
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading indicator regardless of success or failure
       }
     };
 
     fetchUserData();
-  }, [tableProps.dataLink, filter]);
+  }, [tableProps.dataLink, tableProps.filter]);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -121,10 +117,10 @@ const EnhancedTable = ({ tableProps, filter }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
+            {loading ? ( // Show loading indicator if loading is true
               <TableRow>
                 <TableCell colSpan={tableProps.headers.length} align="center">
-                  Loading...
+                  <LinearProgress />
                 </TableCell>
               </TableRow>
             ) : (
@@ -199,6 +195,7 @@ EnhancedTable.propTypes = {
         type: PropTypes.string,
       })
     ).isRequired,
+    filter: PropTypes.object.isRequired, // Assuming filter is an object
   }).isRequired,
 };
 

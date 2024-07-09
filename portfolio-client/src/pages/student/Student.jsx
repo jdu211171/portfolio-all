@@ -41,6 +41,7 @@ const Student = () => {
     },
   ];
 
+  // must match with db table col names
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
     {
@@ -146,7 +147,7 @@ const Student = () => {
           onFilterChange={handleFilterChange}
         />
       </Box>
-      <Table tableProps={props} onRowClick={handleRowClick} filter={filterState} />
+      <Table tableProps={props} onRowClick={handleRowClick} />
     </div>
   );
 };
