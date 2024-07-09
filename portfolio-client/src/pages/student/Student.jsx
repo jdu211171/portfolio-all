@@ -5,7 +5,6 @@ import Table from '../../components/table/Table';
 import Filter from '../../components/filter/Filter'
 
 const Student = () => {
-  const [filterState, setFilterState] = useState({});
   const headers = [
     {
       id: 'name',
@@ -41,6 +40,7 @@ const Student = () => {
     },
   ];
 
+  const [filterState, setFilterState] = useState({});
   // must match with db table col names
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
