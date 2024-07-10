@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Table from '../../components/table/Table';
-import Filter from '../../components/filter/Filter'
+import Filter from '../../components/filter/Filter';
 
 const Student = () => {
   const headers = [
@@ -41,7 +41,8 @@ const Student = () => {
   ];
 
   const [filterState, setFilterState] = useState({});
-  // must match with db table col names
+  
+  // Ensure filterProps have unique keys matching your database columns
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
     {
@@ -122,14 +123,14 @@ const Student = () => {
     },
   ];
   
-  const props = {
+  const tableProps = {
     headers: headers,
     dataLink: '/api/students',
     filter: filterState,
   };
 
-  const handleFilterChange = (value) => {
-    setFilterState(value)
+  const handleFilterChange = (newFilterState) => {
+    setFilterState(newFilterState);
   };
 
   const navigate = useNavigate();
@@ -147,7 +148,7 @@ const Student = () => {
           onFilterChange={handleFilterChange}
         />
       </Box>
-      <Table tableProps={props} onRowClick={handleRowClick} />
+      <Table tableProps={tableProps} onRowClick={handleRowClick} />
     </div>
   );
 };
