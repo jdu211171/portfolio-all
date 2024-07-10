@@ -9,6 +9,7 @@ const staffRoute = require('./routes/staff-route');
 const studentRoute = require('./routes/students-route');
 const bookmarkRoute = require('./routes/bookmarks-route');
 const qaRoute = require('./routes/qa-route');
+const fileRoutes = require('./routes/file-routes');
 
 const configureRoutes = (app) => {
   // Auth routes
@@ -17,10 +18,11 @@ const configureRoutes = (app) => {
   // Protected routes
   app.use('/api/admin', authMiddleware, adminRoute);
   app.use('/api/recruiters', authMiddleware, recruiterRoute);
-  app.use('/api/staff',authMiddleware, staffRoute);
-  app.use('/api/students',authMiddleware, studentRoute);
-  app.use('/api/bookmarks',authMiddleware, bookmarkRoute);
-  app.use('/api/qa',authMiddleware, qaRoute);
+  app.use('/api/staff', authMiddleware, staffRoute);
+  app.use('/api/students', authMiddleware, studentRoute);
+  app.use('/api/bookmarks', authMiddleware, bookmarkRoute);
+  app.use('/api/qa', authMiddleware, qaRoute);
+  app.use('/api/files', fileRoutes);
 };
 
 module.exports = configureRoutes;

@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 
 const configureRoutes = require('./routes');
 
@@ -10,6 +11,8 @@ dotenv.config();
 
 const app = express();
 
+// Use cookie-parser middleware
+app.use(cookieParser());
 // Middleware to parse JSON bodies
 app.use(express.json());
 // Middleware to parse URL-encoded bodies

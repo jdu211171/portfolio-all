@@ -1,0 +1,25 @@
+.title {
+    font-weight: bold;
+    margin-top: 16px;
+  }
+  
+  .sectionContent {
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 0 0 4px 4px;
+    background-color: #fafafa;
+    margin-bottom: 16px;
+  }
+  
+  .fullGalleryContainer {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .fullGalleryImage {
+    width: 100%;
+    max-width: 300px;
+    margin: 8px;
+    cursor: pointer;
+  }
+  

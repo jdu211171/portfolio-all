@@ -1,0 +1,12 @@
+.galleryContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .galleryImage {
+    width: 100%;
+    max-width: 150px;
+    cursor: pointer;
+  }
+  

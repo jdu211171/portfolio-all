@@ -8,6 +8,7 @@ module.exports = {
       {
         email: 'student1@example.com',
         password: 'password1',
+        student_id:"t19b0007",
         first_name: 'John',
         last_name: 'Doe',
         date_of_birth: '1995-05-15',
@@ -32,6 +33,7 @@ module.exports = {
       {
         email: 'student2@example.com',
         password: 'password2',
+        student_id:"t19b0001",
         first_name: 'Jane',
         last_name: 'Smith',
         date_of_birth: '1998-08-25',

@@ -1,6 +1,7 @@
 // services/studentService.js
 
 const { Student } = require('../models');
+const { sendEmail } = require('../utils/emailService');
 
 class StudentService {
   // Service method to create a new student
@@ -61,6 +62,20 @@ class StudentService {
     } catch (error) {
       throw error;
     }
+  }
+
+  //this is sample to send email
+  static async EmailToStudent(email, password, firstName, lastName) {
+
+    // Send a welcome email to the new admin
+    const to = email
+    const subject = 'Welcome to JDU';
+    const text = `Hi ${firstName},\n\nWelcome to JDU. Your account has been created.\n\nBest regards,\nJDU Team`;
+    const html = `<p>Hi ${firstName},</p><p>Welcome to JDU. Your account has been created.</p><p>Best regards,<br>JDU Team</p>`;
+    console.log(to, subject, text, html)
+    await sendEmail(to, subject, text, html);
+
+    return "email send successfully";
   }
 }
 
