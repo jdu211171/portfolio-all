@@ -22,7 +22,7 @@ const FAQ = () => {
   };
 
   return (
-    <Container style={{ marginTop: '2rem' }}>
+    <Container style={{ marginTop: '2rem', maxWidth: "70%", marginLeft: 0 }}>
       <Typography variant='h5' gutterBottom className={FAQstyle["faq-title"]}>
         FAQ
       </Typography>
@@ -31,7 +31,7 @@ const FAQ = () => {
           key={index}
           expanded={expanded === `panel${index}`}
           onChange={handleChange(`panel${index}`)}
-          defaultExpanded={index === 0} 
+          defaultExpanded={index === 0}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -47,22 +47,22 @@ const FAQ = () => {
           </AccordionDetails>
         </Accordion>
       ))}
-      <Box className={FAQstyle["help-info-box"]}>
-        <Box className={FAQstyle["faq-box"]}>
-          <EmailIcon className={FAQstyle["faq-icons"]} />
-          <Typography >test@jdu.uz</Typography>
+      <Box sx={{ display: 'flex', marginTop: "40px"}}>
+        <Box sx={{ display: 'flex',  mr: 2  }} >
+          <EmailIcon  />
+          <Typography>test@jdu.uz</Typography>
         </Box>
-        <Box className={FAQstyle["faq-box"]}>
-          <PhoneIcon className={FAQstyle["faq-icons"]} />
-          <Typography >+998 90 123 45 67</Typography>
+        <Box sx={{ display: 'flex',  mr: 2  }} >
+          <PhoneIcon  />
+          <Typography>+998 90 123 45 67</Typography>
         </Box>
-        <Box className={FAQstyle["faq-box"]}>
-          <AccessTimeIcon className={FAQstyle["faq-icons"]} />
-          <Typography >09:00 ~ 18:00</Typography>
+        <Box sx={{ display: 'flex',  mr: 2  }} >
+          <AccessTimeIcon  />
+          <Typography>09:00 ~ 18:00</Typography>
         </Box>
-        <Box className={FAQstyle["faq-box"]}>
-          <LocationOnIcon className={FAQstyle["faq-icons"]} />
-          <Typography >
+        <Box sx={{ display: 'flex',  mr: 2  }} >
+          <LocationOnIcon  />
+          <Typography>
             Tashkent, Shayhontohur district, Sebzor, 21
           </Typography>
         </Box>
