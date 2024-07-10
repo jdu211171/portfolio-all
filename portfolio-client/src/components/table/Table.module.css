@@ -1,0 +1,13 @@
+.hoverEffect {
+  border-radius: 5px;
+  padding: 4px !important;
+}
+
+.hoverEffect:hover {
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+
+.default {
+  cursor: auto;
+}

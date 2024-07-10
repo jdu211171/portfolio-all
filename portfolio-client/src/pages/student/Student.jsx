@@ -5,41 +5,6 @@ import Table from '../../components/table/Table';
 import Filter from '../../components/filter/Filter';
 
 const Student = () => {
-  const headers = [
-    {
-      id: 'name',
-      numeric: false,
-      disablePadding: true,
-      label: '学生',
-      type: 'avatar',
-    },
-    {
-      id: 'grade',
-      numeric: true,
-      disablePadding: false,
-      label: '学年',
-      type: 'status',
-    },
-    {
-      id: 'email',
-      numeric: true,
-      disablePadding: false,
-      label: '学部',
-    },
-    {
-      id: 'jlpt',
-      numeric: true,
-      disablePadding: false,
-      label: '日本語能力試験',
-    },
-    {
-      id: 'action',
-      numeric: true,
-      disablePadding: false,
-      label: 'アクション',
-    },
-  ];
-
   const [filterState, setFilterState] = useState({});
   
   // Ensure filterProps have unique keys matching your database columns
@@ -123,21 +88,59 @@ const Student = () => {
     },
   ];
   
-  const tableProps = {
-    headers: headers,
-    dataLink: '/api/students',
-    filter: filterState,
-  };
-
   const handleFilterChange = (newFilterState) => {
     setFilterState(newFilterState);
   };
 
   const navigate = useNavigate();
 
-  const handleRowClick = (studentId) => {
+  const NavigateToProfile = (studentId) => {
     navigate(`/profile/${studentId}`);
   };
+
+
+  const headers = [
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: true,
+      label: '学生',
+      type: 'avatar',
+      onClickAction: NavigateToProfile
+    },
+    {
+      id: 'grade',
+      numeric: true,
+      disablePadding: false,
+      label: '学年',
+      type: 'status',
+    },
+    {
+      id: 'email',
+      numeric: true,
+      disablePadding: false,
+      label: '学部',
+    },
+    {
+      id: 'jlpt',
+      numeric: true,
+      disablePadding: false,
+      label: '日本語能力試験',
+    },
+    {
+      id: 'action',
+      numeric: true,
+      disablePadding: false,
+      label: 'アクション',
+    },
+  ];
+
+  const tableProps = {
+    headers: headers,
+    dataLink: '/api/students',
+    filter: filterState,
+  };
+
 
   return (
     <div>
@@ -148,7 +151,7 @@ const Student = () => {
           onFilterChange={handleFilterChange}
         />
       </Box>
-      <Table tableProps={tableProps} onRowClick={handleRowClick} />
+      <Table tableProps={tableProps} />
     </div>
   );
 };

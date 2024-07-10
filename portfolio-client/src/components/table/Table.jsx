@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import style from "./Table.module.css"
 
 import UserAvatar from "./avatar/UserAvatar";
 import {
@@ -28,7 +28,6 @@ const EnhancedTable = ({ tableProps }) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false); // Initialize loading state
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -64,9 +63,6 @@ const EnhancedTable = ({ tableProps }) => {
     }
   };
 
-  const handleClick = (event, id) => {
-    navigate(`/profile/${id}`);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -128,7 +124,6 @@ const EnhancedTable = ({ tableProps }) => {
                 {visibleRows.map((row) => (
                   <TableRow
                     hover
-                    onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"
                     aria-checked={isSelected(row.id)}
                     tabIndex={-1}
@@ -141,6 +136,16 @@ const EnhancedTable = ({ tableProps }) => {
                         key={header.id}
                         align={header.numeric ? "right" : "left"}
                         padding={header.disablePadding ? "none" : "normal"}
+                        onClick={() =>
+                          header.onClickAction
+                            ? header.onClickAction(row.id)
+                            : null
+                        }
+                        className={
+                          header.onClickAction
+                            ? style.hoverEffect
+                            : style.default
+                        }
                       >
                         {header.type === "avatar" ? (
                           <UserAvatar
