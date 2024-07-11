@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import ProtectedLayout from "./components/ProtectedLayout";
 
-import Home from './pages/home/Home';
+import Home from "./pages/home/Home";
 import Setting from "./pages/setting/Setting";
 import Student from "./pages/student/Student";
 import Recruiter from "./pages/recruiter/Recruiter";
@@ -27,16 +27,22 @@ const AppRoutes = () => {
         <Route path="/" element={<Layout />}>
           <Route element={<ProtectedLayout />}>
             <Route index element={<Home />} />
-            <Route path="/student" element={<Student />} />
-            <Route path="/recruiter" element={<Recruiter />} />
-            <Route path="/staff" element={<Staff />} />
-            <Route path="/settings" element={<Setting />} />
-            <Route path="/help" element={<FAQ />} />
-            <Route path="/profile/:studentId/*" element={<StudentProfile />}>
+            <Route path="/student" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}>
+              <Route index element={<Student />} />
+            </Route>
+            <Route path="profile/:studentId/*" element={<StudentProfile />}>
               <Route path="top" element={<Top />} />
               <Route path="qa" element={<Qa />} />
               <Route path="stats" element={<Stats />} />
             </Route>
+            <Route path="/recruiter" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Student"]} />}>
+              <Route index element={<Recruiter />} />
+            </Route>
+            <Route path="/staff" element={<ProtectedLayout allowedRoles={["Admin"]} />}>
+              <Route index element={<Staff />} />
+            </Route>
+            <Route path="/settings" element={<Setting />} />
+            <Route path="/help" element={<FAQ />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Route>
