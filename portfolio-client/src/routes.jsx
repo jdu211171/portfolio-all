@@ -44,6 +44,7 @@ const AppRoutes = () => {
             <Route path="/settings" element={<Setting />} />
             <Route path="/help" element={<FAQ />} />
           </Route>
+          <Route path="/unauthorized" element={<NotFound />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path="/login" element={<Login />} />
