@@ -1,14 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import axios from '../../../utils/axiosUtils';
-import { Box, Tabs, Tab, Typography, Button, TextField, Snackbar, Alert, IconButton, Chip, Avatar } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import EmailIcon from '@mui/icons-material/Email';
-import UserAvatar from '../../../components/table/avatar/UserAvatar'; // Импорт компонента UserAvatar
-import styles from './StudentProfile.module.css';
-import Top from '../Top/Top';
-import Qa from '../Qa/Qa';
-import Stats from '../Stats/Stats';
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import axios from "../../../utils/axiosUtils";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  IconButton,
+  Chip,
+  Avatar,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import EmailIcon from "@mui/icons-material/Email";
+import UserAvatar from "../../../components/table/avatar/UserAvatar"; // Импорт компонента UserAvatar
+import styles from "./StudentProfile.module.css";
+import Top from "../Top/Top";
+import Qa from "../Qa/Qa";
+import Stats from "../Stats/Stats";
 
 const StudentProfile = () => {
   const { studentId } = useParams();
@@ -19,7 +31,11 @@ const StudentProfile = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [editMode, setEditMode] = useState(false);
   const [editedData, setEditedData] = useState({});
-  const [alert, setAlert] = useState({ open: false, message: '', severity: '' });
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -28,7 +44,7 @@ const StudentProfile = () => {
         setStudent(response.data);
         setEditedData(response.data);
       } catch (error) {
-        showAlert('Error fetching student data', 'error');
+        showAlert("Error fetching student data", "error");
       }
     };
 
@@ -37,16 +53,16 @@ const StudentProfile = () => {
         const response = await axios.get(`/api/qa?studentId=${studentId}`);
         setQaData(response.data);
       } catch (error) {
-        showAlert('Error fetching QA data', 'error');
+        showAlert("Error fetching QA data", "error");
       }
     };
 
     fetchStudent();
     fetchQaData();
 
-    if (location.pathname.endsWith('/qa')) {
+    if (location.pathname.endsWith("/qa")) {
       setTabIndex(1);
-    } else if (location.pathname.endsWith('/stats')) {
+    } else if (location.pathname.endsWith("/stats")) {
       setTabIndex(2);
     } else {
       setTabIndex(0);
@@ -78,10 +94,10 @@ const StudentProfile = () => {
       await axios.put(`/api/students/${studentId}`, editedData);
       setStudent(editedData);
       setEditMode(false);
-      showAlert('Changes saved successfully!', 'success');
+      showAlert("Changes saved successfully!", "success");
     } catch (error) {
-      console.error('Error saving student data:', error);
-      showAlert('Error saving changes.', 'error');
+      console.error("Error saving student data:", error);
+      showAlert("Error saving changes.", "error");
     }
   };
 
@@ -98,7 +114,7 @@ const StudentProfile = () => {
   };
 
   const handleCloseAlert = () => {
-    setAlert({ open: false, message: '', severity: '' });
+    setAlert({ open: false, message: "", severity: "" });
   };
 
   const handleBackClick = () => {
@@ -111,38 +127,71 @@ const StudentProfile = () => {
 
   return (
     <Box>
-      <IconButton onClick={handleBackClick} color="primary">
-        <ArrowBackIcon />
-      </IconButton>
+      <Box
+        display="flex"
+        alignItems="center"
+        sx={{ border: 1, borderRadius: 1, borderColor: "grey.300" }}
+      >
+        <IconButton onClick={handleBackClick}>
+          <ArrowBackIcon />
+        </IconButton>
+        | Back
+      </Box>
       <Box className={styles.container}>
         <Box className={styles.avatarContainer}>
-          <UserAvatar 
-            photo={student.photo} 
-            // name={`${student.first_name} ${student.last_name}`} 
-            // studentId={student.student_id}
+          <Avatar
+            src={
+              "https://randomuser.me/api/portraits/med/men/" +
+              parseInt(Math.random() * 100) +
+              ".jpg"
+            }
+            alt={student.first_name}
+            sx={{ width: 130, height: 130 }}
           />
-          <Box className={styles.infoContainer}>
-            <Box display="flex" alignItems="center">
-              <Typography variant="h4" component="div" className={styles.mainTitle}>
+        </Box>
+        <Box className={styles.infoContainer}>
+          <Box className={styles.nameEmailContainer}>
+            <Box>
+              <Typography
+                variant="h4"
+                component="div"
+                className={styles.mainTitle}
+              >
                 {student.first_name} {student.last_name}
               </Typography>
+            </Box>
+            <Box>
               <a href={`mailto:${student.email}`} className={styles.email}>
                 <EmailIcon className={styles.emailIcon} />
                 {student.email}
               </a>
             </Box>
-            <Box className={styles.chipContainer}>
-              <Chip
-                label={`学籍番号: ${student.student_id}`}
-                variant="outlined"
-                sx={{ fontSize: '12px', padding: '2px 6px', height: 'auto', lineHeight: 1 }}
-              />
-              <Chip
-                label={`生年月日: ${new Date(student.date_of_birth).toLocaleDateString()}`}
-                variant="outlined"
-                sx={{ fontSize: '12px', padding: '2px 6px', height: 'auto', lineHeight: 1 }}
-              />
-            </Box>
+          </Box>
+          <Box className={styles.chipContainer}>
+            <Chip
+              label={`学籍番号: ${student.student_id}`}
+              variant="outlined"
+              sx={{
+                fontSize: "12px",
+                padding: "2px 6px",
+                height: "auto",
+                lineHeight: 1,
+                width: "160px",
+              }}
+            />
+            <Chip
+              label={`生年月日: ${new Date(
+                student.date_of_birth
+              ).toLocaleDateString()}`}
+              variant="outlined"
+              sx={{
+                fontSize: "12px",
+                padding: "2px 6px",
+                height: "auto",
+                lineHeight: 1,
+                width: "160px",
+              }}
+            />
           </Box>
         </Box>
       </Box>
@@ -152,17 +201,32 @@ const StudentProfile = () => {
         <Tab label="Units and Skills" />
       </Tabs>
       <Box>
-        {tabIndex === 0 && <Top student={student} editMode={editMode} editedData={editedData} handleChange={handleChange} handleEditClick={handleEditClick} handleCancelClick={handleCancelClick} handleSaveClick={handleSaveClick} />}
-        {tabIndex === 1 && <Qa student={student} qaData={qaData} />} {/* Pass qaData as prop */}
+        {tabIndex === 0 && (
+          <Top
+            student={student}
+            editMode={editMode}
+            editedData={editedData}
+            handleChange={handleChange}
+            handleEditClick={handleEditClick}
+            handleCancelClick={handleCancelClick}
+            handleSaveClick={handleSaveClick}
+          />
+        )}
+        {tabIndex === 1 && <Qa student={student} qaData={qaData} />}{" "}
+        {/* Pass qaData as prop */}
         {tabIndex === 2 && <Stats student={student} />}
       </Box>
-      <Snackbar 
-        open={alert.open} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
         onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseAlert}
+          severity={alert.severity}
+          sx={{ width: "100%" }}
+        >
           {alert.message}
         </Alert>
       </Snackbar>
