@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+import axios from "../../utils/axiosUtils";
 import style from "./Table.module.css"
 
 import UserAvatar from "./avatar/UserAvatar";

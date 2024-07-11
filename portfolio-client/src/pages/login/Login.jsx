@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../utils/axiosUtils';
 import Cookies from 'js-cookie';
 import styles from './Login.module.css';
 import logo from '../../assets/logo.png';
@@ -28,10 +28,10 @@ const Login = () => {
       const { userType } = response.data;
       const token = Cookies.get('token');
       // Set token and userType as cookies (ensure these are set properly)
-      const expiresAt = new Date();
-      expiresAt.setTime(expiresAt.getTime() + (1 * 60 * 60 * 1000)); //expires at 1h
-      Cookies.set('token', token, { expires: expiresAt, secure: true, sameSite: 'Strict' });
-      Cookies.set('userType', userType, { expires: expiresAt, secure: true, sameSite: 'Strict' });
+      // const expiresAt = new Date();
+      // expiresAt.setTime(expiresAt.getTime() + (1 * 60 * 60 * 1000)); //expires at 1h
+      // Cookies.set('token', token, { expires: expiresAt, secure: true, sameSite: 'Strict' });
+      // Cookies.set('userType', userType, { expires: expiresAt, secure: true, sameSite: 'Strict' });
 
       sessionStorage.setItem("token", token)
       sessionStorage.setItem("role", userType)

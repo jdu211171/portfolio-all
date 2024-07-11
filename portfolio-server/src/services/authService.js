@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Admin, Recruiter, Student } = require('../models');
+const { Admin, Staff, Recruiter, Student } = require('../models');
 
 class AuthService {
   static async login(email, password, res) {
-    const userTypes = [Admin, Recruiter, Student];
+    const userTypes = [Admin, Staff, Recruiter, Student];
 
     for (const UserType of userTypes) {
       const user = await UserType.findOne({ where: { email } });
@@ -21,14 +21,14 @@ class AuthService {
           res.cookie('token', token, {
             httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
-            expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 1000), // Convert expiresIn to milliseconds
+            expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 5000), // Convert expiresIn to milliseconds
           });
 
           // Also set userType as a separate cookie
           res.cookie('userType', UserType.name, {
             httpOnly: false, // Can be accessed on the client-side
             secure: process.env.NODE_ENV === 'production',
-            expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 1000), // Convert expiresIn to milliseconds
+            expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 60 * 60 * 1000), // Convert expiresIn to milliseconds
           });
 
           return { userType: UserType.name };

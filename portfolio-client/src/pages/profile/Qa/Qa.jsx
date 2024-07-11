@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography, Button, TextField, Snackbar, Alert, Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import axios from 'axios';
+import axios from '../../../utils/axiosUtils';
 import styles from './Qa.module.css';
 
 const Qa = ({ student }) => {
