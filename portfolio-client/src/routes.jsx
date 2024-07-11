@@ -45,8 +45,8 @@ const AppRoutes = () => {
             <Route path="/help" element={<FAQ />} />
           </Route>
           <Route path="/unauthorized" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<LogOut />} />
         <Route path="/FirstloginPage" element={<FirstLoginPage />} />
