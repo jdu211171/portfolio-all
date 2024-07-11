@@ -21,7 +21,7 @@ class AuthService {
           res.cookie('token', token, {
             httpOnly: false,
             secure: process.env.NODE_ENV === 'production',
-            expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 5000), // Convert expiresIn to milliseconds
+            expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 60 * 60 * 1000), // Convert expiresIn to milliseconds
           });
 
           // Also set userType as a separate cookie
