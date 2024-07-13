@@ -5,7 +5,7 @@ import Gallery from '../../../components/Gallery';
 import SkillSelector from '../../../components/SkillSelector';
 import styles from './Top.module.css';
 
-const Top = ({ student, editMode, editedData, handleChange, handleEditClick, handleCancelClick, handleSaveClick }) => {
+const Top = ({ student, editMode, editedData, handleChange, handleEditClick, handleCancelClick, handleSaveClick, setEditedData }) => {
   const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({ open: false, message: '', severity: '' });
   const [galleryOpen, setGalleryOpen] = useState(false);

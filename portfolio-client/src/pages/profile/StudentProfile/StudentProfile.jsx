@@ -152,8 +152,19 @@ const StudentProfile = () => {
         <Tab label="Units and Skills" />
       </Tabs>
       <Box>
-        {tabIndex === 0 && <Top student={student} editMode={editMode} editedData={editedData} handleChange={handleChange} handleEditClick={handleEditClick} handleCancelClick={handleCancelClick} handleSaveClick={handleSaveClick} />}
-        {tabIndex === 1 && <Qa student={student} qaData={qaData} />} {/* Pass qaData as prop */}
+        {tabIndex === 0 && (
+          <Top
+            student={student}
+            editMode={editMode}
+            editedData={editedData}
+            handleChange={handleChange}
+            handleEditClick={handleEditClick}
+            handleCancelClick={handleCancelClick}
+            handleSaveClick={handleSaveClick}
+            setEditedData={setEditedData}
+          />
+        )}
+        {tabIndex === 1 && <Qa student={student} />}
         {tabIndex === 2 && <Stats student={student} />}
       </Box>
       <Snackbar 

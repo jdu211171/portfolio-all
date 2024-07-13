@@ -116,7 +116,7 @@ const Student = () => {
       type: 'status',
     },
     {
-      id: 'email',
+      id: 'department',
       numeric: true,
       disablePadding: false,
       label: '学部',

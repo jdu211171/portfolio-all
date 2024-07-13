@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import Table from "../../components/table/Table";
 import Filter from '../../components/filter/Filter'
 
-const Home = () => {
+const Staff = () => {
   const headers = [
     {
       id: "name",
@@ -15,11 +15,23 @@ const Home = () => {
       type: "avatar",
     },
     {
-      id: "active",
+      id: "staff_id",
       numeric: true,
       disablePadding: false,
-      label: "アクティブ",
+      label: "職員ID",
       type: "status",
+    },
+    {
+      id: "role",
+      numeric: true,
+      disablePadding: false,
+      label: "役職",
+    },
+    {
+      id: "phone_number",
+      numeric: true,
+      disablePadding: false,
+      label: "電話番号",
     },
     {
       id: "email",
@@ -47,46 +59,30 @@ const Home = () => {
       minWidth: "160px",
     },
     {
-      key: "test2",
-      label: "test2",
+      key: "role",
+      label: "役職",
       type: "checkbox",
-      options: ["opt1", "opt2", "opt3"],
+      options: ["Specialty", "Admin", "Manager"],
       minWidth: "160px",
     },
     {
-      key: "test3",
-      label: "test3",
-      type: "checkbox",
-      options: ["opt1", "opt2", "opt3"],
+      key: "phone_number",
+      label: "電話番号",
+      type: "text",
       minWidth: "160px",
     },
     {
-      key: "test4",
-      label: "test4",
-      type: "checkbox",
-      options: ["opt1", "opt2", "opt3"],
+      key: "email",
+      label: "メール",
+      type: "text",
       minWidth: "160px",
-    },
-    {
-      key: "test5",
-      label: "test5",
-      type: "checkbox",
-      options: ["opt1", "opt2", "opt3"],
-      minWidth: "160px",
-    },
-    {
-      key: "test6",
-      label: "test6",
-      type: "checkbox",
-      options: ["opt1", "opt2", "opt3"],
-      minWidth: "160px",
-    },
+    }
   ];
 
-  const props = {
+  const tableProps = {
     headers: headers,
     dataLink: "/api/staff",
-    filter:filterState
+    filter:filterState,
   };
 
   const handleFilterChange = (value) => {
@@ -102,9 +98,9 @@ const Home = () => {
           onFilterChange={handleFilterChange}
         />
       </Box>
-      <Table tableProps={props} />
+      <Table tableProps={tableProps} />
     </div>
   );
 };
 
-export default Home;
+export default Staff;
