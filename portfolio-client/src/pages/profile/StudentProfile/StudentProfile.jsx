@@ -52,7 +52,14 @@ const StudentProfile = () => {
   };
 
   const handleBackClick = () => {
-    navigate(-1);
+    const isRootPath = location.pathname.endsWith('/top');
+    console.log(isRootPath)
+    if(isRootPath) {
+      navigate('/student');
+    } else {
+      navigate(-1);
+    }
+    
   };
 
   if (!student) {
