@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Outlet, NavLink } from "react-router-dom";
 import axios from "../../../utils/axiosUtils";
 import {
   Box,
@@ -16,11 +16,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EmailIcon from "@mui/icons-material/Email";
-import UserAvatar from "../../../components/table/avatar/UserAvatar"; // Импорт компонента UserAvatar
 import styles from "./StudentProfile.module.css";
-import Top from "../Top/Top";
-import Qa from "../Qa/Qa";
-import Stats from "../Stats/Stats";
 
 const StudentProfile = () => {
   const { studentId } = useParams();
@@ -28,9 +24,6 @@ const StudentProfile = () => {
   const location = useLocation();
   const [student, setStudent] = useState(null);
   const [qaData, setQaData] = useState([]); // State for QA data
-  const [tabIndex, setTabIndex] = useState(0);
-  const [editMode, setEditMode] = useState(false);
-  const [editedData, setEditedData] = useState({});
   const [alert, setAlert] = useState({
     open: false,
     message: "",
@@ -42,73 +35,14 @@ const StudentProfile = () => {
       try {
         const response = await axios.get(`/api/students/${studentId}`);
         setStudent(response.data);
-        setEditedData(response.data);
       } catch (error) {
         showAlert("Error fetching student data", "error");
       }
     };
 
-    const fetchQaData = async () => {
-      try {
-        const response = await axios.get(`/api/qa?studentId=${studentId}`);
-        setQaData(response.data);
-      } catch (error) {
-        showAlert("Error fetching QA data", "error");
-      }
-    };
-
     fetchStudent();
-    fetchQaData();
-
-    if (location.pathname.endsWith("/qa")) {
-      setTabIndex(1);
-    } else if (location.pathname.endsWith("/stats")) {
-      setTabIndex(2);
-    } else {
-      setTabIndex(0);
-    }
-  }, [studentId, location.pathname]);
-
-  const handleTabChange = (event, newIndex) => {
-    setTabIndex(newIndex);
-    if (newIndex === 0) {
-      navigate(`/profile/${studentId}/top`);
-    } else if (newIndex === 1) {
-      navigate(`/profile/${studentId}/qa`);
-    } else if (newIndex === 2) {
-      navigate(`/profile/${studentId}/stats`);
-    }
-  };
-
-  const handleEditClick = () => {
-    setEditMode(true);
-  };
-
-  const handleCancelClick = () => {
-    setEditMode(false);
-    setEditedData(student);
-  };
-
-  const handleSaveClick = async () => {
-    try {
-      await axios.put(`/api/students/${studentId}`, editedData);
-      setStudent(editedData);
-      setEditMode(false);
-      showAlert("Changes saved successfully!", "success");
-    } catch (error) {
-      console.error("Error saving student data:", error);
-      showAlert("Error saving changes.", "error");
-    }
-  };
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setEditedData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
+  }, [studentId]);
+  
   const showAlert = (message, severity) => {
     setAlert({ open: true, message, severity });
   };
@@ -195,27 +129,31 @@ const StudentProfile = () => {
           </Box>
         </Box>
       </Box>
-      <Tabs value={tabIndex} onChange={handleTabChange}>
-        <Tab label="Top" />
-        <Tab label="Q&A" />
-        <Tab label="Units and Skills" />
-      </Tabs>
-      <Box>
-        {tabIndex === 0 && (
-          <Top
-            student={student}
-            editMode={editMode}
-            editedData={editedData}
-            handleChange={handleChange}
-            handleEditClick={handleEditClick}
-            handleCancelClick={handleCancelClick}
-            handleSaveClick={handleSaveClick}
-          />
-        )}
-        {tabIndex === 1 && <Qa student={student} qaData={qaData} />}{" "}
-        {/* Pass qaData as prop */}
-        {tabIndex === 2 && <Stats student={student} />}
+      <Box className={styles.navbar}>
+        <NavLink
+          to={`/student/profile/${studentId}/top`}
+          state={{
+            student,
+          }}
+          className={({ isActive }) => (isActive ? styles.active : "")}
+        >
+          トップ
+        </NavLink>
+        <NavLink
+          to={`/student/profile/${studentId}/qa`}
+          className={({ isActive }) => (isActive ? styles.active : "")}
+        >
+          Q&A
+        </NavLink>
+        <NavLink
+          to={`/student/profile/${studentId}/stats`}
+          className={({ isActive }) => (isActive ? styles.active : "")}
+          style={{minWidth:'130px'}}
+        >
+          単位数とスキル
+        </NavLink>
       </Box>
+      <Outlet />
       <Snackbar
         open={alert.open}
         autoHideDuration={6000}

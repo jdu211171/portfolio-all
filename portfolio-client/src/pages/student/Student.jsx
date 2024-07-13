@@ -95,7 +95,7 @@ const Student = () => {
   const navigate = useNavigate();
 
   const NavigateToProfile = (studentId) => {
-    navigate(`/profile/${studentId}`);
+    navigate(`profile/${studentId}`);
   };
 
 

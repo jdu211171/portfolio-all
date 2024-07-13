@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
 import Layout from "./components/layout/Layout";
 import ProtectedLayout from "./components/ProtectedLayout";
@@ -29,12 +29,16 @@ const AppRoutes = () => {
             <Route index element={<Home />} />
             <Route path="/student" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}>
               <Route index element={<Student />} />
-            </Route>
-            <Route path="profile/:studentId/*" element={<StudentProfile />}>
+              <Route path="profile/:studentId/*" element={<StudentProfile />}>
+              <Route index element={<Navigate to="top" state={{
+            student:"data",
+          }} />} /> {/* Redirect index to top */}
               <Route path="top" element={<Top />} />
               <Route path="qa" element={<Qa />} />
               <Route path="stats" element={<Stats />} />
             </Route>
+          </Route>
+           
             <Route path="/recruiter" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Student"]} />}>
               <Route index element={<Recruiter />} />
             </Route>

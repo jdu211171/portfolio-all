@@ -1,13 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Tabs, Tab, Typography, Button, TextField, Snackbar, Alert, Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import Gallery from '../../../components/Gallery';
-import SkillSelector from '../../../components/SkillSelector';
-import styles from './Top.module.css';
+import React, { useState, useEffect } from "react";
+import { useLocation, useParams } from "react-router-dom";
 
-const Top = ({ student, editMode, editedData, handleChange, handleEditClick, handleCancelClick, handleSaveClick }) => {
+import axios from "../../../utils/axiosUtils";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Typography,
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import Gallery from "../../../components/Gallery";
+import SkillSelector from "../../../components/SkillSelector";
+import styles from "./Top.module.css";
+
+const Top = () => {
+  const { studentId } = useParams();
+
+  const [student, setStudent] = useState(null);
+
+  useEffect(() => {
+    const fetchStudent = async () => {
+      try {
+        const response = await axios.get(`/api/students/${studentId}`);
+        setStudent(response.data);
+      } catch (error) {
+        showAlert("Error fetching student data", "error");
+      }
+    };
+
+    fetchStudent();
+  }, [studentId]);
+  
+  const location = useLocation();
+  const {
+    editMode = false,
+    editedData,
+    handleChange,
+    handleEditClick,
+    handleCancelClick,
+    handleSaveClick,
+  } = location.state || {};
+
   const [subTabIndex, setSubTabIndex] = useState(0);
-  const [alert, setAlert] = useState({ open: false, message: '', severity: '' });
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryUrls, setGalleryUrls] = useState([]);
 
@@ -20,7 +67,7 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
   };
 
   const handleCloseAlert = () => {
-    setAlert({ open: false, message: '', severity: '' });
+    setAlert({ open: false, message: "", severity: "" });
   };
 
   const handleGalleryOpen = () => {
@@ -32,7 +79,10 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
   };
 
   const generateGalleryUrls = (numImages) => {
-    return Array.from({ length: numImages }, (_, index) => `https://picsum.photos/300/200?random=${index + 1}`);
+    return Array.from(
+      { length: numImages },
+      (_, index) => `https://picsum.photos/300/200?random=${index + 1}`
+    );
   };
 
   useEffect(() => {
@@ -53,7 +103,11 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
         <Box>
           <Box mt={2}>
             {!editMode && (
-              <Button onClick={handleEditClick} variant="contained" color="primary">
+              <Button
+                onClick={handleEditClick}
+                variant="contained"
+                color="primary"
+              >
                 プロフィールを編集
               </Button>
             )}
@@ -62,28 +116,39 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
             {editMode ? (
               <>
                 <Box mb={2}>
-                  <Button onClick={handleSaveClick} variant="contained" color="primary">
+                  <Button
+                    onClick={handleSaveClick}
+                    variant="contained"
+                    color="primary"
+                  >
                     保存
                   </Button>
-                  <Button onClick={handleCancelClick} variant="outlined" sx={{ ml: 2 }}>
+                  <Button
+                    onClick={handleCancelClick}
+                    variant="outlined"
+                    sx={{ ml: 2 }}
+                  >
                     キャンセル
                   </Button>
                 </Box>
                 <TextField
                   label="自己紹介"
                   name="self_introduction"
-                  value={editedData.self_introduction || ''}
+                  value={editedData.self_introduction || ""}
                   onChange={handleChange}
                   fullWidth
                   multiline
                   rows={4}
                   margin="normal"
                 />
-                <Gallery galleryUrls={galleryUrls.slice(0, 2)} onClick={handleGalleryOpen} />
+                <Gallery
+                  galleryUrls={galleryUrls.slice(0, 2)}
+                  onClick={handleGalleryOpen}
+                />
                 <TextField
                   label="趣味"
                   name="hobbies"
-                  value={editedData.hobbies || ''}
+                  value={editedData.hobbies || ""}
                   onChange={handleChange}
                   fullWidth
                   margin="normal"
@@ -91,17 +156,19 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
                 <TextField
                   label="特技"
                   name="other_information"
-                  value={editedData.other_information || ''}
+                  value={editedData.other_information || ""}
                   onChange={handleChange}
                   fullWidth
                   margin="normal"
                 />
                 <SkillSelector
                   selectedSkills={editedData.it_skills}
-                  setSelectedSkills={(skills) => setEditedData((prevData) => ({
-                    ...prevData,
-                    it_skills: skills,
-                  }))}
+                  setSelectedSkills={(skills) =>
+                    setEditedData((prevData) => ({
+                      ...prevData,
+                      it_skills: skills,
+                    }))
+                  }
                   editMode={editMode}
                   showAutocomplete={true}
                   showInfoText={true}
@@ -109,10 +176,12 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
                 />
                 <SkillSelector
                   selectedSkills={editedData.skills}
-                  setSelectedSkills={(skills) => setEditedData((prevData) => ({
-                    ...prevData,
-                    skills: skills,
-                  }))}
+                  setSelectedSkills={(skills) =>
+                    setEditedData((prevData) => ({
+                      ...prevData,
+                      skills: skills,
+                    }))
+                  }
                   editMode={editMode}
                   showAutocomplete={false}
                   showInfoText={false}
@@ -121,13 +190,28 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
               </>
             ) : (
               <>
-                <Typography variant="h6" className={styles.title}>自己紹介</Typography>
-                <Typography variant="body1" className={styles.sectionContent}>{student.self_introduction || ''}</Typography>
-                <Gallery galleryUrls={galleryUrls.slice(0, 2)} onClick={handleGalleryOpen} />
-                <Typography variant="h6" className={styles.title}>趣味</Typography>
-                <Typography variant="body1" className={styles.sectionContent}>{student.hobbies || ''}</Typography>
-                <Typography variant="h6" className={styles.title}>特技</Typography>
-                <Typography variant="body1" className={styles.sectionContent}>{student.other_information || ''}</Typography>
+                <Typography variant="h6" className={styles.title}>
+                  自己紹介
+                </Typography>
+                <Typography variant="body1" className={styles.sectionContent}>
+                  {student.self_introduction || ""}
+                </Typography>
+                <Gallery
+                  galleryUrls={galleryUrls.slice(0, 2)}
+                  onClick={handleGalleryOpen}
+                />
+                <Typography variant="h6" className={styles.title}>
+                  趣味
+                </Typography>
+                <Typography variant="body1" className={styles.sectionContent}>
+                  {student.hobbies || ""}
+                </Typography>
+                <Typography variant="h6" className={styles.title}>
+                  特技
+                </Typography>
+                <Typography variant="body1" className={styles.sectionContent}>
+                  {student.other_information || ""}
+                </Typography>
                 <SkillSelector
                   selectedSkills={student.it_skills}
                   setSelectedSkills={() => {}}
@@ -154,24 +238,33 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
           <Typography>成果物 content goes here.</Typography>
         </Box>
       )}
-      <Snackbar 
-        open={alert.open} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
         onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseAlert}
+          severity={alert.severity}
+          sx={{ width: "100%" }}
+        >
           {alert.message}
         </Alert>
       </Snackbar>
-      <Dialog open={galleryOpen} onClose={handleGalleryClose} maxWidth="lg" fullWidth>
+      <Dialog
+        open={galleryOpen}
+        onClose={handleGalleryClose}
+        maxWidth="lg"
+        fullWidth
+      >
         <DialogTitle>
           Gallery
           <IconButton
             aria-label="close"
             onClick={handleGalleryClose}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               right: 8,
               top: 8,
               color: (theme) => theme.palette.grey[500],
@@ -183,7 +276,12 @@ const Top = ({ student, editMode, editedData, handleChange, handleEditClick, han
         <DialogContent dividers>
           <Box className={styles.fullGalleryContainer}>
             {galleryUrls.map((url, index) => (
-              <img key={index} src={url} alt={`Gallery ${index}`} className={styles.fullGalleryImage} />
+              <img
+                key={index}
+                src={url}
+                alt={`Gallery ${index}`}
+                className={styles.fullGalleryImage}
+              />
             ))}
           </Box>
         </DialogContent>
