@@ -30,9 +30,7 @@ const AppRoutes = () => {
             <Route path="/student" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}>
               <Route index element={<Student />} />
               <Route path="profile/:studentId/*" element={<StudentProfile />}>
-              <Route index element={<Navigate to="top" state={{
-            student:"data",
-          }} />} /> {/* Redirect index to top */}
+              <Route index element={<Navigate to="top"/>} /> {/* Redirect index to top */}
               <Route path="top" element={<Top />} />
               <Route path="qa" element={<Qa />} />
               <Route path="stats" element={<Stats />} />
