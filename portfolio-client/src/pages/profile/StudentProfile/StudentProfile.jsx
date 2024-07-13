@@ -3,13 +3,7 @@ import { useParams, useNavigate, useLocation, Outlet, NavLink } from "react-rout
 import axios from "../../../utils/axiosUtils";
 import {
   Box,
-  Tabs,
-  Tab,
   Typography,
-  Button,
-  TextField,
-  Snackbar,
-  Alert,
   IconButton,
   Chip,
   Avatar,
@@ -23,12 +17,6 @@ const StudentProfile = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(null);
-  const [qaData, setQaData] = useState([]); // State for QA data
-  const [alert, setAlert] = useState({
-    open: false,
-    message: "",
-    severity: "",
-  });
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -42,18 +30,9 @@ const StudentProfile = () => {
 
     fetchStudent();
   }, [studentId]);
-  
-  const showAlert = (message, severity) => {
-    setAlert({ open: true, message, severity });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert({ open: false, message: "", severity: "" });
-  };
 
   const handleBackClick = () => {
     const isRootPath = location.pathname.endsWith('/top');
-    console.log(isRootPath)
     if(isRootPath) {
       navigate('/student');
     } else {
@@ -161,20 +140,6 @@ const StudentProfile = () => {
         </NavLink>
       </Box>
       <Outlet />
-      <Snackbar
-        open={alert.open}
-        autoHideDuration={6000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseAlert}
-          severity={alert.severity}
-          sx={{ width: "100%" }}
-        >
-          {alert.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };
