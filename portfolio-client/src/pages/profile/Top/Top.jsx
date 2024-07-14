@@ -54,13 +54,21 @@ const Top = () => {
     setEditMode(!editMode);
   };
 
-  const handleSave = () => {
-    console.log();
-    setEditMode(!editMode);
+  const handleSave = async () => {
+    try {
+      await axios.put(`/api/students/${studentId}`, editData);
+      setStudent(editData);
+      setEditMode(false);
+      showAlert('Changes saved successfully!', 'success');
+    } catch (error) {
+      console.error('Error saving student data:', error);
+      showAlert('Error saving changes.', 'error');
+    }
   };
 
   const handleCancel = () => {
     console.log();
+    setEditData(student)
     setEditMode(!editMode);
   };
 
@@ -176,12 +184,8 @@ const Top = () => {
           <Box mt={2}>
             <SkillSelector
               title="ITスキル"
-              headers={{
-                上級: "3年間以上",
-                中級: "1年間〜1年間半",
-                初級: "基礎",
-              }}
-              data={student.it_skills}
+              headers={{上級: "3年間以上", 中級: "1年間〜1年間半", 初級: "基礎"}}
+              data={student}
               editData={editData}
               editMode={editMode}
               updateEditData={handleUpdateEditData}
@@ -191,14 +195,11 @@ const Top = () => {
             />
             <SkillSelector
               title="その他"
-              headers={{
-                上級: "3年間以上",
-                中級: "1年間〜1年間半",
-                初級: "基礎",
-              }}
-              data={student.skills}
+              headers={{上級: "3年間以上", 中級: "1年間〜1年間半",初級: "基礎"}}
+              data={student}
               editMode={editMode}
               editData={editData}
+              updateEditData={handleUpdateEditData}
               showAutocomplete={false}
               showHeaders={false}
               keyName="skills"

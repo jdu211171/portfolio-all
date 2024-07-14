@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Autocomplete,
   TextField,
@@ -25,14 +25,20 @@ const SkillSelector = ({
   showAutocomplete,
   showHeaders
 }) => {
-  const initialJsonData = JSON.parse(data);
+  console.log(data)
+  const initialJsonData = JSON.parse(data[keyName]);
   const initialEditJsonData = JSON.parse(editData[keyName]);
 
-  const [jsonData] = useState(initialJsonData);
+
+  const [jsonData, setJsonData] = useState(initialJsonData);
   const [editJsonData, setEditJsonData] = useState(initialEditJsonData);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("初級");
 
+  useEffect(() => {
+    const initialJsonData = JSON.parse(data[keyName]);
+    setJsonData(initialJsonData)
+  }, [data]);
   const handleAddSkill = () => {
     if (selectedSkill && selectedLevel) {
       // Check if the selected skill already exists in any level

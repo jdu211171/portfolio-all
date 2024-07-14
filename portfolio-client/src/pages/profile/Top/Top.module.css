@@ -35,4 +35,5 @@
   position: sticky;
   top: -32px;
   gap: 8px;
+  z-index: 1000000;
 }
