@@ -181,30 +181,28 @@ const Top = () => {
             updateEditData={handleUpdateEditData}
             keyName="other_information"
           />
-          <Box mt={2}>
-            <SkillSelector
-              title="ITスキル"
-              headers={{上級: "3年間以上", 中級: "1年間〜1年間半", 初級: "基礎"}}
-              data={student}
-              editData={editData}
-              editMode={editMode}
-              updateEditData={handleUpdateEditData}
-              showAutocomplete={true}
-              showHeaders={true}
-              keyName="it_skills"
-            />
-            <SkillSelector
-              title="その他"
-              headers={{上級: "3年間以上", 中級: "1年間〜1年間半",初級: "基礎"}}
-              data={student}
-              editMode={editMode}
-              editData={editData}
-              updateEditData={handleUpdateEditData}
-              showAutocomplete={false}
-              showHeaders={false}
-              keyName="skills"
-            />
-          </Box>
+          <SkillSelector
+            title="ITスキル"
+            headers={{上級: "3年間以上", 中級: "1年間〜1年間半", 初級: "基礎"}}
+            data={student}
+            editData={editData}
+            editMode={editMode}
+            updateEditData={handleUpdateEditData}
+            showAutocomplete={true}
+            showHeaders={true}
+            keyName="it_skills"
+          />
+          <SkillSelector
+            title="その他"
+            headers={{上級: "3年間以上", 中級: "1年間〜1年間半",初級: "基礎"}}
+            data={student}
+            editMode={editMode}
+            editData={editData}
+            updateEditData={handleUpdateEditData}
+            showAutocomplete={false}
+            showHeaders={false}
+            keyName="skills"
+          />
         </Box>
       )}
       {/* 成果物 starts from here */}
