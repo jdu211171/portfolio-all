@@ -1,0 +1,17 @@
+/* src/components/TextField.module.css */
+.container {
+  margin: 30px auto;
+}
+.title {
+  font-size: 20px;
+  padding: 8px 24px;
+  font-weight: bold;
+  width: 50%;
+  border: 1px solid #74828F;
+}
+
+.data {
+  white-space: pre-wrap; /* Maintain whitespace and line breaks */
+  padding: 12px;
+  border: 1px solid #74828F;
+}

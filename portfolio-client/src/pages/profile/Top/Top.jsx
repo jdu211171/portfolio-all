@@ -8,7 +8,6 @@ import {
   Tab,
   Typography,
   Button,
-  TextField,
   Snackbar,
   Alert,
   Dialog,
@@ -18,6 +17,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Gallery from "../../../components/Gallery";
+import TextField from "../../../components/TextField/TextField";
+import SkillSelector2 from "../../../components/SkillSelector/SkillSelector";
 import SkillSelector from "../../../components/SkillSelector";
 import styles from "./Top.module.css";
 
@@ -25,12 +26,15 @@ const Top = () => {
   const { studentId } = useParams();
 
   const [student, setStudent] = useState(null);
+  const [editData, setEditData] = useState({});
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
     const fetchStudent = async () => {
       try {
         const response = await axios.get(`/api/students/${studentId}`);
-        setStudent(response.data);
+        await setStudent(response.data);
+        setEditData(response.data);
       } catch (error) {
         showAlert("Error fetching student data", "error");
       }
@@ -38,16 +42,18 @@ const Top = () => {
 
     fetchStudent();
   }, [studentId]);
-  
-  const location = useLocation();
-  const {
-    editMode = false,
-    editedData,
-    handleChange,
-    handleEditClick,
-    handleCancelClick,
-    handleSaveClick,
-  } = location.state || {};
+
+  const handleUpdateEditData = (key, value) => {
+    setEditData((prevEditData) => ({
+      ...prevEditData,
+      [key]: value,
+    }));
+  };
+
+  const toggleEditMode = () => {
+    console.log();
+    setEditMode(!editMode);
+  };
 
   const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({
@@ -102,134 +108,72 @@ const Top = () => {
       {subTabIndex === 0 && (
         <Box>
           <Box mt={2}>
-            {!editMode && (
-              <Button
-                onClick={handleEditClick}
-                variant="contained"
-                color="primary"
-              >
-                プロフィールを編集
-              </Button>
-            )}
+            <Button
+              onClick={toggleEditMode}
+              variant="contained"
+              color="primary"
+            >
+              プロフィールを編集
+            </Button>
           </Box>
+          <TextField
+            title="自己紹介"
+            data={student.self_introduction}
+            editData={editData}
+            editMode={editMode}
+            updateEditData={handleUpdateEditData}
+            keyName="self_introduction"
+          />
+          <Gallery
+            galleryUrls={galleryUrls.slice(0, 2)}
+            onClick={handleGalleryOpen}
+          />
+          <TextField
+            title="趣味"
+            data={student.hobbies}
+            editData={editData}
+            editMode={editMode}
+            updateEditData={handleUpdateEditData}
+            keyName="hobbies"
+          />
+          <TextField
+            title="特技"
+            data={student.other_information}
+            editData={editData}
+            editMode={editMode}
+            updateEditData={handleUpdateEditData}
+            keyName="other_information"
+          />
           <Box mt={2}>
-            {editMode ? (
-              <>
-                <Box mb={2}>
-                  <Button
-                    onClick={handleSaveClick}
-                    variant="contained"
-                    color="primary"
-                  >
-                    保存
-                  </Button>
-                  <Button
-                    onClick={handleCancelClick}
-                    variant="outlined"
-                    sx={{ ml: 2 }}
-                  >
-                    キャンセル
-                  </Button>
-                </Box>
-                <TextField
-                  label="自己紹介"
-                  name="self_introduction"
-                  value={editedData.self_introduction || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  multiline
-                  rows={4}
-                  margin="normal"
-                />
-                <Gallery
-                  galleryUrls={galleryUrls.slice(0, 2)}
-                  onClick={handleGalleryOpen}
-                />
-                <TextField
-                  label="趣味"
-                  name="hobbies"
-                  value={editedData.hobbies || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="特技"
-                  name="other_information"
-                  value={editedData.other_information || ""}
-                  onChange={handleChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <SkillSelector
-                  selectedSkills={editedData.it_skills}
-                  setSelectedSkills={(skills) =>
-                    setEditedData((prevData) => ({
-                      ...prevData,
-                      it_skills: skills,
-                    }))
-                  }
-                  editMode={editMode}
-                  showAutocomplete={true}
-                  showInfoText={true}
-                  title="ITスキル"
-                />
-                <SkillSelector
-                  selectedSkills={editedData.skills}
-                  setSelectedSkills={(skills) =>
-                    setEditedData((prevData) => ({
-                      ...prevData,
-                      skills: skills,
-                    }))
-                  }
-                  editMode={editMode}
-                  showAutocomplete={false}
-                  showInfoText={false}
-                  title="その他"
-                />
-              </>
-            ) : (
-              <>
-                <Typography variant="h6" className={styles.title}>
-                  自己紹介
-                </Typography>
-                <Typography variant="body1" className={styles.sectionContent}>
-                  {student.self_introduction || ""}
-                </Typography>
-                <Gallery
-                  galleryUrls={galleryUrls.slice(0, 2)}
-                  onClick={handleGalleryOpen}
-                />
-                <Typography variant="h6" className={styles.title}>
-                  趣味
-                </Typography>
-                <Typography variant="body1" className={styles.sectionContent}>
-                  {student.hobbies || ""}
-                </Typography>
-                <Typography variant="h6" className={styles.title}>
-                  特技
-                </Typography>
-                <Typography variant="body1" className={styles.sectionContent}>
-                  {student.other_information || ""}
-                </Typography>
-                <SkillSelector
-                  selectedSkills={student.it_skills}
-                  setSelectedSkills={() => {}}
-                  editMode={editMode}
-                  showAutocomplete={true}
-                  showInfoText={true}
-                  title="ITスキル"
-                />
-                <SkillSelector
-                  selectedSkills={student.skills}
-                  setSelectedSkills={() => {}}
-                  editMode={editMode}
-                  showAutocomplete={false}
-                  showInfoText={false}
-                  title="その他"
-                />
-              </>
-            )}
+            <SkillSelector2
+                title="ITスキル"
+                headers={{上級:"3年間以上", 中級:"1年間〜1年間半", 初級:"基礎"}}
+                data={student.it_skills}
+                editData={editData}
+                editMode={editMode}
+                updateEditData={handleUpdateEditData}
+                showAutocomplete={true}
+                showInfoText={true}
+                keyName="it_skills"
+            />
+            {/* <SkillSelector
+              title="ITスキル"
+              headers={{上級:"3年間以上", 中級:"1年間〜1年間半", 初級:"基礎"}}
+              data={student.it_skills}
+              editMode={editMode}
+              showAutocomplete={true}
+              showInfoText={true}
+              keyName="it_skills"
+            />
+            <SkillSelector
+              title="その他"
+              data={student.skills}
+              editMode={editMode}
+              editData={editData}
+              showAutocomplete={false}
+              showInfoText={false}
+              keyName="skills"
+            /> */}
           </Box>
         </Box>
       )}

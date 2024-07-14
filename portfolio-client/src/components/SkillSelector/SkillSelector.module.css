@@ -1,0 +1,31 @@
+/* src/components/TextField.module.css */
+.container {
+  margin: 30px auto;
+}
+.title {
+  font-size: 20px;
+  margin: 15px auto;
+}
+
+.description {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+  width: fit-content;
+  border-bottom: 1px solid #74828F;
+ padding: 10px; 
+}
+
+.description div {
+  padding: 8px;
+}
+
+.data {
+  margin-top: 20px;
+}
+
+.data table {
+  border-spacing:10px 10px;
+}

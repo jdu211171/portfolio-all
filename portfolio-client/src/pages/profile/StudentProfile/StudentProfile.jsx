@@ -30,6 +30,7 @@ const StudentProfile = () => {
 
     fetchStudent();
   }, [studentId]);
+  
 
   const handleBackClick = () => {
     const isRootPath = location.pathname.endsWith('/top');
