@@ -29,7 +29,7 @@
   }
   
   #main {
-    /* margin-left: 250px; */
+    position: relative;
     padding: 40px;
     overflow-y: scroll;
   }

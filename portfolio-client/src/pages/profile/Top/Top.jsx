@@ -54,6 +54,16 @@ const Top = () => {
     setEditMode(!editMode);
   };
 
+  const handleSave = () => {
+    console.log();
+    setEditMode(!editMode);
+  };
+
+  const handleCancel = () => {
+    console.log();
+    setEditMode(!editMode);
+  };
+
   const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({
     open: false,
@@ -99,22 +109,42 @@ const Top = () => {
   }
 
   return (
-    <Box>
-      <Tabs value={subTabIndex} onChange={handleSubTabChange}>
+    <Box my={2}>
+      <Box mt={2} className={styles.buttonsContainer}>
+            {editMode ? (
+              <>
+                <Button
+                  onClick={handleSave}
+                  variant="contained"
+                  color="primary"
+                >
+                  保存
+                </Button>
+
+                <Button
+                  onClick={handleCancel}
+                  variant="outlined"
+                  color="error"
+                >
+                  キャンセル
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={toggleEditMode}
+                variant="contained"
+                color="primary"
+              >
+                プロフィールを編集
+              </Button>
+            )}
+          </Box>
+      <Tabs className={styles.Tabs} value={subTabIndex} onChange={handleSubTabChange}>
         <Tab label="自己PR" />
         <Tab label="成果物" />
       </Tabs>
       {subTabIndex === 0 && (
         <Box>
-          <Box mt={2} sx={{ display: 'flex', flexDirection: 'row-reverse'}}>
-            <Button
-              onClick={toggleEditMode}
-              variant="contained"
-              color="primary"
-            >
-              プロフィールを編集
-            </Button>
-          </Box>
           <TextField
             title="自己紹介"
             data={student.self_introduction}
@@ -145,25 +175,33 @@ const Top = () => {
           />
           <Box mt={2}>
             <SkillSelector
-                title="ITスキル"
-                headers={{上級:"3年間以上", 中級:"1年間〜1年間半", 初級:"基礎"}}
-                data={student.it_skills}
-                editData={editData}
-                editMode={editMode}
-                updateEditData={handleUpdateEditData}
-                showAutocomplete={true}
-                showHeaders={true}
-                keyName="it_skills"
+              title="ITスキル"
+              headers={{
+                上級: "3年間以上",
+                中級: "1年間〜1年間半",
+                初級: "基礎",
+              }}
+              data={student.it_skills}
+              editData={editData}
+              editMode={editMode}
+              updateEditData={handleUpdateEditData}
+              showAutocomplete={true}
+              showHeaders={true}
+              keyName="it_skills"
             />
             <SkillSelector
-                title="その他"
-                headers={{上級:"3年間以上", 中級:"1年間〜1年間半", 初級:"基礎"}}
-                data={student.skills}
-                editMode={editMode}
-                editData={editData}
-                showAutocomplete={false}
-                showHeaders={false}
-                keyName="skills"
+              title="その他"
+              headers={{
+                上級: "3年間以上",
+                中級: "1年間〜1年間半",
+                初級: "基礎",
+              }}
+              data={student.skills}
+              editMode={editMode}
+              editData={editData}
+              showAutocomplete={false}
+              showHeaders={false}
+              keyName="skills"
             />
           </Box>
         </Box>

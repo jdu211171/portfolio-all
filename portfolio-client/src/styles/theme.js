@@ -22,6 +22,16 @@ const theme = createTheme({
                 size: 'small', // Default size for MuiTextField
             },
         },
+        MuiTab: {
+            styleOverrides: {
+                root: {
+                    '&.Mui-selected': {
+                        backgroundColor: '#5627DC', // Background color for the active tab
+                        color: '#fff', // Text color for the active tab
+                    },
+                },
+            },
+        },
     },
 });
 
