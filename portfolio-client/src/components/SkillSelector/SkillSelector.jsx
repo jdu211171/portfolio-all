@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import styles from "./SkillSelector.module.css";
-import skills from "../../assets/skills";
+import skills from "../../utils/skills";
 
 const SkillSelector = ({
   title,

@@ -106,7 +106,7 @@ const Top = () => {
       </Tabs>
       {subTabIndex === 0 && (
         <Box>
-          <Box mt={2}>
+          <Box mt={2} sx={{ display: 'flex', flexDirection: 'row-reverse'}}>
             <Button
               onClick={toggleEditMode}
               variant="contained"
@@ -156,14 +156,14 @@ const Top = () => {
                 keyName="it_skills"
             />
             <SkillSelector
-              title="その他"
-              headers={{上級:"3年間以上", 中級:"1年間〜1年間半", 初級:"基礎"}}
-              data={student.skills}
-              editMode={editMode}
-              editData={editData}
-              showAutocomplete={false}
-              showHeaders={false}
-              keyName="skills"
+                title="その他"
+                headers={{上級:"3年間以上", 中級:"1年間〜1年間半", 初級:"基礎"}}
+                data={student.skills}
+                editMode={editMode}
+                editData={editData}
+                showAutocomplete={false}
+                showHeaders={false}
+                keyName="skills"
             />
           </Box>
         </Box>
