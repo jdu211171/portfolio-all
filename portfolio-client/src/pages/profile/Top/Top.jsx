@@ -152,7 +152,7 @@ const Top = () => {
         <Tab label="成果物" />
       </Tabs>
       {subTabIndex === 0 && (
-        <Box>
+        <Box my={2}>
           <TextField
             title="自己紹介"
             data={student.self_introduction}
@@ -207,8 +207,9 @@ const Top = () => {
           </Box>
         </Box>
       )}
+      {/* 成果物 starts from here */}
       {subTabIndex === 1 && (
-        <Box>
+        <Box my={2}>
           <Typography>成果物 content goes here.</Typography>
         </Box>
       )}
