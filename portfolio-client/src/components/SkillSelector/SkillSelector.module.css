@@ -4,6 +4,7 @@
 }
 .title {
   font-size: 20px;
+  font-weight: 600;
   margin: 15px auto;
 }
 
@@ -14,8 +15,7 @@
   gap: 10px;
   flex-wrap: wrap;
   width: fit-content;
-  border-bottom: 1px solid #74828F;
- padding: 10px; 
+  padding: 10px;
 }
 
 .description div {
@@ -27,5 +27,9 @@
 }
 
 .data table {
-  border-spacing:10px 10px;
+  border-spacing: 10px 10px;
+}
+
+.data td {
+  min-width: 38px;
 }

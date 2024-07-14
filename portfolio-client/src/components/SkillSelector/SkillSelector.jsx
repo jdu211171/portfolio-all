@@ -23,6 +23,7 @@ const SkillSelector = ({
   updateEditData,
   keyName,
   showAutocomplete,
+  showHeaders
 }) => {
   const initialJsonData = JSON.parse(data);
   const initialEditJsonData = JSON.parse(editData[keyName]);
@@ -82,12 +83,13 @@ const SkillSelector = ({
     <div className={styles.container}>
       <div className={styles.title}>{title}</div>
       <div className={styles.description}>
-        {Object.entries(headers).map(([level, description]) => (
+        {showHeaders && Object.entries(headers).map(([level, description]) => (
           <div key={level}>
             <span style={{ fontWeight: 800 }}>{level}</span>: {description}
           </div>
         ))}
       </div>
+      <hr />
       {editMode && (
         <Box display="flex" alignItems="center" mb={2} mt={2}>
           {showAutocomplete ? (
@@ -105,6 +107,7 @@ const SkillSelector = ({
               onChange={(event) => setSelectedSkill({ name: event.target.value })}
               label="Skill"
               variant="outlined"
+              sx={{ width: 120 }}
             />
           )}
           <FormControl variant="outlined" size="small" sx={{ ml: 2 }}>
