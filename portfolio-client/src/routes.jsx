@@ -13,7 +13,8 @@ import Login from "./pages/login/Login";
 import FAQ from "./pages/faq/Faq";
 
 import LogOut from "./components/LogOut";
-import NotFound from "./pages/NotFound";
+import NotFound from "./pages/NotFound/NotFound";
+import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import FirstLoginPage from "./pages/FirstLoginPage/FirstLoginPage";
 import StudentProfile from "./pages/profile/StudentProfile/StudentProfile";
 import Top from "./pages/profile/Top/Top";
@@ -46,9 +47,9 @@ const AppRoutes = () => {
             <Route path="/settings" element={<Setting />} />
             <Route path="/help" element={<FAQ />} />
           </Route>
-          <Route path="/unauthorized" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<LogOut />} />
         <Route path="/FirstloginPage" element={<FirstLoginPage />} />

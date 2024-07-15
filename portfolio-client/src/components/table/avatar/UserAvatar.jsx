@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, Chip } from "@mui/material";
 import style from "./UserAvatar.module.css"; // Adjust the path to your CSS module
+import axios from "axios";
 
 const UserAvatar = ({ photo, name, studentId }) => {
   return (
