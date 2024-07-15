@@ -118,7 +118,7 @@ const Top = () => {
 
   return (
     <Box my={2}>
-      <Box mt={2} className={styles.buttonsContainer}>
+      <Box my={2} className={styles.buttonsContainer}>
             {editMode ? (
               <>
                 <Button

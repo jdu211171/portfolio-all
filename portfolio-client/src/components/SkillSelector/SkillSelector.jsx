@@ -25,7 +25,6 @@ const SkillSelector = ({
   showAutocomplete,
   showHeaders
 }) => {
-  console.log(data)
   const initialJsonData = JSON.parse(data[keyName]);
   const initialEditJsonData = JSON.parse(editData[keyName]);
 
