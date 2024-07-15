@@ -10,6 +10,7 @@ const studentRoute = require('./routes/students-route');
 const bookmarkRoute = require('./routes/bookmarks-route');
 const qaRoute = require('./routes/qa-route');
 const fileRoutes = require('./routes/file-routes');
+const kintoneRoutes = require('./routes/kintone-routes');
 
 const configureRoutes = (app) => {
   // Auth routes
@@ -23,6 +24,7 @@ const configureRoutes = (app) => {
   app.use('/api/bookmarks', authMiddleware, bookmarkRoute);
   app.use('/api/qa', authMiddleware, qaRoute);
   app.use('/api/files', fileRoutes);
+  app.use('/api/kintone', kintoneRoutes);
 };
 
 module.exports = configureRoutes;
