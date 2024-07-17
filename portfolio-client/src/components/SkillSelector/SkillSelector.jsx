@@ -25,18 +25,17 @@ const SkillSelector = ({
   showAutocomplete,
   showHeaders
 }) => {
-  const initialJsonData = JSON.parse(data[keyName]);
-  const initialEditJsonData = JSON.parse(editData[keyName]);
 
-
-  const [jsonData, setJsonData] = useState(initialJsonData);
-  const [editJsonData, setEditJsonData] = useState(initialEditJsonData);
+  const [jsonData, setJsonData] = useState({});
+  const [editJsonData, setEditJsonData] = useState({});
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("初級");
 
   useEffect(() => {
-    const initialJsonData = JSON.parse(data[keyName]);
+    const initialJsonData = data[keyName] ? JSON.parse(data[keyName]) : {}; 
+    const initialEditJsonData = editData[keyName] ? JSON.parse(editData[keyName]) : {}; 
     setJsonData(initialJsonData)
+    setEditJsonData(initialEditJsonData)
   }, [data]);
   const handleAddSkill = () => {
     if (selectedSkill && selectedLevel) {
