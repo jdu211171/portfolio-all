@@ -1,7 +1,7 @@
 const apps = {
     students: {
-      appId: "105",
-      token: "IpVLEiqLaP1u9H8dyQjYCpHalE0dI7MDfqqDASQP"
+      appId: "159",
+      token: "Gg1TIV35o5MH3dZlT3CVTJRSbxKMMpxvIZgWtRCP"
     },
     staff: {
       appId: "106",

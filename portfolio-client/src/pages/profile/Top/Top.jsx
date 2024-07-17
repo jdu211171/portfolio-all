@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import ReactDOM from 'react-dom';
 
 import axios from "../../../utils/axiosUtils";
 import {
@@ -116,38 +117,45 @@ const Top = () => {
     return <div>Loading...</div>;
   }
 
+  const portalContent = (
+    <Box my={2} className={styles.buttonsContainer}>
+      {editMode ? (
+        <>
+          <Button onClick={handleSave} variant="contained" color="primary" size="small">
+            保存
+          </Button>
+
+          <Button onClick={handleCancel} variant="outlined" color="error" size="small">
+            キャンセル
+          </Button>
+        </>
+      ) : (
+        <Button
+          onClick={toggleEditMode}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          プロフィールを編集
+        </Button>
+      )}
+    </Box>
+  );
+
   return (
     <Box my={2}>
-      <Box my={2} className={styles.buttonsContainer}>
-            {editMode ? (
-              <>
-                <Button
-                  onClick={handleSave}
-                  variant="contained"
-                  color="primary"
-                >
-                  保存
-                </Button>
+      <>
+        {ReactDOM.createPortal(
+          portalContent,
+          document.getElementById("saveButton")
+        )}
+      </>
 
-                <Button
-                  onClick={handleCancel}
-                  variant="outlined"
-                  color="error"
-                >
-                  キャンセル
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={toggleEditMode}
-                variant="contained"
-                color="primary"
-              >
-                プロフィールを編集
-              </Button>
-            )}
-          </Box>
-      <Tabs className={styles.Tabs} value={subTabIndex} onChange={handleSubTabChange}>
+      <Tabs
+        className={styles.Tabs}
+        value={subTabIndex}
+        onChange={handleSubTabChange}
+      >
         <Tab label="自己PR" />
         <Tab label="成果物" />
       </Tabs>
@@ -183,7 +191,11 @@ const Top = () => {
           />
           <SkillSelector
             title="ITスキル"
-            headers={{上級: "3年間以上", 中級: "1年間〜1年間半", 初級: "基礎"}}
+            headers={{
+              上級: "3年間以上",
+              中級: "1年間〜1年間半",
+              初級: "基礎",
+            }}
             data={student}
             editData={editData}
             editMode={editMode}
@@ -194,7 +206,11 @@ const Top = () => {
           />
           <SkillSelector
             title="その他"
-            headers={{上級: "3年間以上", 中級: "1年間〜1年間半",初級: "基礎"}}
+            headers={{
+              上級: "3年間以上",
+              中級: "1年間〜1年間半",
+              初級: "基礎",
+            }}
             data={student}
             editMode={editMode}
             editData={editData}

@@ -7,6 +7,7 @@ import {
   IconButton,
   Chip,
   Avatar,
+  Grid
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EmailIcon from "@mui/icons-material/Email";
@@ -48,15 +49,22 @@ const StudentProfile = () => {
 
   return (
     <Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        sx={{ border: 1, borderRadius: 1, borderColor: "grey.300" }}
-      >
-        <IconButton onClick={handleBackClick}>
-          <ArrowBackIcon />
-        </IconButton>
-        | Back
+      <Grid container>
+        <Grid></Grid>
+      </Grid>
+
+      <Box className={styles.topControlButtons}>
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={{ border: 1, borderRadius: 1, borderColor: "grey.300", flexGrow: 1, }}
+        >
+          <IconButton onClick={handleBackClick}>
+            <ArrowBackIcon />
+          </IconButton>
+          | Back
+        </Box>
+        <Box id="saveButton"></Box>
       </Box>
       <Box className={styles.container}>
         <Box className={styles.avatarContainer}>
@@ -135,7 +143,7 @@ const StudentProfile = () => {
         <NavLink
           to={`/student/profile/${studentId}/stats`}
           className={({ isActive }) => (isActive ? styles.active : "")}
-          style={{minWidth:'130px'}}
+          style={{ minWidth: "130px" }}
         >
           単位数とスキル
         </NavLink>
