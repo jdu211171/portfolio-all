@@ -144,13 +144,26 @@ const SkillSelector = ({
                   {skills.map((skill, index) => (
                     <Chip
                       key={level + index}
-                      label={skill.name}
+                      label={skill.name + "\n" + (skill.date ? skill.date : "") }
                       variant="outlined"
-                      style={{
+                      style={ skill.date ? {
                         borderColor: skill.color,
                         color: skill.color,
                         margin: "0 4px 4px 0",
                         backgroundColor: skill.color + "16",
+                        padding:"8px 4px",
+                        height: "auto"
+                      } : {
+                        borderColor: skill.color,
+                        color: skill.color,
+                        margin: "0 4px 4px 0",
+                        backgroundColor: skill.color + "16",
+                      } }
+                      sx={{
+                        '& .MuiChip-label': {
+                          display: 'block',
+                          whiteSpace:"pre-wrap",
+                        },
                       }}
                       onDelete={editMode ? () => handleDeleteSkill(skill, level) : undefined}
                     />
