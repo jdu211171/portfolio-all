@@ -25,6 +25,7 @@ class KintoneController {
   // Controller method to create a new student
   static async create(req, res) {
     try {
+      console.log(req)
       const newStudent = await KintoneService.createRecord(KINTONE_APP_ID_STUDENTS, req.body);
       res.status(201).json(newStudent);
     } catch (error) {

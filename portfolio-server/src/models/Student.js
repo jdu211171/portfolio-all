@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     date_of_birth: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     photo: {
       type: DataTypes.STRING,
@@ -56,27 +56,27 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     gallery: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: true,
-    },
+    },    
     skills: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     it_skills: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     other_information: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    academic_units: {
-      type: DataTypes.INTEGER,
+    partner_university: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
-    partnership_units: {
-      type: DataTypes.INTEGER,
+    deliverables: {
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     jlpt: {
@@ -101,9 +101,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     active: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
+    kintone_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'Student',

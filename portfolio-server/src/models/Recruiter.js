@@ -1,8 +1,8 @@
 'use strict';
 const bcrypt = require('bcrypt');
-const { Model } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize) => {
   class Recruiter extends Model {
     /**
      * Helper method for defining associations.
@@ -60,16 +60,22 @@ module.exports = (sequelize, DataTypes) => {
     },
     date_of_birth: {
       type: DataTypes.DATE,
-      allowNull: false,
+      allowNull: true,
     },
     active: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
+    kintone_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    }
   }, {
     sequelize,
     modelName: 'Recruiter',
+    tableName: 'Recruiters', // Ensure your table name is plural if that is your convention
+    timestamps: true, // Automatically add createdAt and updatedAt
     hooks: {
       beforeCreate: async (recruiter) => {
         if (recruiter.password) {

@@ -11,6 +11,7 @@ const bookmarkRoute = require('./routes/bookmarks-route');
 const qaRoute = require('./routes/qa-route');
 const fileRoutes = require('./routes/file-routes');
 const kintoneRoutes = require('./routes/kintone-routes');
+const webhookRoutes = require('./routes/webhook-routes');
 
 const configureRoutes = (app) => {
   // Auth routes
@@ -25,6 +26,7 @@ const configureRoutes = (app) => {
   app.use('/api/qa', authMiddleware, qaRoute);
   app.use('/api/files', fileRoutes);
   app.use('/api/kintone', kintoneRoutes);
+  app.use('/api/webhook', webhookRoutes);
 };
 
 module.exports = configureRoutes;

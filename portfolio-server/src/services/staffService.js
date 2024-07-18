@@ -2,9 +2,20 @@ const { Staff } = require('../models'); // Assuming your model file is properly 
 
 class StaffService {
   static async createStaff(staffData) {
+    const sampleData = {
+      email: 'jane.doe@example.com',
+      password: 'SecurePassword123', // This will be hashed by the beforeCreate hook
+      first_name: 'Jane',
+      last_name: 'Doe',
+      date_of_birth: '1980-01-01',
+      photo: 'http://example.com/photo.jpg',
+      active: true,
+    };
+  
     try {
-      const newStaff = await Staff.create(staffData);
-      return newStaff;
+      console.log('Creating new staff with data:', sampleData);
+      const newStaff = await Staff.create(sampleData);
+      console.log('New staff created:', newStaff);
     } catch (error) {
       throw error;
     }
