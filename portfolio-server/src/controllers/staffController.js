@@ -1,20 +1,35 @@
-const StaffService = require('../services/staffService');
+const generatePassword = require('generate-password');
 
+const StaffService = require('../services/staffService');
+const { EmailToStaff } = require('../utils/emailToStaff');
 class StaffController {
   static async webhookHandler(req, res) {
     try {
       const { type, record, recordId } = req.body
-      
       if (type == "ADD_RECORD") {
-        let data = {}
-        data.first_name = record.staffName.value
-        data.last_name = record.staffName.value
-        data.email = record.mail.value
-        data.password = "password"
-        data.date_of_birth = "1988-07-15 07:00:00+07"
-        data.active = true
+        const password = generatePassword.generate({
+          length: 12,
+          numbers: true,
+          symbols: true,
+          uppercase: true,
+          excludeSimilarCharacters: true
+        });
+        const data = {
+          email: record.mail.value,
+          password: password, // This will be hashed by the beforeCreate hook
+          first_name: record.staffName.value,
+          last_name: record.staffName.value,
+          date_of_birth: '1980-01-01',
+          department: record['部署'].value,
+          position: record.status.value,
+          photo: '',
+          active: true,
+          kintone_id: record['$id'].value
+        };
         const newStaff = await StaffService.createStaff(data);
-        console.log("//////////////////////////")
+        if (newStaff) {
+          EmailToStaff(newStaff.email, password, newStaff.first_name, newStaff.last_name)
+        }
         res.status(201).json(newStaff);
       } else {
         const staffId = req.params.id;
