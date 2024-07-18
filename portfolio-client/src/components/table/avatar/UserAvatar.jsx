@@ -24,6 +24,7 @@ const UserAvatar = ({ photo, name, studentId }) => {
             color="success"
             variant="outlined"
             size="small"
+            sx={{width:"100px"}}
           />
         ) : (
           ""

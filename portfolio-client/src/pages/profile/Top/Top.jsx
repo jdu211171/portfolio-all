@@ -20,6 +20,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
+import Deliverables from "../../../components/Deliverables/Deliverables";
+
 import styles from "./Top.module.css";
 
 const Top = () => {
@@ -224,7 +226,7 @@ const Top = () => {
       {/* 成果物 starts from here */}
       {subTabIndex === 1 && (
         <Box my={2}>
-          <Typography>成果物 content goes here.</Typography>
+          <Deliverables data={student.deliverables} />
         </Box>
       )}
       <Snackbar
