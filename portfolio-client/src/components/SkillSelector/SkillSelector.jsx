@@ -25,9 +25,8 @@ const SkillSelector = ({
   showAutocomplete,
   showHeaders
 }) => {
-  console.log(data)
-  const [jsonData, setJsonData] = useState({});
-  const [editJsonData, setEditJsonData] = useState({});
+  const [jsonData, setJsonData] = useState(data[keyName]);
+  const [editJsonData, setEditJsonData] = useState(editData[keyName]);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("初級");
 
