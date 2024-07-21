@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 
 import axios from "../../../utils/axiosUtils";
 import {
@@ -52,8 +52,11 @@ const Top = () => {
     }));
   };
 
+  const handleUpdateEditMode = () => {
+    setEditMode(true)
+  }
+
   const toggleEditMode = () => {
-    console.log();
     setEditMode(!editMode);
   };
 
@@ -62,20 +65,19 @@ const Top = () => {
       await axios.put(`/api/students/${studentId}`, editData);
       setStudent(editData);
       setEditMode(false);
-      showAlert('Changes saved successfully!', 'success');
+      showAlert("Changes saved successfully!", "success");
     } catch (error) {
-      console.error('Error saving student data:', error);
-      showAlert('Error saving changes.', 'error');
+      console.error("Error saving student data:", error);
+      showAlert("Error saving changes.", "error");
     }
   };
 
   const handleCancel = () => {
-    console.log();
-    setEditData(student)
+    setEditData(student);
     setEditMode(!editMode);
   };
 
-  const [subTabIndex, setSubTabIndex] = useState(0);
+  const [subTabIndex, setSubTabIndex] = useState(1);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
@@ -123,11 +125,21 @@ const Top = () => {
     <Box my={2} className={styles.buttonsContainer}>
       {editMode ? (
         <>
-          <Button onClick={handleSave} variant="contained" color="primary" size="small">
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            color="primary"
+            size="small"
+          >
             保存
           </Button>
 
-          <Button onClick={handleCancel} variant="outlined" color="error" size="small">
+          <Button
+            onClick={handleCancel}
+            variant="outlined"
+            color="error"
+            size="small"
+          >
             キャンセル
           </Button>
         </>
@@ -226,7 +238,16 @@ const Top = () => {
       {/* 成果物 starts from here */}
       {subTabIndex === 1 && (
         <Box my={2}>
-          <Deliverables data={student.deliverables} />
+          <Deliverables
+            data={student.deliverables}
+            editMode={editMode}
+            editData={editData.deliverables}
+            updateEditData={handleUpdateEditData}
+            showAutocomplete={false}
+            showHeaders={false}
+            keyName="deliverables"
+            updateEditMode={handleUpdateEditMode}
+          />
         </Box>
       )}
       <Snackbar

@@ -83,6 +83,46 @@
   background-color: #3e8e41;
 }
 
+.imageContainer {
+  display: flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.image {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32%;
+  min-width: 240px;
+  min-height: 240px;
+  padding: 30px;
+  background: linear-gradient(180deg, #d8faff 0%, #d6f9fe 12%, #88c6ce 100%);
+}
+
+.image img {
+  aspect-ratio: 1 / 1;
+  min-width: 160px;
+  min-height: 160px;
+}
+
+.addIconButton {
+  width: 40% !important;
+  height: 40% !important;
+}
+
+.removeIconButton {
+  position: absolute !important;
+  top: 0;
+  right: 0;
+}
+
+.addIconButton svg {
+  font-size: 80px;
+}
+
 @media (max-width: 768px) {
   .imageBox {
     padding: 40px;
