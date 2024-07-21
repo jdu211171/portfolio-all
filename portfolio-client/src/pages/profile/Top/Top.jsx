@@ -77,7 +77,7 @@ const Top = () => {
     setEditMode(!editMode);
   };
 
-  const [subTabIndex, setSubTabIndex] = useState(1);
+  const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
