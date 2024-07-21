@@ -35,6 +35,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   padding: 80px;
   background: linear-gradient(180deg, #d8faff 0%, #d6f9fe 12%, #88c6ce 100%);

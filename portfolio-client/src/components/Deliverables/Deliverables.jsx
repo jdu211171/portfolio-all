@@ -24,7 +24,7 @@ const Deliverables = ({
   const [activeDeliverable, setActiveDeliverable] = useState(0);
 
   useEffect(() => {
-    setNewData(editData)
+    setNewData(editData);
   }, [editData]);
   const handleChange = (key, value) => {
     const updatedData = newData.map((item, index) => {
@@ -124,7 +124,9 @@ const Deliverables = ({
                 />
               ) : (
                 <div className={styles.cell}>
-                  {newData[activeDeliverable]?.link}
+                  <a href={newData[activeDeliverable]?.link}>
+                    {newData[activeDeliverable]?.link}
+                  </a>
                 </div>
               )}
             </td>
@@ -141,7 +143,9 @@ const Deliverables = ({
                 />
               ) : (
                 <div className={styles.cell}>
-                  {newData[activeDeliverable]?.codeLink}
+                  <a href={newData[activeDeliverable]?.codeLink}>
+                    {newData[activeDeliverable]?.codeLink}
+                  </a>
                 </div>
               )}
             </td>
