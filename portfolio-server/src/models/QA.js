@@ -19,12 +19,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    question: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    answer: {
-      type: DataTypes.TEXT,
+    qa_list: {
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     studentId: {
