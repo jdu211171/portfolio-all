@@ -145,6 +145,7 @@ const EnhancedTable = ({ tableProps }) => {
                             ? style.hoverEffect
                             : style.default
                         }
+                        style={{ minWidth: header.minWidth }}
                       >
                         {header.type === "avatar" ? (
                           <UserAvatar

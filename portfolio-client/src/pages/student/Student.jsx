@@ -105,6 +105,7 @@ const Student = () => {
       numeric: true,
       disablePadding: false,
       label: "日本語能力試験",
+      minWidth: "160px",
     },
     {
       id: "ielts",
@@ -117,6 +118,7 @@ const Student = () => {
       numeric: true,
       disablePadding: false,
       label: "アクション",
+      minWidth: "160px",
     },
   ];
 
