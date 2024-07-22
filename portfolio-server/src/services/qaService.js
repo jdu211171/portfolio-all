@@ -39,7 +39,7 @@ class QAService {
       if (!qa) {
         throw new Error('QA entry not found');
       }
-      await qa.update(qaData);
+      await qa.update({ qa_list: qaData });
       return qa;
     } catch (error) {
       throw error;

@@ -39,18 +39,20 @@ module.exports = {
 
       const deliverables = [
         {
-          link: "link",
-          codeLink: "link",
-          imageLink: "link",
-          description: "description",
-          role: "role"
+          title: "title1",
+          link: "link1",
+          codeLink: "link1",
+          imageLink: "link1",
+          description: "description1",
+          role: ["role1","role2"]
         },
         {
-          link: "link",
-          codeLink: "link",
-          imageLink: "link",
-          description: "description",
-          role: "role"
+          title: "title1",
+          link: "link2",
+          codeLink: "link2",
+          imageLink: "link2",
+          description: "description2",
+          role: ["role1","role2"]
         }
       ];
 

@@ -51,7 +51,6 @@ const Stats = () => {
   };
 
   const toggleEditMode = () => {
-    console.log();
     setEditMode(!editMode);
   };
 
@@ -68,7 +67,6 @@ const Stats = () => {
   };
 
   const handleCancel = () => {
-    console.log();
     setEditData(student);
     setEditMode(!editMode);
   };
