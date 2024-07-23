@@ -1,5 +1,5 @@
 const apps = {
-    students: {
+    student_credits: {
       appId: "159",
       token: "Gg1TIV35o5MH3dZlT3CVTJRSbxKMMpxvIZgWtRCP"
     },

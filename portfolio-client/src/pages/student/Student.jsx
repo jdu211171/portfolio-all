@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
-import Table from '../../components/table/Table';
-import Filter from '../../components/filter/Filter';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Box } from "@mui/material";
+import Table from "../../components/table/Table";
+import Filter from "../../components/filter/Filter";
 
 const Student = () => {
   const [filterState, setFilterState] = useState({});
-  
+
   // Ensure filterProps have unique keys matching your database columns
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
+    {
+      key: "year",
+      label: "学年",
+      type: "radio",
+      options: ["1年生", "2年生", "3年生", "4年生"],
+      minWidth: "120px",
+    },
+    {
+      key: "programming_languages",
+      label: "プログラミング言語",
+      type: "checkbox",
+      options: ["JS", "Python", "Java", "SQL"],
+      minWidth: "160px",
+    },
     {
       key: "jlpt",
       label: "日本語能力試験",
@@ -21,42 +35,14 @@ const Student = () => {
       key: "ielts",
       label: "IELTS (英語力)",
       type: "radio",
-      options: ["6.5", "7", "7.5", "8", "8.5"],
+      options: ["6", "6.5", "7", "7.5", "8"],
       minWidth: "160px",
     },
     {
-      key: "year",
-      label: "学年",
-      type: "radio",
-      options: ["1年生", "2年生", "3年生", "4年生"],
-      minWidth: "160px",
-    },
-    {
-      key: "department",
-      label: "学部",
-      type: "radio",
-      options: ["ITエンジニア", "データサイエンス", "デザイナー", "AI"],
-      minWidth: "160px",
-    },
-    {
-      key: "it_skill_level",
-      label: "ITスキルレベル",
-      type: "radio",
-      options: ["上級", "中級", "初級"],
-      minWidth: "160px",
-    },
-    {
-      key: "programming_languages",
-      label: "プログラミング言語",
+      key: "jdu_japanese_certification",
+      label: "JDU日本語認定試験",
       type: "checkbox",
-      options: ["JS", "Python", "Java", "SQL"],
-      minWidth: "160px",
-    },
-    {
-      key: "grade",
-      label: "成績 (有無)",
-      type: "radio",
-      options: ["有り", "無し"],
+      options: ["N1", "N2", "N3", "N4", "N5"],
       minWidth: "160px",
     },
     {
@@ -67,14 +53,7 @@ const Student = () => {
       minWidth: "160px",
     },
     {
-      key: "special_qualification",
-      label: "特技 (有無)",
-      type: "radio",
-      options: ["有り", "無し"],
-      minWidth: "160px",
-    },
-    {
-      key: "affiliated_university",
+      key: "partner_university",
       label: "提携大学",
       type: "radio",
       options: [
@@ -86,8 +65,15 @@ const Student = () => {
       ],
       minWidth: "160px",
     },
+    {
+      key: "special_qualification",
+      label: "特技 (有無)",
+      type: "radio",
+      options: ["有り", "無し"],
+      minWidth: "160px",
+    },
   ];
-  
+
   const handleFilterChange = (newFilterState) => {
     setFilterState(newFilterState);
   };
@@ -98,49 +84,49 @@ const Student = () => {
     navigate(`profile/${studentId}`);
   };
 
-
   const headers = [
     {
-      id: 'name',
+      id: "name",
       numeric: false,
       disablePadding: true,
-      label: '学生',
-      type: 'avatar',
-      onClickAction: NavigateToProfile
+      label: "学生",
+      type: "avatar",
+      onClickAction: NavigateToProfile,
     },
     {
-      id: 'grade',
-      numeric: true,
+      id: "email",
+      numeric: false,
       disablePadding: false,
-      label: '学年',
-      type: 'status',
+      label: "メール",
+      type: "email",
     },
     {
-      id: 'department',
+      id: "jlpt",
       numeric: true,
       disablePadding: false,
-      label: '学部',
+      label: "日本語能力試験",
+      minWidth: "160px",
     },
     {
-      id: 'jlpt',
+      id: "ielts",
       numeric: true,
       disablePadding: false,
-      label: '日本語能力試験',
+      label: "IELTS",
     },
     {
-      id: 'action',
+      id: "action",
       numeric: true,
       disablePadding: false,
-      label: 'アクション',
+      label: "アクション",
+      minWidth: "160px",
     },
   ];
 
   const tableProps = {
     headers: headers,
-    dataLink: '/api/students',
+    dataLink: "/api/students",
     filter: filterState,
   };
-
 
   return (
     <div>

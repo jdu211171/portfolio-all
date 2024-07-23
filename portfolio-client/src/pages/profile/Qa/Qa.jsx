@@ -1,95 +1,109 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Snackbar, Alert, Tabs, Tab, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import axios from '../../../utils/axiosUtils';
-import styles from './Qa.module.css';
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
+import { useParams } from "react-router-dom";
+import styles from "./Qa.module.css";
+import QATextField from "../../../components/QATextField/QATextField";
+import QAAccordion from "../../../components/QAAccordion/QAAccordion";
+import qaList from "../../../utils/qaList";
+import {
+  Close,
+  School,
+  AutoStories,
+  Face,
+  WorkHistory,
+  TrendingUp,
+} from "@mui/icons-material";
+import axios from "../../../utils/axiosUtils";
+import { Box, Tabs, Tab, Button, Snackbar, Alert } from "@mui/material";
 
-const Qa = ({ student }) => {
+const QA = () => {
+  const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
   const { studentId } = useParams();
-  const [expanded, setExpanded] = useState(false);
+
+  const [studentQA, setStudentQA] = useState(null);
+  const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
-  const [qaData, setQaData] = useState([]);
-  const [editedQaData, setEditedQaData] = useState([]);
-  const [newQuestion, setNewQuestion] = useState('');
-  const [newAnswer, setNewAnswer] = useState('');
-  const [alert, setAlert] = useState({ open: false, message: '', severity: '' });
-  const [tabIndex, setTabIndex] = useState(0);
+  const [isFirstTime, setIsFirstTime] = useState(false);
 
   useEffect(() => {
-    const fetchQaData = async () => {
+    const fetchStudent = async () => {
       try {
-        const response = await axios.get(`/api/qa`);
-        const studentQaData = response.data.filter(qa => qa.studentId === parseInt(studentId, 10));
-        setQaData(studentQaData);
-        setEditedQaData(studentQaData);
+        const response = await axios.get(`/api/qa/student/${studentId}`);
+        setStudentQA(response.data);
+
+        if (response.data.length === 0) {
+          // Initialize editData based on qaList if response.data is empty
+          let tempData = {};
+          Object.entries(qaList.QAPage).forEach(([category, questions]) => {
+            tempData[category] = {};
+            Object.entries(questions).forEach(([key, question]) => {
+              tempData[category][key] = { question: question, answer: "" };
+            });
+          });
+          setEditData(tempData);
+          setIsFirstTime(true);
+        } else {
+          setEditData(response.data);
+        }
       } catch (error) {
-        showAlert('Error fetching QA data.', 'error');
+        console.error("Error fetching student data:", error);
       }
     };
 
-    fetchQaData();
+    fetchStudent();
   }, [studentId]);
 
-  const handleExpandChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleUpdate = (category, keyName, value) => {
+    setEditData((prevEditData) => {
+      const updatedEditData = { ...prevEditData };
+      if (updatedEditData[category]) {
+        updatedEditData[category] = {
+          ...updatedEditData[category],
+          [keyName]: {
+            ...updatedEditData[category][keyName],
+            answer: value,
+          },
+        };
+      }
+      return updatedEditData;
+    });
   };
 
-  const handleTabChange = (event, newIndex) => {
-    setTabIndex(newIndex);
+  const toggleEditMode = () => {
+    setEditMode((prev) => !prev);
   };
 
-  const handleEditClick = () => {
-    setEditMode(true);
-  };
-
-  const handleCancelClick = () => {
-    setEditMode(false);
-    setEditedQaData(qaData);
-  };
-
-  const handleSaveClick = async () => {
+  const handleSave = async () => {
     try {
-      const updatedQaData = await Promise.all(
-        editedQaData.map(async (qa) => {
-          const response = await axios.put(`/api/qa/${qa.id}`, qa);
-          return response.data;
-        })
-      );
-      setQaData(updatedQaData);
-      setEditedQaData(updatedQaData);
+      let res;
+      if (isFirstTime) {
+        res = await axios.post("/api/qa/", { studentId, data: editData });
+      } else {
+        res = await axios.put(`/api/qa/${studentId}`, { data: editData });
+      }
+      setStudentQA(res.data);
       setEditMode(false);
-      showAlert('Changes saved successfully!', 'success');
+      showAlert("Changes saved successfully!", "success");
     } catch (error) {
-      showAlert('Error saving changes.', 'error');
+      console.error("Error saving student data:", error);
+      showAlert("Error saving changes.", "error");
     }
   };
 
-  const handleChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedQaData = [...editedQaData];
-    updatedQaData[index] = { ...updatedQaData[index], [name]: value };
-    setEditedQaData(updatedQaData);
+  const handleCancel = () => {
+    setEditData(studentQA);
+    setEditMode(false);
   };
 
-  const handleAddNewQa = () => {
-    if (!newQuestion || !newAnswer) {
-      showAlert('Please fill in both the question and the answer.', 'warning');
-      return;
-    }
+  const [subTabIndex, setSubTabIndex] = useState(0);
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
 
-    const newQa = {
-      id: Date.now(), // Temporary ID
-      question: newQuestion,
-      answer: newAnswer,
-      studentId: parseInt(studentId, 10)
-    };
-
-    showAlert(`New QA added!\nQuestion: ${newQuestion}\nAnswer: ${newAnswer}`, 'success');
-    setQaData([...qaData, newQa]);
-    setEditedQaData([...editedQaData, newQa]);
-    setNewQuestion('');
-    setNewAnswer('');
+  const handleSubTabChange = (event, newIndex) => {
+    setSubTabIndex(newIndex);
   };
 
   const showAlert = (message, severity) => {
@@ -97,112 +111,116 @@ const Qa = ({ student }) => {
   };
 
   const handleCloseAlert = () => {
-    setAlert({ open: false, message: '', severity: '' });
+    setAlert({ open: false, message: "", severity: "" });
   };
 
-  return (
-    <Box>
-      <Tabs value={tabIndex} onChange={handleTabChange}>
-        <Tab label="学生成績" />
-        <Tab label="専門知識" />
-        <Tab label="個性" />
-        <Tab label="実務経験" />
-        <Tab label="キャリア目標" />
-      </Tabs>
-      {tabIndex === 0 && (
-        <Box>
-          <Box mt={2}>
-            {!editMode && (
-              <Button onClick={handleEditClick} variant="contained" color="primary">
-                編集
-              </Button>
-            )}
-          </Box>
-          <Box mt={2}>
-            {editMode ? (
-              <>
-                <Box mb={2}>
-                  <Button onClick={handleSaveClick} variant="contained" color="primary">
-                    保存
-                  </Button>
-                  <Button onClick={handleCancelClick} variant="outlined" sx={{ ml: 2 }}>
-                    キャンセル
-                  </Button>
-                </Box>
-                {editedQaData.map((qa, index) => (
-                  <Accordion key={qa.id} expanded={expanded === qa.id} onChange={handleExpandChange(qa.id)}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>{qa.question}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <TextField
-                        label="Question"
-                        name="question"
-                        value={qa.question}
-                        onChange={(event) => handleChange(index, event)}
-                        fullWidth
-                        margin="normal"
-                      />
-                      <TextField
-                        label="Answer"
-                        name="answer"
-                        value={qa.answer}
-                        onChange={(event) => handleChange(index, event)}
-                        fullWidth
-                        multiline
-                        rows={4}
-                        margin="normal"
-                      />
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-                <Box mt={2}>
-                  <Typography variant="h6">Add New QA</Typography>
-                  <TextField
-                    label="New Question"
-                    value={newQuestion}
-                    onChange={(e) => setNewQuestion(e.target.value)}
-                    fullWidth
-                    margin="normal"
-                  />
-                  <TextField
-                    label="New Answer"
-                    value={newAnswer}
-                    onChange={(e) => setNewAnswer(e.target.value)}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    margin="normal"
-                  />
-                  <Button onClick={handleAddNewQa} variant="contained" color="primary">
-                    Add QA
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              <>
-                {qaData.map((qa) => (
-                  <Accordion key={qa.id} expanded={expanded === qa.id} onChange={handleExpandChange(qa.id)}>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                      <Typography>{qa.question}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <Typography>{qa.answer}</Typography>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </>
-            )}
-          </Box>
-        </Box>
+  const getCategoryData = (index) => {
+    const category = labels[index];
+    return editData[category] || {}; // Ensure we return an empty object if category not found
+  };
+
+  if (!studentQA) {
+    return <div>Loading...</div>;
+  }
+
+  const portalContent = (
+    <Box my={2} className={styles.buttonsContainer}>
+      {editMode ? (
+        <>
+          <Button
+            onClick={handleSave}
+            variant="contained"
+            color="primary"
+            size="small"
+          >
+            保存
+          </Button>
+
+          <Button
+            onClick={handleCancel}
+            variant="outlined"
+            color="error"
+            size="small"
+          >
+            キャンセル
+          </Button>
+        </>
+      ) : (
+        <Button
+          onClick={toggleEditMode}
+          variant="contained"
+          color="primary"
+          size="small"
+        >
+          プロフィールを編集
+        </Button>
       )}
-      <Snackbar 
-        open={alert.open} 
-        autoHideDuration={6000} 
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+    </Box>
+  );
+
+  return (
+    <Box my={2}>
+      <>
+        {ReactDOM.createPortal(
+          portalContent,
+          document.getElementById("saveButton")
+        )}
+      </>
+
+      <Tabs
+        className={styles.Tabs}
+        value={subTabIndex}
+        onChange={handleSubTabChange}
+        sx={{
+          "& .MuiTabs-indicator": {
+            display: "none",
+          },
+        }}
       >
-        <Alert onClose={handleCloseAlert} severity={alert.severity} sx={{ width: '100%' }}>
+        <Tab icon={<School />} iconPosition="bottom" label="学生成績" />
+        <Tab icon={<AutoStories />} iconPosition="bottom" label="専門知識" />
+        <Tab icon={<Face />} iconPosition="bottom" label="個性" />
+        <Tab icon={<WorkHistory />} iconPosition="bottom" label="実務経験" />
+        <Tab icon={<TrendingUp />} iconPosition="bottom" label="キャリア目標" />
+      </Tabs>
+
+      <Box my={2}>
+        {editMode &&
+          Object.entries(getCategoryData(subTabIndex)).map(
+            ([key, { question, answer }]) => (
+              <QATextField
+                key={key}
+                data={studentQA} // Pass any relevant data here if needed
+                editData={editData}
+                category={labels[subTabIndex]} // Use labels to get the current category
+                question={question}
+                keyName={key}
+                updateEditData={handleUpdate}
+              />
+            )
+          )}
+      </Box>
+
+      <Box my={2}>
+        {!editMode &&
+          Object.entries(getCategoryData(subTabIndex)).map(
+            ([key, { question, answer }]) => (
+              <QAAccordion key={key} question={question} answer={answer} />
+            )
+          )}
+      </Box>
+
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={alert.severity}
+          sx={{ width: "100%" }}
+        >
           {alert.message}
         </Alert>
       </Snackbar>
@@ -210,4 +228,4 @@ const Qa = ({ student }) => {
   );
 };
 
-export default Qa;
+export default QA;

@@ -33,6 +33,11 @@ const Stats = () => {
     const fetchStudent = async () => {
       try {
         const response = await axios.get(`/api/students/${studentId}`);
+        const kintoneData = await axios.post(`/api/kintone/getby`, {
+          table: "student_credits",
+          col: "studentID2",
+          val: response.data.student_id,
+        });
         await setStudent(response.data);
         setEditData(response.data);
       } catch (error) {
@@ -48,29 +53,6 @@ const Stats = () => {
       ...prevEditData,
       [key]: value,
     }));
-  };
-
-  const toggleEditMode = () => {
-    console.log();
-    setEditMode(!editMode);
-  };
-
-  const handleSave = async () => {
-    try {
-      await axios.put(`/api/students/${studentId}`, editData);
-      setStudent(editData);
-      setEditMode(false);
-      showAlert("Changes saved successfully!", "success");
-    } catch (error) {
-      console.error("Error saving student data:", error);
-      showAlert("Error saving changes.", "error");
-    }
-  };
-
-  const handleCancel = () => {
-    console.log();
-    setEditData(student);
-    setEditMode(!editMode);
   };
 
   const [subTabIndex, setSubTabIndex] = useState(0);

@@ -11,11 +11,9 @@ module.exports = {
       category: {
         type: Sequelize.STRING
       },
-      question: {
-        type: Sequelize.TEXT
-      },
-      answer: {
-        type: Sequelize.TEXT
+      qa_list: {
+        type: Sequelize.JSONB,
+        allowNull: true,
       },
       studentId: {  // This field references the Users table
         type: Sequelize.INTEGER,

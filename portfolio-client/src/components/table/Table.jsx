@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import axios from "../../utils/axiosUtils";
-import style from "./Table.module.css"
+import style from "./Table.module.css";
 
 import UserAvatar from "./avatar/UserAvatar";
 import {
@@ -15,7 +15,7 @@ import {
   TableRow,
   TableSortLabel,
   Chip,
-  LinearProgress
+  LinearProgress,
 } from "@mui/material";
 
 import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
@@ -62,7 +62,6 @@ const EnhancedTable = ({ tableProps }) => {
       setSelected([]);
     }
   };
-
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -146,6 +145,7 @@ const EnhancedTable = ({ tableProps }) => {
                             ? style.hoverEffect
                             : style.default
                         }
+                        style={{ minWidth: header.minWidth }}
                       >
                         {header.type === "avatar" ? (
                           <UserAvatar
@@ -158,6 +158,10 @@ const EnhancedTable = ({ tableProps }) => {
                             label={row[header.id] ? "○" : "×"}
                             color={row[header.id] ? "primary" : "default"}
                           />
+                        ) : header.type === "email" ? (
+                          <a href={`mailto:${row[header.id]}`}>
+                            {row[header.id]}
+                          </a>
                         ) : (
                           row[header.id]
                         )}
