@@ -1,61 +1,145 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 import axios from "../../../utils/axiosUtils";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Typography,
-  Button,
-  Snackbar,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import certificateColors from "../../../utils/certificates";
+import { Box, Tabs, Tab, Snackbar, Alert } from "@mui/material";
 import CreditsProgressBar from "../../../components/CreditsProgressBar/CreditsProgressBar";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import styles from "./Stats.module.css";
 
 const Stats = () => {
   const { studentId } = useParams();
-
   const [student, setStudent] = useState(null);
   const [kintoneData, setKintoneData] = useState({});
   const [editData, setEditData] = useState({});
-  const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get(`/api/students/${studentId}`);
-        const kintone = await axios.post(`/api/kintone/getby`, {
-          table: "student_credits",
-          col: "studentId",
-          val: response.data.student_id,
-        });
-        if (kintone.data.records.length != 0) {
-          await setKintoneData(kintone.data.records[0]);
-          console.log(kintoneData, kintone.data.records[0]);
-        }
-        await setStudent(response.data);
-      } catch (error) {
-        showAlert("Error fetching student data", "error");
-      }
-    };
-
-    fetchStudent();
-  }, [studentId]);
-
+  const [certificates, setCertificates] = useState({});
   const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
     severity: "",
   });
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const studentResponse = await axios.get(`/api/students/${studentId}`);
+        const studentData = studentResponse.data;
+
+        const kintoneResponse = await axios.post(`/api/kintone/getby`, {
+          table: "student_credits",
+          col: "studentId",
+          val: studentData.student_id,
+        });
+
+        if (kintoneResponse.data.records.length > 0) {
+          setKintoneData(kintoneResponse.data.records[0]);
+        }
+
+        const fetchCertificates = async () => {
+          const requests = [
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_ielts",
+              col: "studentID",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_jlpt",
+              col: "studentID2",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_jdu_jlpt",
+              col: "studentID2",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_benron",
+              col: "studentID2",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_it_contest",
+              col: "studentID",
+              val: studentData.student_id,
+            }),
+          ];
+
+          const [
+            ieltsResponse,
+            jlptResponse,
+            jduJlptResponse,
+            benronResponse,
+            itContestResponse,
+          ] = await Promise.all(requests);
+
+          setCertificateData("main", "JLPT", jlptResponse.data.records);
+          setCertificateData(
+            "main",
+            "JDU日本語認定試験",
+            jduJlptResponse.data.records
+          );
+          setCertificateData("main", "IELTS", ieltsResponse.data.records);
+          setCertificateData(
+            "other",
+            "日本語弁論大会学内",
+            benronResponse.data.records
+          );
+          setCertificateData(
+            "other",
+            "ITコンテスト学内",
+            itContestResponse.data.records
+          );
+
+          setStudent(studentData);
+        };
+
+        await fetchCertificates();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchStudentData();
+  }, [studentId]);
+
+  const setCertificateData = (key, type, data) => {
+    // Create a temporary array to hold the processed data
+    let temp = [];
+
+    // Process each item in the data array
+    if (key == "main") {
+      data.forEach((x) => {
+        let obj = {
+          name: type == "IELTS" ? x.awards.value : x.jlptLevel.value,
+          date: x.date.value.slice(0, 7),
+          color:
+            certificateColors[type][
+              type == "IELTS" ? x.awards.value : x.jlptLevel.value
+            ],
+        };
+        temp.push(obj);
+      });
+    } else {
+      data.forEach((x) => {
+        let obj = {
+          name: x.level.value,
+          date: x.date.value.slice(0, 7),
+          color: certificateColors[key][x.level.value],
+        };
+        temp.push(obj);
+      });
+    }
+
+    // Update the certificates state immutably
+    setCertificates((prevCertificates) => ({
+      ...prevCertificates,
+      [key]: {
+        ...prevCertificates[key],
+        [type]: temp,
+      },
+    }));
+  };
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
@@ -115,7 +199,6 @@ const Stats = () => {
           />
         </Box>
       )}
-      {/* 成果物 starts from here */}
       {subTabIndex === 1 && (
         <Box my={2}>
           TOU
@@ -126,21 +209,19 @@ const Stats = () => {
           />
         </Box>
       )}
-
       <Box my={2}>
         <SkillSelector
-          title="ITスキル"
+          title="資格"
           headers={{
-            上級: "3年間以上",
-            中級: "1年間〜1年間半",
-            初級: "基礎",
+            JLPT: "",
+            JDU日本語認定試験: "",
+            IELTS: "",
           }}
-          data={student}
+          data={certificates}
           editData={editData}
-          editMode={editMode}
           showAutocomplete={true}
-          showHeaders={true}
-          keyName="it_skills"
+          showHeaders={false}
+          keyName="main"
         />
         <SkillSelector
           title="その他"
@@ -149,12 +230,11 @@ const Stats = () => {
             中級: "1年間〜1年間半",
             初級: "基礎",
           }}
-          data={student}
-          editMode={editMode}
+          data={certificates}
           editData={editData}
           showAutocomplete={false}
           showHeaders={false}
-          keyName="skills"
+          keyName="other"
         />
       </Box>
       <Snackbar
