@@ -26,6 +26,7 @@ const Deliverables = ({
   useEffect(() => {
     setNewData(editData);
   }, [editData]);
+
   const handleChange = (key, value) => {
     const updatedData = newData.map((item, index) => {
       if (index === activeDeliverable) {
@@ -33,11 +34,13 @@ const Deliverables = ({
       }
       return item;
     });
+    setNewData(updatedData);
     updateEditData(keyName, updatedData);
   };
 
-  const addNewDeliverable = async () => {
+  const addNewDeliverable = () => {
     const deliverable = {
+      title: "",
       link: "",
       role: [],
       codeLink: "",
@@ -45,31 +48,36 @@ const Deliverables = ({
       description: "",
     };
     const updatedData = [...newData, deliverable];
+    setNewData(updatedData);
     updateEditData(keyName, updatedData);
     updateEditMode();
     setActiveDeliverable(updatedData.length - 1);
     setTimeout(() => {
-      textFieldRef.current.focus();
+      textFieldRef.current?.focus();
     }, 0);
   };
 
-  const deleteDeliverable = async (index) => {
-    let temp = newData.filter((_, i) => i !== index);
-    updateEditData(keyName, temp);
+  const deleteDeliverable = (index) => {
+    const updatedData = newData.filter((_, i) => i !== index);
+    setNewData(updatedData);
+    updateEditData(keyName, updatedData);
+    if (activeDeliverable >= updatedData.length) {
+      setActiveDeliverable(updatedData.length - 1);
+    }
   };
 
-  const handleChangeActive = (n) => {
-    setActiveDeliverable(n);
+  const handleChangeActive = (index) => {
+    setActiveDeliverable(index);
   };
 
   const Controls = () => {
     const { zoomIn, zoomOut, resetTransform } = useControls();
     return (
       <div className={styles.zoomContainer}>
-        <button className={styles.zoomButtonR} onClick={() => zoomIn()}>
+        <button className={styles.zoomButtonR} onClick={zoomIn}>
           +
         </button>
-        <button className={styles.resetButton} onClick={() => resetTransform()}>
+        <button className={styles.resetButton} onClick={resetTransform}>
           <svg
             width="16"
             height="16"
@@ -83,7 +91,7 @@ const Deliverables = ({
             />
           </svg>
         </button>
-        <button className={styles.zoomButtonL} onClick={() => zoomOut()}>
+        <button className={styles.zoomButtonL} onClick={zoomOut}>
           -
         </button>
       </div>
@@ -101,7 +109,7 @@ const Deliverables = ({
                 <MuiTextField
                   inputRef={textFieldRef}
                   value={newData[activeDeliverable]?.title || ""}
-                  onChange={(e) => handleChange("link", e.target.value)}
+                  onChange={(e) => handleChange("title", e.target.value)}
                   fullWidth
                   multiline
                 />
@@ -124,7 +132,11 @@ const Deliverables = ({
                 />
               ) : (
                 <div className={styles.cell}>
-                  <a href={newData[activeDeliverable]?.link}>
+                  <a
+                    href={newData[activeDeliverable]?.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {newData[activeDeliverable]?.link}
                   </a>
                 </div>
@@ -143,7 +155,11 @@ const Deliverables = ({
                 />
               ) : (
                 <div className={styles.cell}>
-                  <a href={newData[activeDeliverable]?.codeLink}>
+                  <a
+                    href={newData[activeDeliverable]?.codeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {newData[activeDeliverable]?.codeLink}
                   </a>
                 </div>
@@ -194,12 +210,9 @@ const Deliverables = ({
                 className={styles.image}
               >
                 <img
-                  src={`https://picsum.photos/300/200?random=${Math.random(
-                    100
-                  )}`}
-                  alt={newData[activeDeliverable]?.imageLink}
+                  src={`https://picsum.photos/300/200?random=${index}`}
+                  alt={pr.imageLink}
                 />
-
                 {editMode && (
                   <IconButton
                     onClick={(e) => {
@@ -215,7 +228,6 @@ const Deliverables = ({
               </div>
             )
         )}
-
         {editMode && (
           <div className={styles.image}>
             <IconButton
