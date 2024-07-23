@@ -16,8 +16,6 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import Gallery from "../../../components/Gallery";
-import TextField from "../../../components/TextField/TextField";
 import CreditsProgressBar from "../../../components/CreditsProgressBar/CreditsProgressBar";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import styles from "./Stats.module.css";
@@ -26,6 +24,7 @@ const Stats = () => {
   const { studentId } = useParams();
 
   const [student, setStudent] = useState(null);
+  const [kintoneData, setKintoneData] = useState({});
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
 
@@ -33,13 +32,16 @@ const Stats = () => {
     const fetchStudent = async () => {
       try {
         const response = await axios.get(`/api/students/${studentId}`);
-        const kintoneData = await axios.post(`/api/kintone/getby`, {
+        const kintone = await axios.post(`/api/kintone/getby`, {
           table: "student_credits",
-          col: "studentID2",
+          col: "studentId",
           val: response.data.student_id,
         });
+        if (kintone.data.records.length != 0) {
+          await setKintoneData(kintone.data.records[0]);
+          console.log(kintoneData, kintone.data.records[0]);
+        }
         await setStudent(response.data);
-        setEditData(response.data);
       } catch (error) {
         showAlert("Error fetching student data", "error");
       }
@@ -48,21 +50,12 @@ const Stats = () => {
     fetchStudent();
   }, [studentId]);
 
-  const handleUpdateEditData = (key, value) => {
-    setEditData((prevEditData) => ({
-      ...prevEditData,
-      [key]: value,
-    }));
-  };
-
   const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
     severity: "",
   });
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [galleryUrls, setGalleryUrls] = useState([]);
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
@@ -75,25 +68,6 @@ const Stats = () => {
   const handleCloseAlert = () => {
     setAlert({ open: false, message: "", severity: "" });
   };
-
-  const handleGalleryOpen = () => {
-    setGalleryOpen(true);
-  };
-
-  const handleGalleryClose = () => {
-    setGalleryOpen(false);
-  };
-
-  const generateGalleryUrls = (numImages) => {
-    return Array.from(
-      { length: numImages },
-      (_, index) => `https://picsum.photos/300/200?random=${index + 1}`
-    );
-  };
-
-  useEffect(() => {
-    setGalleryUrls(generateGalleryUrls(8));
-  }, []);
 
   if (!student) {
     return <div>Loading...</div>;
@@ -125,7 +99,7 @@ const Stats = () => {
         onChange={handleSubTabChange}
       >
         <Tab label="JDU" />
-        <Tab label="東京通信大学" />
+        <Tab label={student.partner_university} />
       </Tabs>
       {subTabIndex === 0 && (
         <Box my={2}>
@@ -133,8 +107,11 @@ const Stats = () => {
           <CreditsProgressBar
             breakpoints={breakpoints}
             unit="単位"
-            credits={40}
-            color="green"
+            credits={
+              Number(kintoneData.businessSkillsCredits.value) +
+              Number(kintoneData.japaneseEmploymentCredits.value)
+            }
+            semester={kintoneData.semester.value}
           />
         </Box>
       )}
@@ -145,8 +122,7 @@ const Stats = () => {
           <CreditsProgressBar
             breakpoints={breakpoints2}
             unit="単位"
-            credits={50}
-            color="red"
+            credits={kintoneData.partnerUniversityCredits.value}
           />
         </Box>
       )}
@@ -162,7 +138,6 @@ const Stats = () => {
           data={student}
           editData={editData}
           editMode={editMode}
-          updateEditData={handleUpdateEditData}
           showAutocomplete={true}
           showHeaders={true}
           keyName="it_skills"
@@ -177,7 +152,6 @@ const Stats = () => {
           data={student}
           editMode={editMode}
           editData={editData}
-          updateEditData={handleUpdateEditData}
           showAutocomplete={false}
           showHeaders={false}
           keyName="skills"
@@ -197,40 +171,6 @@ const Stats = () => {
           {alert.message}
         </Alert>
       </Snackbar>
-      <Dialog
-        open={galleryOpen}
-        onClose={handleGalleryClose}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle>
-          Gallery
-          <IconButton
-            aria-label="close"
-            onClick={handleGalleryClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Box className={styles.fullGalleryContainer}>
-            {galleryUrls.map((url, index) => (
-              <img
-                key={index}
-                src={url}
-                alt={`Gallery ${index}`}
-                className={styles.fullGalleryImage}
-              />
-            ))}
-          </Box>
-        </DialogContent>
-      </Dialog>
     </Box>
   );
 };
