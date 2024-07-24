@@ -5,7 +5,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = {
   development: {
     dialect: 'postgres',
-    dialectModule: pg,
+    dialectModule: require('pg'),
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,
     username: process.env.DB_USER || 'botirovs03',
@@ -15,7 +15,7 @@ const config = {
   },
   production: {
     dialect: 'postgres',
-    dialectModule: pg,
+    dialectModule: require('pg'),
     host: process.env.DB_HOST_PROD || 'localhost',
     port: process.env.DB_PORT_PROD || 5432,
     username: process.env.DB_USER_PROD || 'your_prod_user',
