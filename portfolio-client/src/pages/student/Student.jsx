@@ -18,7 +18,7 @@ const Student = () => {
       minWidth: "120px",
     },
     {
-      key: "programming_languages",
+      key: "it_skills",
       label: "プログラミング言語",
       type: "checkbox",
       options: ["JS", "Python", "Java", "SQL"],

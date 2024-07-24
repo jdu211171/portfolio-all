@@ -58,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
     gallery: {
       type: DataTypes.JSONB,
       allowNull: true,
-    },    
+    },
     skills: {
       type: DataTypes.JSONB,
       allowNull: true,
@@ -70,6 +70,11 @@ module.exports = (sequelize, DataTypes) => {
     other_information: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    semester: {
+      type: DataTypes.ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),
+      allowNull: false,
+      defaultValue: '1',
     },
     partner_university: {
       type: DataTypes.STRING,

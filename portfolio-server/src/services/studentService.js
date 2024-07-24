@@ -41,6 +41,15 @@ class StudentService {
                 return { [column]: { [Op.iLike]: `%${filter[key]}%` } };
               }
             });
+          } else if (key === 'skills' || key === "it_skills") {
+            // Search across all searchable columns
+            query[Op.or] = {
+              [Op.or]: [
+                { [key]: { '上級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                { [key]: { '中級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                { [key]: { '初級::text': { [Op.iLike]: `%${filter[key]}%` } } }
+              ]
+            }
           } else if (Array.isArray(filter[key])) {
             // If filter value is an array, use $in operator
             query[key] = { [Op.in]: filter[key] };
