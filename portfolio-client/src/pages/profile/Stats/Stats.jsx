@@ -192,10 +192,12 @@ const Stats = () => {
             breakpoints={breakpoints}
             unit="単位"
             credits={
-              Number(kintoneData.businessSkillsCredits.value) +
-              Number(kintoneData.japaneseEmploymentCredits.value)
+              JSON.stringify(kintoneData) !== '{}'
+                ? (Number(kintoneData.businessSkillsCredits?.value) +
+                  Number(kintoneData.japaneseEmploymentCredits?.value))
+                : 0
             }
-            semester={kintoneData.semester.value}
+            semester={kintoneData ? kintoneData.semester?.value : 0}
           />
         </Box>
       )}
