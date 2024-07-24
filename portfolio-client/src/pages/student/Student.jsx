@@ -13,7 +13,7 @@ const Student = () => {
     {
       key: "year",
       label: "学年",
-      type: "radio",
+      type: "checkbox",
       options: ["1年生", "2年生", "3年生", "4年生"],
       minWidth: "120px",
     },
@@ -34,7 +34,7 @@ const Student = () => {
     {
       key: "ielts",
       label: "IELTS (英語力)",
-      type: "radio",
+      type: "checkbox",
       options: ["6", "6.5", "7", "7.5", "8"],
       minWidth: "160px",
     },
@@ -48,14 +48,14 @@ const Student = () => {
     {
       key: "credits",
       label: "単位数",
-      type: "radio",
+      type: "checkbox",
       options: ["20単位内", "40単位内", "60単位内", "80単位内", "100単位以上"],
       minWidth: "160px",
     },
     {
       key: "partner_university",
       label: "提携大学",
-      type: "radio",
+      type: "checkbox",
       options: [
         "東京通信大学",
         "産能短期大学",

@@ -44,3 +44,11 @@
   height: 0vh;
   overflow: hidden;
 }
+
+.clear {
+  color: #777;
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+}

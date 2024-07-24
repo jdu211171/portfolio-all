@@ -106,6 +106,21 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
     handleClick();
   };
 
+  const handleClear = () => {
+    // Reset local filter state to initial state (or empty state)
+    const clearedFilterState = fields.reduce((acc, field) => {
+      if (field.type === "checkbox") {
+        acc[field.key] = []; // Reset checkbox arrays to empty
+      } else {
+        acc[field.key] = ""; // Reset other fields to empty strings
+      }
+      return acc;
+    }, {});
+
+    setLocalFilterState(clearedFilterState); // Update local state
+    onFilterChange(clearedFilterState); // Notify parent component with cleared filters
+  };
+
   const handleClick = (onSearch = false) => {
     if (!open && onSearch) {
       setOpen(true);
@@ -163,7 +178,10 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
           </FormControl>
         </Grid>
       </Grid>
-      <Grid item xs={12}>
+      <Grid item xs={12} style={{ position: "relative" }}>
+        <div className={style.clear} onClick={handleClear}>
+          clear
+        </div>
         <IconButton
           onClick={handleClick}
           style={{ width: "100%", height: "5px", padding: "0 10px" }}
@@ -172,7 +190,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
         </IconButton>
       </Grid>
       <Collapse in={collapse} timeout={300}>
-        <Grid container spacing={1} className={style.filterFields}>
+        <Grid my={1} container spacing={1} className={style.filterFields}>
           {fields.map((field, index) => renderField(field, index))}
         </Grid>
       </Collapse>
