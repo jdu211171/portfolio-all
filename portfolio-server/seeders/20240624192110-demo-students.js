@@ -78,7 +78,7 @@ module.exports = {
         other_information: faker.lorem.paragraph(),
         semester: faker.datatype.number({ min: 1, max: 9 }).toString(),
         partner_university: faker.company.companyName(),
-        partner_university_credits: faker.datatype.number({ min: 0, max: 100 }).toString(),
+        partner_university_credits: faker.datatype.number({ min: 0, max: 124 }),
         deliverables: JSON.stringify(deliverables),
         jlpt: jlpt,
         ielts: faker.random.word(),
