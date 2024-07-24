@@ -17,6 +17,19 @@ class StudentService {
   // Service method to retrieve all students
   static async getAllStudents(filter) {
     try {
+      const semesterMapping = {
+        '1年生': ['1', '2'],
+        '2年生': ['3', '4'],
+        '3年生': ['5', '6'],
+        '4年生': ['7', '8', '9'],
+      }
+      const getSemesterNumbers = (term) => {
+        return semesterMapping[term] || []; // Return an empty array if term is not found in the mapping
+      };
+      if (filter.semester) {
+        filter.semester = filter.semester.flatMap(term => getSemesterNumbers(term));
+      }
+      
       let query = {}; // Initialize an empty query object
       const searchableColumns = ['email', 'first_name', 'last_name', 'self_introduction', 'hobbies', 'skills', 'it_skills', 'jlpt']; // Example list of searchable columns
 
@@ -26,9 +39,30 @@ class StudentService {
           // Handle different types of filter values
           if (key === 'search') {
             // Search across all searchable columns
-            query[Op.or] = searchableColumns.map(column => ({
-              [column]: { [Op.iLike]: `%${filter[key]}%` } // Use Op.iLike for case insensitive search
-            }));
+            query[Op.or] = searchableColumns.map(column => {
+              if (['skills', 'it_skills'].includes(column)) {
+                // Handle JSONB fields specifically
+                return {
+                  [Op.or]: [
+                    { [column]: { '上級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                    { [column]: { '中級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                    { [column]: { '初級::text': { [Op.iLike]: `%${filter[key]}%` } } }
+                  ]
+                };
+              } else {
+                // Use Op.iLike for case insensitive search on other columns
+                return { [column]: { [Op.iLike]: `%${filter[key]}%` } };
+              }
+            });
+          } else if (key === 'skills' || key === "it_skills") {
+            // Search across all searchable columns
+            query[Op.or] = {
+              [Op.or]: [
+                { [key]: { '上級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                { [key]: { '中級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                { [key]: { '初級::text': { [Op.iLike]: `%${filter[key]}%` } } }
+              ]
+            }
           } else if (Array.isArray(filter[key])) {
             // If filter value is an array, use $in operator
             query[key] = { [Op.in]: filter[key] };
@@ -41,7 +75,7 @@ class StudentService {
           }
         }
       });
-
+      console.dir(query, { depth: null, symbols: true })
       // Execute the query to fetch students
       const students = await Student.findAll({
         where: query,

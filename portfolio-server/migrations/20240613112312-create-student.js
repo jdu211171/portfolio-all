@@ -65,9 +65,19 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      semester: {
+        type: Sequelize.ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),
+        allowNull: false,
+        defaultValue: '1', // Note that the default value should be a string to match ENUM options
+      },
       partner_university: {
         type: Sequelize.STRING,
         allowNull: true,
+      },
+      partner_university_credits: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
       },
       deliverables: {
         type: Sequelize.JSONB,

@@ -44,7 +44,7 @@ module.exports = {
           codeLink: "link1",
           imageLink: "link1",
           description: "description1",
-          role: ["role1","role2"]
+          role: ["role1", "role2"]
         },
         {
           title: "title1",
@@ -52,7 +52,7 @@ module.exports = {
           codeLink: "link2",
           imageLink: "link2",
           description: "description2",
-          role: ["role1","role2"]
+          role: ["role1", "role2"]
         }
       ];
 
@@ -76,7 +76,9 @@ module.exports = {
         skills: JSON.stringify(skills), // Store as JSON string in seed
         it_skills: JSON.stringify(itSkills), // Store as JSON string in seed
         other_information: faker.lorem.paragraph(),
+        semester: faker.datatype.number({ min: 1, max: 9 }).toString(),
         partner_university: faker.company.companyName(),
+        partner_university_credits: faker.datatype.number({ min: 0, max: 124 }),
         deliverables: JSON.stringify(deliverables),
         jlpt: jlpt,
         ielts: faker.random.word(),

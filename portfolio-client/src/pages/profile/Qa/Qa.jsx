@@ -6,7 +6,6 @@ import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
 import qaList from "../../../utils/qaList";
 import {
-  Close,
   School,
   AutoStories,
   Face,
@@ -31,7 +30,7 @@ const QA = () => {
         const response = await axios.get(`/api/qa/student/${studentId}`);
         setStudentQA(response.data);
 
-        if (response.data.length === 0) {
+        if (Object.keys(response.data.idList).length === 0) {
           // Initialize editData based on qaList if response.data is empty
           let tempData = {};
           Object.entries(qaList.QAPage).forEach(([category, questions]) => {

@@ -10,12 +10,14 @@ import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg"
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 import { ReactComponent as LogOutIcon } from "../../assets/icons/logOut.svg";
 
-import logo from '/src/assets/logo.png';
+import logo from "/src/assets/logo.png";
 import style from "./Layout.module.css";
 
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [smallScreen, setSmallScreen] = useState(false);
   const handleResize = () => {
+    setSmallScreen(window.innerWidth > 768);
     setIsMenuOpen(window.innerWidth > 768);
   };
 
@@ -40,7 +42,7 @@ const Layout = () => {
         <div className={style.left}>
           <div className={style.logo}>
             <div>
-             <img src={logo} alt="Logo" />
+              <img src={logo} alt="Logo" />
             </div>
             <div>JDU Portfolio</div>
           </div>
@@ -129,6 +131,7 @@ const Layout = () => {
             </ul>
           </nav>
         </header>
+        {isMenuOpen && !smallScreen && <div className={style.overlay} onClick={(e) => {e.preventDefault(); setIsMenuOpen(false)}} />}
         <main className={style.right} id={style.main}>
           <Outlet />
         </main>

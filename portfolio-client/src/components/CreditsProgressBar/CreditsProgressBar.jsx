@@ -1,7 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from "./CreditsProgressBar.module.css"
 
-const CreditsProgressBar = ({ breakpoints, unit, credits, color }) => {
+const CreditsProgressBar = ({ breakpoints, unit, credits, semester}) => {
+    const [color, setColor] = useState("red");
+    if (124/9 * Number(semester) < credits) {
+      setColor("green")
+    }
     const totalPoints = breakpoints[breakpoints.length - 1].point;
     const creditPercentage = (credits / totalPoints) * 100;
 
