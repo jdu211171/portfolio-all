@@ -74,6 +74,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      partner_university_credits: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       deliverables: {
         type: Sequelize.JSONB,
         allowNull: true,

@@ -17,6 +17,19 @@ class StudentService {
   // Service method to retrieve all students
   static async getAllStudents(filter) {
     try {
+      const semesterMapping = {
+        '1年生': ['1', '2'],
+        '2年生': ['3', '4'],
+        '3年生': ['5', '6'],
+        '4年生': ['7', '8', '9'],
+      }
+      const getSemesterNumbers = (term) => {
+        return semesterMapping[term] || []; // Return an empty array if term is not found in the mapping
+      };
+      if (filter.semester) {
+        filter.semester = filter.semester.flatMap(term => getSemesterNumbers(term));
+      }
+      
       let query = {}; // Initialize an empty query object
       const searchableColumns = ['email', 'first_name', 'last_name', 'self_introduction', 'hobbies', 'skills', 'it_skills', 'jlpt']; // Example list of searchable columns
 

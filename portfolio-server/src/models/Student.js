@@ -80,6 +80,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    partner_university_credits: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     deliverables: {
       type: DataTypes.JSONB,
       allowNull: true,

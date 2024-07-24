@@ -11,7 +11,7 @@ const Student = () => {
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
     {
-      key: "year",
+      key: "semester",
       label: "学年",
       type: "checkbox",
       options: ["1年生", "2年生", "3年生", "4年生"],
