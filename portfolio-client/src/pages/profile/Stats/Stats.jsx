@@ -192,22 +192,35 @@ const Stats = () => {
             breakpoints={breakpoints}
             unit="単位"
             credits={
-              JSON.stringify(kintoneData) !== '{}'
-                ? (Number(kintoneData.businessSkillsCredits?.value) +
-                  Number(kintoneData.japaneseEmploymentCredits?.value))
+              JSON.stringify(kintoneData) !== "{}"
+                ? Number(kintoneData.businessSkillsCredits?.value) +
+                  Number(kintoneData.japaneseEmploymentCredits?.value)
                 : 0
             }
-            semester={kintoneData ? kintoneData.semester?.value : 0}
+            semester={
+              JSON.stringify(kintoneData) !== "{}"
+                ? kintoneData.semester?.value
+                : 0
+            }
           />
         </Box>
       )}
       {subTabIndex === 1 && (
         <Box my={2}>
-          TOU
+          {student.partner_university}
           <CreditsProgressBar
             breakpoints={breakpoints2}
             unit="単位"
-            credits={kintoneData.partnerUniversityCredits.value}
+            credits={
+              JSON.stringify(kintoneData) !== "{}"
+                ? kintoneData.partnerUniversityCredits.value
+                : 0
+            }
+            semester={
+              JSON.stringify(kintoneData) !== "{}"
+                ? kintoneData.semester?.value
+                : 0
+            }
           />
         </Box>
       )}
