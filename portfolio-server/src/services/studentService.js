@@ -26,9 +26,21 @@ class StudentService {
           // Handle different types of filter values
           if (key === 'search') {
             // Search across all searchable columns
-            query[Op.or] = searchableColumns.map(column => ({
-              [column]: { [Op.iLike]: `%${filter[key]}%` } // Use Op.iLike for case insensitive search
-            }));
+            query[Op.or] = searchableColumns.map(column => {
+              if (['skills', 'it_skills'].includes(column)) {
+                // Handle JSONB fields specifically
+                return {
+                  [Op.or]: [
+                    { [column]: { '上級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                    { [column]: { '中級::text': { [Op.iLike]: `%${filter[key]}%` } } },
+                    { [column]: { '初級::text': { [Op.iLike]: `%${filter[key]}%` } } }
+                  ]
+                };
+              } else {
+                // Use Op.iLike for case insensitive search on other columns
+                return { [column]: { [Op.iLike]: `%${filter[key]}%` } };
+              }
+            });
           } else if (Array.isArray(filter[key])) {
             // If filter value is an array, use $in operator
             query[key] = { [Op.in]: filter[key] };
@@ -41,7 +53,7 @@ class StudentService {
           }
         }
       });
-
+      console.dir(query, { depth: null, symbols: true })
       // Execute the query to fetch students
       const students = await Student.findAll({
         where: query,
