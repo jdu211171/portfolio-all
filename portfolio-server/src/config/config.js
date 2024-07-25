@@ -15,6 +15,12 @@ const config = {
   },
   production: {
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false // This line can be omitted if your CA cert is trusted
+      }
+    },
     dialectModule: require('pg'),
     host: process.env.DB_HOST_PROD || 'localhost',
     port: process.env.DB_PORT_PROD || 5432,
