@@ -1,18 +1,26 @@
 import React, { useState } from "react";
-import { Container, TextField, Button, Avatar, Grid, Box, IconButton, InputAdornment } from "@mui/material";
-import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+  Container,
+  TextField,
+  Button,
+  Avatar,
+  Grid,
+  Box,
+  IconButton,
+  InputAdornment,
+} from "@mui/material";
+import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material"; // Icon lar
+import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 
 const Setting = () => {
-  const [avatarImage, setAvatarImage] = useState("/mnt/data/image.png");
+  const [avatarImage, setAvatarImage] = useState(jduLogo); // xozirgi default image *fayldan olingan rasm
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [newPasswordError, setNewPasswordError] = useState(false);
-  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
@@ -27,13 +35,13 @@ const Setting = () => {
 
   const togglePasswordVisibility = (field) => {
     switch (field) {
-      case 'current':
+      case "current":
         setShowCurrentPassword(!showCurrentPassword);
         break;
-      case 'new':
+      case "new":
         setShowNewPassword(!showNewPassword);
         break;
-      case 'confirm':
+      case "confirm":
         setShowConfirmPassword(!showConfirmPassword);
         break;
       default:
@@ -42,95 +50,137 @@ const Setting = () => {
   };
 
   const handleSave = () => {
-    let valid = true;
-
-    if (newPassword === "" || newPassword === currentPassword || newPassword !== confirmPassword) {
-      valid = false;
-      setNewPasswordError(true);
-      setConfirmPasswordError(true);
+    if (
+      newPassword === confirmPassword &&
+      newPassword !== currentPassword &&
+      newPassword !== ""
+    ) {
+      alert("New data is success");
     } else {
-      setNewPasswordError(false);
-      setConfirmPasswordError(false);
-    }
-
-    if (valid) {
-      // Your save logic here, e.g., API call or state update
+      alert("Password validation failed.");
     }
   };
 
   return (
-    <Container maxWidth="lg" className={SettingStyle["setting-container"]}>
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={3}>
-        <Box className={SettingStyle["h3"]}>
-          <h3>Monkey D. Luffy</h3>
+    <Container maxWidth="md" className={SettingStyle["setting-container"]}>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        className={SettingStyle["header"]}
+      >
+        <Box display="flex" alignItems="center" position="relative" mr={2}>
+          <Avatar
+            alt="Jerome Bell"
+            src={
+              "https://randomuser.me/api/portraits/med/men/" +
+              parseInt(Math.random() * 100) +
+              ".jpg"
+            }
+            sx={{ width: 150, height: 150 }}
+          />
+          <label htmlFor="avatar-upload">
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="span"
+              size="small"
+              sx={{
+                position: "absolute",
+                bottom: 4,
+                right: 4,
+                backgroundColor: "white",
+              }}
+            >
+              <PhotoCamera />
+            </IconButton>
+          </label>
+          <input
+            accept="image/*"
+            id="avatar-upload"
+            type="file"
+            style={{ display: "none" }}
+            onChange={handleAvatarChange}
+          />
         </Box>
-        <Box display="flex" alignItems="center">
-          <Button variant="outlined" color="primary" sx={{
-            mr: 2,
-            p: 3
-          }}>
+
+        <Box ml={2}>
+          <h1 className={SettingStyle["h1"]}>Monkey D. Luffy</h1>
+        </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          className={SettingStyle["button-group"]}
+        >
+          <Button
+            variant="outlined"
+            color="primary"
+            className={SettingStyle["cancel-button"]}
+            style={{ marginRight: "10px" }}
+          >
             キャンセル
           </Button>
-          <Button variant="contained" color="primary" onClick={handleSave}
-          sx={{
-            mr: 2,
-            p: 3
-          }}> 
+          <Button
+            variant="contained"
+            color="primary"
+            className={SettingStyle["save-button"]}
+            onClick={handleSave}
+          >
             保存
           </Button>
         </Box>
       </Box>
-      <Box mt={3} maxWidth="100%" mb={8}>
-        <Box display="flex" alignItems="center">
-          <Box display="flex" alignItems="center" position="relative" mr={2}>
-            <Avatar alt="Jerome Bell" src={
-          "https://randomuser.me/api/portraits/med/men/" +
-          parseInt(Math.random() * 100) +
-          ".jpg"
-        } sx={{ width: 150, height: 150 }} />
-            <label htmlFor="avatar-upload">
-              <IconButton color="primary" aria-label="upload picture" component="span" size="small" sx={{ position: 'absolute', bottom: 4, right: 4, backgroundColor: 'white' }}>
-                <PhotoCamera />
-              </IconButton>
-            </label>
-            <input accept="image/*" id="avatar-upload" type="file" style={{ display: 'none' }} onChange={handleAvatarChange} />
-          </Box>
-          <Grid container spacing={2} >
-            <Grid item xs={12} md={3} sx={{ lineHeight: 2, m: 1 }}>
-              <TextField label="名" variant="outlined" fullWidth defaultValue="Jerome Bell" />
-            </Grid>
-            <Grid item xs={12} md={3} sx={{ lineHeight: 2, m: 1 }}>
-              <TextField label="姓" variant="outlined" fullWidth defaultValue="Jerome Bell" />
-            </Grid>
-            <Grid item xs={12} md={3} sx={{ lineHeight: 2, m: 1 }}>
-              <TextField label="電話番号" variant="outlined" fullWidth defaultValue="998 93 456 67 85" />
-            </Grid>
-            <Grid item xs={12} md={3} sx={{ lineHeight: 2, m: 1 }}>
-              <TextField label="メール" variant="outlined" fullWidth defaultValue="jerome_bell@gmail.com" />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-
-
-
-
-
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="名"
+            variant="outlined"
+            fullWidth
+            defaultValue="Default Admin"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="姓"
+            variant="outlined"
+            fullWidth
+            defaultValue="Default Admin"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="電話番号"
+            variant="outlined"
+            fullWidth
+            defaultValue="998 93 456 67 85"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            label="メール"
+            variant="outlined"
+            fullWidth
+            defaultValue="admin@gmail.com"
+          />
+        </Grid>
+      </Grid>
       <Box className={SettingStyle["section"]}>
-        <h4 className={SettingStyle["h4"]}>パスワード</h4>
-        <Grid container spacing={3} ml={5}>
+        <h2 className={SettingStyle["h2"]}>パスワード</h2>
+        <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
             <TextField
               label="現在のパスワード"
               variant="outlined"
               fullWidth
-              type={showCurrentPassword ? "text" : "password"}
+              type={showCurrentPassword ? "password" : "text"}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => togglePasswordVisibility('current')}>
+                    <IconButton
+                      onClick={() => togglePasswordVisibility("current")}
+                    >
                       {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -145,13 +195,11 @@ const Setting = () => {
               fullWidth
               type={showNewPassword ? "text" : "password"}
               value={newPassword}
-              error={newPasswordError}
-              helperText={newPasswordError ? "パスワードが一致しません。" : ""}
               onChange={(e) => setNewPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => togglePasswordVisibility('new')}>
+                    <IconButton onClick={() => togglePasswordVisibility("new")}>
                       {showNewPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -166,13 +214,13 @@ const Setting = () => {
               fullWidth
               type={showConfirmPassword ? "text" : "password"}
               value={confirmPassword}
-              error={confirmPasswordError}
-              helperText={confirmPasswordError ? "パスワードが一致しません。" : ""}
               onChange={(e) => setConfirmPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => togglePasswordVisibility('confirm')}>
+                    <IconButton
+                      onClick={() => togglePasswordVisibility("confirm")}
+                    >
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -182,20 +230,40 @@ const Setting = () => {
           </Grid>
         </Grid>
       </Box>
-      <Box className={SettingStyle["section"]} mt={10}>
-        <h4 className={SettingStyle["h4"]}>JDU問い合わせ</h4>
-        <Grid container spacing={2} ml={5}>
-          <Grid item xs={12} sm={4} sx={{lineHeight: 1, m:1}}>
-            <TextField label="メール" variant="outlined" fullWidth defaultValue="test@jdu.uz" />
+      <Box className={SettingStyle["section"]}>
+        <h2 className={SettingStyle["h2"]}>JDU問い合わせ</h2>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="メール"
+              variant="outlined"
+              fullWidth
+              defaultValue="test@jdu.uz"
+            />
           </Grid>
-          <Grid item xs={12} sm={4} sx={{lineHeight: 1, m:1}}>
-            <TextField label="電話番号" variant="outlined" fullWidth defaultValue="+998 90 234 56 78" />
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="電話番号"
+              variant="outlined"
+              fullWidth
+              defaultValue="+998 90 234 56 78"
+            />
           </Grid>
-          <Grid item xs={12} sm={4} sx={{lineHeight: 1, m:1}}>
-            <TextField label="勤務時間" variant="outlined" fullWidth defaultValue="09:00 - 18:00" />
+          <Grid item xs={12} sm={4}>
+            <TextField
+              label="勤務時間"
+              variant="outlined"
+              fullWidth
+              defaultValue="09:00 - 18:00"
+            />
           </Grid>
-          <Grid item xs={12} sx={{lineHeight: 2, m:1}}>
-            <TextField label="ロケーション" variant="outlined" fullWidth defaultValue="Tashkent, Shayhontohur district, Sebzor, 21" />
+          <Grid item xs={12}>
+            <TextField
+              label="ロケーション"
+              variant="outlined"
+              fullWidth
+              defaultValue="Tashkent, Shayhontohur district, Sebzor, 21"
+            />
           </Grid>
         </Grid>
       </Box>
