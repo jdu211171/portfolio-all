@@ -69,7 +69,7 @@ module.exports = {
         first_name: faker.name.firstName(),
         last_name: faker.name.lastName(),
         date_of_birth: faker.date.past(),
-        photo: faker.image.avatar(),
+        photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
         self_introduction: faker.lorem.paragraph(),
         hobbies: faker.random.words(),
         gallery: JSON.stringify(gallery), // Store as JSON string in seed

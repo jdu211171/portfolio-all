@@ -25,7 +25,7 @@ const Login = () => {
     try {
       const response = await axios.post('/api/auth/login', { email, password });
 
-      const { userType } = response.data;
+      const { userType, userData } = response.data;
       const token = Cookies.get('token');
       // Set token and userType as cookies (ensure these are set properly)
       // const expiresAt = new Date();
@@ -35,6 +35,7 @@ const Login = () => {
 
       sessionStorage.setItem("token", token)
       sessionStorage.setItem("role", userType)
+      sessionStorage.setItem("loginUser", JSON.stringify(userData))
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');

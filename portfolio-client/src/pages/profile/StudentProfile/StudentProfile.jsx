@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation, Outlet, NavLink } from "react-router-dom";
-import axios from "../../../utils/axiosUtils";
 import {
-  Box,
-  Typography,
-  IconButton,
-  Chip,
-  Avatar,
-  Grid
-} from "@mui/material";
+  useParams,
+  useNavigate,
+  useLocation,
+  Outlet,
+  NavLink,
+} from "react-router-dom";
+import axios from "../../../utils/axiosUtils";
+import { Box, Typography, IconButton, Chip, Avatar, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EmailIcon from "@mui/icons-material/Email";
 import styles from "./StudentProfile.module.css";
@@ -31,16 +30,14 @@ const StudentProfile = () => {
 
     fetchStudent();
   }, [studentId]);
-  
 
   const handleBackClick = () => {
-    const isRootPath = location.pathname.endsWith('/top');
-    if(isRootPath) {
-      navigate('/student');
+    const isRootPath = location.pathname.endsWith("/top");
+    if (isRootPath) {
+      navigate("/student");
     } else {
       navigate(-1);
     }
-    
   };
 
   if (!student) {
@@ -57,7 +54,12 @@ const StudentProfile = () => {
         <Box
           display="flex"
           alignItems="center"
-          sx={{ border: 1, borderRadius: 1, borderColor: "grey.300", flexGrow: 1, }}
+          sx={{
+            border: 1,
+            borderRadius: 1,
+            borderColor: "grey.300",
+            flexGrow: 1,
+          }}
         >
           <IconButton onClick={handleBackClick}>
             <ArrowBackIcon />
@@ -69,11 +71,7 @@ const StudentProfile = () => {
       <Box className={styles.container}>
         <Box className={styles.avatarContainer}>
           <Avatar
-            src={
-              "https://randomuser.me/api/portraits/med/men/" +
-              parseInt(Math.random() * 100) +
-              ".jpg"
-            }
+            src={student.photo}
             alt={student.first_name}
             sx={{ width: 130, height: 130 }}
           />

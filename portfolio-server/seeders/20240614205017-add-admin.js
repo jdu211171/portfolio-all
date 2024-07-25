@@ -17,7 +17,7 @@ module.exports = {
         first_name: 'Admin',
         last_name: 'User',
         date_of_birth: new Date(),
-        photo: '',
+        photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
         createdAt: new Date(),
         updatedAt: new Date()
       }], {});

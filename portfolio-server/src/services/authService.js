@@ -30,8 +30,7 @@ class AuthService {
             secure: process.env.NODE_ENV === 'production',
             expires: new Date(Date.now() + parseInt(process.env.JWT_EXPIRATION) * 60 * 60 * 1000), // Convert expiresIn to milliseconds
           });
-
-          return { userType: UserType.name };
+          return { userType: UserType.name, userData: { name: user.first_name + " " + user.last_name, studentId: user.student_id, photo: user.photo } };
         }
       }
     }
