@@ -16,6 +16,7 @@ class StudentService {
 
   // Service method to retrieve all students
   static async getAllStudents(filter) {
+    console.log(filter)
     try {
       const semesterMapping = {
         '1年生': ['1', '2'],
@@ -29,7 +30,7 @@ class StudentService {
       if (filter.semester) {
         filter.semester = filter.semester.flatMap(term => getSemesterNumbers(term));
       }
-      
+
       let query = {}; // Initialize an empty query object
       const searchableColumns = ['email', 'first_name', 'last_name', 'self_introduction', 'hobbies', 'skills', 'it_skills', 'jlpt']; // Example list of searchable columns
 
@@ -63,11 +64,23 @@ class StudentService {
                 { [key]: { '初級::text': { [Op.iLike]: `%${filter[key]}%` } } }
               ]
             }
+          } else if (key === 'partner_university_credits') {
+            query[key] = { [Op.lt]: Number(filter[key]) };
+          } else if (key === 'other_information') {
+            if (filter[key] === '有り') {
+              query['other_information'] = { [Op.ne]: null };
+            } else if (filter[key] === '無し') {
+              query['other_information'] = { [Op.is]: null };
+            }
+          } else if (key === 'jlpt' || key === 'ielts') {
+            // Handle jlpt specifically for stringified JSON field
+            query[Op.or] = filter[key].map(level => {
+              return { key: { [Op.iLike]: `%${level}%` } };
+            });
           } else if (Array.isArray(filter[key])) {
             // If filter value is an array, use $in operator
             query[key] = { [Op.in]: filter[key] };
           } else if (typeof filter[key] === 'string') {
-            // If filter value is a string, use $like operator for partial match
             query[key] = { [Op.like]: `%${filter[key]}%` };
           } else {
             // Handle other types of filter values as needed

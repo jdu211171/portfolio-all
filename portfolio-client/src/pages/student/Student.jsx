@@ -46,10 +46,11 @@ const Student = () => {
       minWidth: "160px",
     },
     {
-      key: "credits",
+      key: "partner_university_credits",
       label: "単位数",
-      type: "checkbox",
-      options: ["20単位内", "40単位内", "60単位内", "80単位内", "100単位以上"],
+      type: "radio",
+      options: ["20", "40", "60", "80", "100"],
+      unit: "単位内",
       minWidth: "160px",
     },
     {
@@ -66,7 +67,7 @@ const Student = () => {
       minWidth: "160px",
     },
     {
-      key: "special_qualification",
+      key: "other_information",
       label: "特技 (有無)",
       type: "radio",
       options: ["有り", "無し"],
@@ -106,12 +107,14 @@ const Student = () => {
       disablePadding: false,
       label: "日本語能力試験",
       minWidth: "160px",
+      isJSON: true,
     },
     {
       id: "ielts",
       numeric: true,
       disablePadding: false,
       label: "IELTS",
+      isJSON: true,
     },
     {
       id: "action",

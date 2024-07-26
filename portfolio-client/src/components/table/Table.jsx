@@ -162,6 +162,8 @@ const EnhancedTable = ({ tableProps }) => {
                           <a href={`mailto:${row[header.id]}`}>
                             {row[header.id]}
                           </a>
+                        ) : header.isJSON ? (
+                          JSON.parse(row[header.id]).highest
                         ) : (
                           row[header.id]
                         )}

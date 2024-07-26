@@ -56,9 +56,26 @@ module.exports = {
         }
       ];
 
+
+
       const jlptLevels = ["N1", "N2", "N3", "N4", "N5"];
       const jlpt = jlptLevels[Math.floor(Math.random() * jlptLevels.length)];
 
+      let jlptString = {
+        highest: jlpt,
+        jlptlist: [
+          { level: "n5", date: "2022-12" },
+          { level: "n5", date: "2020-12" }
+        ]
+      }
+
+      let ieltsString = {
+        highest: (faker.datatype.number({ min: 12, max: 16 }) / 2).toString(),
+        ieltslist: [
+          { level: "6.5", date: "2022-12" },
+          { level: "6.0", date: "2020-12" }
+        ]
+      }
       // Generate an array of image links for the gallery
       const gallery = Array.from({ length: 5 }, () => faker.image.image());
 
@@ -80,9 +97,9 @@ module.exports = {
         partner_university: faker.company.companyName(),
         partner_university_credits: faker.datatype.number({ min: 0, max: 124 }),
         deliverables: JSON.stringify(deliverables),
-        jlpt: jlpt,
-        ielts: faker.random.word(),
-        jdu_japanese_certification: faker.random.word(),
+        jlpt: JSON.stringify(jlptString),
+        ielts: JSON.stringify(ieltsString),
+        jdu_japanese_certification: JSON.stringify(jlptString),
         japanese_speech_contest: faker.random.word(),
         it_contest: faker.random.word(),
         active: true,

@@ -53,7 +53,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
                   key={option}
                   value={option}
                   control={<Radio />}
-                  label={option}
+                  label={option + (field.unit ? field.unit : "")}
                 />
               ))}
             </RadioGroup>
@@ -89,7 +89,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
                       }}
                     />
                   }
-                  label={option}
+                  label={option + (field.unit ? field.unit : "")}
                 />
               ))}
             </FormGroup>
