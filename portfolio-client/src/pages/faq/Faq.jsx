@@ -6,13 +6,16 @@ import {
   AccordionSummary,
   AccordionDetails,
   Box,
+  Grid,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import FAQstyle from "./Faq.module.css";
+import FAQstyle from './Faq.module.css';
 
 const FAQ = () => {
   const questionAnswer = [
@@ -31,29 +34,34 @@ const FAQ = () => {
   ];
 
   const [expanded, setExpanded] = useState(false);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
   return (
-    <Container style={{ marginTop: '2rem' }}>
+    <Container sx={{ mt: 4 }}>
       <Typography variant='h5' gutterBottom className={FAQstyle["faq-title"]}>
         FAQ
       </Typography>
       {questionAnswer.map((qa, index) => (
-        <Accordion className={FAQstyle["accordion-box"]}
+        <Accordion
           key={index}
           expanded={expanded === `panel${index}`}
           onChange={handleChange(`panel${index}`)}
-          defaultExpanded={index === 0} 
+          defaultExpanded={index === 0}
+          sx={{ mb: 2 }}
         >
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls={`panel${index}bh-content`}
             id={`panel${index}bh-header`}
           >
-            <Typography className={FAQstyle["title-accordion"]}>{qa.question}</Typography>
+            <Typography className={FAQstyle["title-accordion"]}>
+              {qa.question}
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography className={FAQstyle['body-accordion']}>
@@ -62,25 +70,35 @@ const FAQ = () => {
           </AccordionDetails>
         </Accordion>
       ))}
-      <Box className={FAQstyle["help-info-box"]}>
-        <Box className={FAQstyle["faq-box"]}>
-          <EmailIcon className={FAQstyle["faq-icons"]} />
-          <Typography>test@jdu.uz</Typography>
-        </Box>
-        <Box className={FAQstyle["faq-box"]}>
-          <PhoneIcon className={FAQstyle["faq-icons"]} />
-          <Typography>+998 90 123 45 67</Typography>
-        </Box>
-        <Box className={FAQstyle["faq-box"]}>
-          <AccessTimeIcon className={FAQstyle["faq-icons"]} />
-          <Typography>09:00 ~ 18:00</Typography>
-        </Box>
-        <Box className={FAQstyle["faq-box"]}>
-          <LocationOnIcon className={FAQstyle["faq-icons"]} />
-          <Typography>
-            Tashkent, Shayhontohur district, Sebzor, 21
-          </Typography>
-        </Box>
+      <Box sx={{ mt: 4 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box display="flex" alignItems="center">
+              <EmailIcon className={FAQstyle["faq-icons"]} />
+              <Typography sx={{ ml: 1 }}>test@jdu.uz</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box display="flex" alignItems="center">
+              <PhoneIcon className={FAQstyle["faq-icons"]} />
+              <Typography sx={{ ml: 1 }}>+998 90 123 45 67</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box display="flex" alignItems="center">
+              <AccessTimeIcon className={FAQstyle["faq-icons"]} />
+              <Typography sx={{ ml: 1 }}>09:00 ~ 18:00</Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3}>
+            <Box display="flex" alignItems="center">
+              <LocationOnIcon className={FAQstyle["faq-icons"]} />
+              <Typography sx={{ ml: 1 }}>
+                Tashkent, Shayhontohur district, Sebzor, 21
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     </Container>
   );
