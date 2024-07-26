@@ -73,25 +73,25 @@ const FAQ = () => {
       <Box sx={{ mt: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={3}>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" >
               <EmailIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>test@jdu.uz</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" >
               <PhoneIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>+998 90 123 45 67</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" >
               <AccessTimeIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>09:00 ~ 18:00</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <Box display="flex" alignItems="center">
+            <Box display="flex" >
               <LocationOnIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>
                 Tashkent, Shayhontohur district, Sebzor, 21
