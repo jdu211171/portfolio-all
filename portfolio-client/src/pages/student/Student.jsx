@@ -42,7 +42,7 @@ const Student = () => {
       key: "jdu_japanese_certification",
       label: "JDU日本語認定試験",
       type: "checkbox",
-      options: ["N1", "N2", "N3", "N4", "N5"],
+      options: ["Q1", "Q2", "Q3", "Q4", "Q5"],
       minWidth: "160px",
     },
     {

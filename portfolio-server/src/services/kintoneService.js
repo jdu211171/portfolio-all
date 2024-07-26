@@ -162,8 +162,6 @@ class KintoneService {
       }));
 
       let result = await StudentService.syncStudentData(formattedStudentData);
-
-      console.log(result)
     } catch (error) {
       console.log(error)
       throw error;

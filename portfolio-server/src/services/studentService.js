@@ -71,10 +71,10 @@ class StudentService {
             } else if (filter[key] === '無し') {
               query['other_information'] = { [Op.is]: null };
             }
-          } else if (key === 'jlpt' || key === 'ielts') {
+          } else if (key === 'jlpt' || key === 'ielts' || key === 'jdu_japanese_certification') {
             // Handle jlpt specifically for stringified JSON field
             query[Op.or] = filter[key].map(level => {
-              return { key: { [Op.iLike]: `%${level}%` } };
+              return { [key]: { [Op.iLike]: `%${level}%` } };
             });
           } else if (Array.isArray(filter[key])) {
             // If filter value is an array, use $in operator
@@ -87,7 +87,6 @@ class StudentService {
           }
         }
       });
-      console.dir(query, { depth: null, symbols: true })
       // Execute the query to fetch students
       const students = await Student.findAll({
         where: query,

@@ -57,12 +57,26 @@ module.exports = {
       skills: {
         type: Sequelize.JSONB,
         allowNull: true,
-        defaultValue: {}
+        defaultValue: {
+          "上級": [
+          ],
+          "中級": [
+          ],
+          "初級": [
+          ]
+        }
       },
       it_skills: {
         type: Sequelize.JSONB,
         allowNull: true,
-        defaultValue: {}
+        defaultValue: {
+          "上級": [
+          ],
+          "中級": [
+          ],
+          "初級": [
+          ]
+        }
       },
       other_information: {
         type: Sequelize.TEXT,
