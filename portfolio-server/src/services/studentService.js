@@ -16,7 +16,6 @@ class StudentService {
 
   // Service method to retrieve all students
   static async getAllStudents(filter) {
-    console.log(filter)
     try {
       const semesterMapping = {
         '1年生': ['1', '2'],
@@ -135,6 +134,41 @@ class StudentService {
         throw new Error('Student not found');
       }
       await student.destroy();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // Service method to upsert student data
+  static async syncStudentData(studentData) {
+    try {
+      const results = await Promise.all(studentData.map(async (data) => {
+        // Prepare data for upsert
+        const formattedData = {
+          email: data.mail,
+          password: 'default_password', // Set default password or handle as required
+          student_id: data.studentId,
+          first_name: data.studentName.split(' ')[0], // Assuming first name is the first part
+          last_name: data.studentName.split(' ')[1], // Assuming last name is the second part
+          date_of_birth: data.jduDate,
+          // Include other fields as needed
+          semester: data.semester,
+          partner_university: data.univer,
+          kintone_id: data.レコード番号.value,
+          jlpt: data.jlpt,
+          jdu_japanese_certification: data.jdu_japanese_certification,
+          ielts: data.ielts,
+          japanese_speech_contest: data.japanese_speech_contest,
+          it_contest: data.it_contest,
+        };
+
+        // Perform upsert
+        return await Student.upsert(formattedData, {
+          returning: true, // Optionally return the created or updated instance
+        });
+      }));
+
+      return results;
     } catch (error) {
       throw error;
     }

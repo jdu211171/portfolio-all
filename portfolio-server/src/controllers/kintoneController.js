@@ -26,7 +26,6 @@ class KintoneController {
   // Controller method to create a new student
   static async create(req, res) {
     try {
-      console.log(req)
       const newStudent = await KintoneService.createRecord(KINTONE_APP_ID_STUDENTS, req.body);
       res.status(201).json(newStudent);
     } catch (error) {
@@ -48,6 +47,16 @@ class KintoneController {
   static async delete(req, res) {
     try {
       await KintoneService.deleteRecord(KINTONE_APP_ID_STUDENTS, req.params.id);
+      res.status(204).json();
+    } catch (error) {
+      res.status(500).json({ message: 'Error deleting student', error: error.message });
+    }
+  }
+
+  // Controller method to delete a student
+  static async sync(req, res) {
+    try {
+      await KintoneService.syncData();
       res.status(204).json();
     } catch (error) {
       res.status(500).json({ message: 'Error deleting student', error: error.message });

@@ -57,6 +57,12 @@ const Deliverables = ({
     }, 0);
   };
 
+  useEffect(() => {
+    if (editData.length == 0) {
+      addNewDeliverable();
+    }
+  }, []);
+
   const deleteDeliverable = (index) => {
     const updatedData = newData.filter((_, i) => i !== index);
     setNewData(updatedData);

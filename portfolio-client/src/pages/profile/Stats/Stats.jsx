@@ -40,27 +40,27 @@ const Stats = () => {
           const requests = [
             axios.post(`/api/kintone/getby`, {
               table: "certificate_ielts",
-              col: "studentID",
+              col: "studentId",
               val: studentData.student_id,
             }),
             axios.post(`/api/kintone/getby`, {
               table: "certificate_jlpt",
-              col: "studentID2",
+              col: "studentId",
               val: studentData.student_id,
             }),
             axios.post(`/api/kintone/getby`, {
               table: "certificate_jdu_jlpt",
-              col: "studentID2",
+              col: "studentId",
               val: studentData.student_id,
             }),
             axios.post(`/api/kintone/getby`, {
               table: "certificate_benron",
-              col: "studentID2",
+              col: "studentId",
               val: studentData.student_id,
             }),
             axios.post(`/api/kintone/getby`, {
               table: "certificate_it_contest",
-              col: "studentID",
+              col: "studentId",
               val: studentData.student_id,
             }),
           ];

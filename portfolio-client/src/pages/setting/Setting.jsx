@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+
+import axios from "../../utils/axiosUtils";
+
 import {
   Container,
   TextField,
@@ -58,6 +61,14 @@ const Setting = () => {
       alert("New data is success");
     } else {
       alert("Password validation failed.");
+    }
+  };
+
+  const handleSync = async () => {
+    try {
+      const response = await axios.post("api/kintone/sync");
+    } catch (error) {
+      console.log(error)
     }
   };
 
@@ -129,6 +140,11 @@ const Setting = () => {
             保存
           </Button>
         </Box>
+      </Box>
+      <Box my={1} className={SettingStyle.syncButton}>
+        <Button variant="contained" color="primary" onClick={handleSync}>
+          同期
+        </Button>
       </Box>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={6}>

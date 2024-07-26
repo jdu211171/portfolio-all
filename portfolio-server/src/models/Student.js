@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     student_id: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     first_name: {
       type: DataTypes.STRING,
@@ -90,23 +91,23 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     jlpt: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     ielts: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     jdu_japanese_certification: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     japanese_speech_contest: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     it_contest: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     active: {

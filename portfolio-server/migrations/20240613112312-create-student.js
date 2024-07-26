@@ -52,14 +52,17 @@ module.exports = {
       gallery: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {}
       },
       skills: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {}
       },
       it_skills: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {}
       },
       other_information: {
         type: Sequelize.TEXT,
@@ -82,25 +85,33 @@ module.exports = {
       deliverables: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: [{
+          title: "",
+          link: "",
+          role: [],
+          codeLink: "",
+          imageLink: "",
+          description: "",
+        }]
       },
       jlpt: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       ielts: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       jdu_japanese_certification: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       japanese_speech_contest: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       it_contest: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       active: {

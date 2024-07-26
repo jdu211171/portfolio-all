@@ -60,7 +60,6 @@ class StudentController {
   // sample email sender
   static async mail(req, res, next) {
     try {
-      console.log(req.body)
       const { email, password, firstName, lastName } = req.body;
       await StudentService.EmailToStudent(email, password, firstName, lastName);
       res.status(204).end();

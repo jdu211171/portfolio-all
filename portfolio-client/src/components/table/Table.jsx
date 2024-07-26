@@ -163,7 +163,11 @@ const EnhancedTable = ({ tableProps }) => {
                             {row[header.id]}
                           </a>
                         ) : header.isJSON ? (
-                          JSON.parse(row[header.id]).highest
+                          JSON.parse(row[header.id])?.highest ? (
+                            JSON.parse(row[header.id])?.highest
+                          ) : (
+                            "無し"
+                          )
                         ) : (
                           row[header.id]
                         )}
