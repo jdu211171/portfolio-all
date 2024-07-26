@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-
 import axios from "../../utils/axiosUtils";
-
 import {
   Container,
   TextField,
@@ -12,18 +10,38 @@ import {
   IconButton,
   InputAdornment,
 } from "@mui/material";
-import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material"; // Icon lar
+import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
+import { useForm, Controller } from "react-hook-form";
 import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 
 const Setting = () => {
-  const [avatarImage, setAvatarImage] = useState(jduLogo); // xozirgi default image *fayldan olingan rasm
+  const [avatarImage, setAvatarImage] = useState(jduLogo);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+      firstName: "Default Admin",
+      lastName: "Default Admin",
+      phoneNumber: "998 93 456 67 85",
+      email: "admin@gmail.com",
+      contactEmail: "test@jdu.uz",
+      contactPhone: "+998 90 234 56 78",
+      workingHours: "09:00 - 18:00",
+      location: "Tashkent, Shayhontohur district, Sebzor, 21",
+    },
+  });
 
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
@@ -52,71 +70,83 @@ const Setting = () => {
     }
   };
 
-  const handleSave = () => {
-    if (
-      newPassword === confirmPassword &&
-      newPassword !== currentPassword &&
-      newPassword !== ""
-    ) {
-      alert("New data is success");
+  const validatePasswords = (data) => {
+    if (data.newPassword !== data.confirmPassword) {
+      return "Passwords do not match";
+    }
+    if (data.newPassword === data.currentPassword) {
+      return "New password must be different from the current password";
+    }
+    return true;
+  };
+
+  const onSubmit = (data) => {
+    const passwordValidation = validatePasswords(data);
+    if (passwordValidation === true) {
+      alert("Password updated successfully");
     } else {
-      alert("Password validation failed.");
+      alert(passwordValidation);
     }
   };
 
   const handleSync = async () => {
     try {
-      const response = await axios.post("api/kintone/sync");
+      await axios.post("api/kintone/sync");
+      alert("Sync successful");
     } catch (error) {
-      console.log(error)
+      console.error("Sync failed:", error);
+      alert("Sync failed. Please try again.");
     }
   };
 
   return (
-    <Container maxWidth="md" className={SettingStyle["setting-container"]}>
+    <>
       <Box
         display="flex"
         alignItems="center"
         justifyContent="space-between"
         className={SettingStyle["header"]}
       >
-        <Box display="flex" alignItems="center" position="relative" mr={2}>
-          <Avatar
-            alt="Jerome Bell"
-            src={
-              "https://randomuser.me/api/portraits/med/men/" +
-              parseInt(Math.random() * 100) +
-              ".jpg"
-            }
-            sx={{ width: 150, height: 150 }}
-          />
-          <label htmlFor="avatar-upload">
-            <IconButton
-              color="primary"
-              aria-label="upload picture"
-              component="span"
-              size="small"
-              sx={{
-                position: "absolute",
-                bottom: 4,
-                right: 4,
-                backgroundColor: "white",
-              }}
-            >
-              <PhotoCamera />
-            </IconButton>
-          </label>
-          <input
-            accept="image/*"
-            id="avatar-upload"
-            type="file"
-            style={{ display: "none" }}
-            onChange={handleAvatarChange}
-          />
-        </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          className={SettingStyle["header"]}
+        >
+          <Box display="flex" alignItems="center" position="relative" mr={2}>
+            <Avatar
+              alt="User Avatar"
+              src={avatarImage}
+              sx={{ width: 100, height: 100 }}
+            />
+            <label htmlFor="avatar-upload">
+              <IconButton
+                color="primary"
+                aria-label="upload picture"
+                component="span"
+                size="small"
+                sx={{
+                  position: "absolute",
+                  bottom: 4,
+                  right: 4,
+                  backgroundColor: "white",
+                }}
+              >
+                <PhotoCamera />
+              </IconButton>
+            </label>
+            <input
+              accept="image/*"
+              id="avatar-upload"
+              type="file"
+              style={{ display: "none" }}
+              onChange={handleAvatarChange}
+            />
+          </Box>
 
-        <Box ml={2}>
-          <h1 className={SettingStyle["h1"]}>Monkey D. Luffy</h1>
+          <Box ml={2}>
+            <h1 className={SettingStyle["h1"]}>Monkey D. Luffy</h1>
+          </Box>
         </Box>
         <Box
           display="flex"
@@ -127,7 +157,7 @@ const Setting = () => {
             variant="outlined"
             color="primary"
             className={SettingStyle["cancel-button"]}
-            style={{ marginRight: "10px" }}
+            style={{ minWidth: "124px" }}
           >
             キャンセル
           </Button>
@@ -135,7 +165,8 @@ const Setting = () => {
             variant="contained"
             color="primary"
             className={SettingStyle["save-button"]}
-            onClick={handleSave}
+            onClick={handleSubmit(onSubmit)}
+            style={{ minWidth: "76px" }}
           >
             保存
           </Button>
@@ -148,35 +179,49 @@ const Setting = () => {
       </Box>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="名"
-            variant="outlined"
-            fullWidth
-            defaultValue="Default Admin"
+          <Controller
+            name="firstName"
+            control={control}
+            render={({ field }) => (
+              <TextField label="名" variant="outlined" fullWidth {...field} />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="姓"
-            variant="outlined"
-            fullWidth
-            defaultValue="Default Admin"
+          <Controller
+            name="lastName"
+            control={control}
+            render={({ field }) => (
+              <TextField label="姓" variant="outlined" fullWidth {...field} />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="電話番号"
-            variant="outlined"
-            fullWidth
-            defaultValue="998 93 456 67 85"
+          <Controller
+            name="phoneNumber"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="電話番号"
+                variant="outlined"
+                fullWidth
+                {...field}
+              />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <TextField
-            label="メール"
-            variant="outlined"
-            fullWidth
-            defaultValue="admin@gmail.com"
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                label="メール"
+                variant="outlined"
+                fullWidth
+                {...field}
+              />
+            )}
           />
         </Grid>
       </Grid>
@@ -184,64 +229,89 @@ const Setting = () => {
         <h2 className={SettingStyle["h2"]}>パスワード</h2>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="現在のパスワード"
-              variant="outlined"
-              fullWidth
-              type={showCurrentPassword ? "password" : "text"}
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("current")}
-                    >
-                      {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+            <Controller
+              name="currentPassword"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="現在のパスワード"
+                  variant="outlined"
+                  fullWidth
+                  type={showCurrentPassword ? "text" : "password"}
+                  {...field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility("current")}
+                        >
+                          {showCurrentPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="新規パスワード"
-              variant="outlined"
-              fullWidth
-              type={showNewPassword ? "text" : "password"}
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={() => togglePasswordVisibility("new")}>
-                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+            <Controller
+              name="newPassword"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="新規パスワード"
+                  variant="outlined"
+                  fullWidth
+                  type={showNewPassword ? "text" : "password"}
+                  {...field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility("new")}
+                        >
+                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="パスワードを認証"
-              variant="outlined"
-              fullWidth
-              type={showConfirmPassword ? "text" : "password"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => togglePasswordVisibility("confirm")}
-                    >
-                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="パスワードを認証"
+                  variant="outlined"
+                  fullWidth
+                  type={showConfirmPassword ? "text" : "password"}
+                  {...field}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => togglePasswordVisibility("confirm")}
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
         </Grid>
@@ -250,40 +320,64 @@ const Setting = () => {
         <h2 className={SettingStyle["h2"]}>JDU問い合わせ</h2>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="メール"
-              variant="outlined"
-              fullWidth
-              defaultValue="test@jdu.uz"
+            <Controller
+              name="contactEmail"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="メール"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="電話番号"
-              variant="outlined"
-              fullWidth
-              defaultValue="+998 90 234 56 78"
+            <Controller
+              name="contactPhone"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="電話番号"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <TextField
-              label="勤務時間"
-              variant="outlined"
-              fullWidth
-              defaultValue="09:00 - 18:00"
+            <Controller
+              name="workingHours"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="勤務時間"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="ロケーション"
-              variant="outlined"
-              fullWidth
-              defaultValue="Tashkent, Shayhontohur district, Sebzor, 21"
+            <Controller
+              name="location"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="ロケーション"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                />
+              )}
             />
           </Grid>
         </Grid>
       </Box>
-    </Container>
+    </>
   );
 };
 

@@ -3,19 +3,23 @@
 }
 
 .header {
-  margin-bottom: 40px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .button-group {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   width: 40%;
-  margin-left: 10%;
+  justify-content: end;
+  flex-grow: 1;
 }
 .save-button,
-.cancel-button{
+.cancel-button {
   width: 200px;
 }
 .syncButton {
@@ -38,4 +42,3 @@
 .MuiTextField-root {
   margin-bottom: 16px;
 }
-
