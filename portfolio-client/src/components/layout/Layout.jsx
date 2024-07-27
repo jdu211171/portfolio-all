@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, NavLink } from "react-router-dom";
-
 import UserAvatar from "../table/avatar/UserAvatar";
 
-//icons
+// icons
 import { ReactComponent as NavButtonIcon } from "../../assets/icons/navButton.svg";
 import { ReactComponent as HomeIcon } from "../../assets/icons/home.svg";
 import { ReactComponent as StudentIcon } from "../../assets/icons/student.svg";
@@ -16,10 +15,37 @@ import { ReactComponent as BookmarkIcon } from "../../assets/icons/bookmark.svg"
 import logo from "/src/assets/logo.png";
 import style from "./Layout.module.css";
 
+// Utility function to check roles
+const checkRole = (role, allowedRoles) => {
+  return allowedRoles.includes(role);
+};
+
+// Define navigation items and their allowed roles
+const navItems = [
+  {
+    section: "GENERAL",
+    items: [
+        { to: "/", icon: <HomeIcon />, label: "Home", roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/student", icon: <StudentIcon />, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/staff", icon: <UserPlusIcon />, label: "職員", roles: ["Admin"] },
+        { to: "/recruiter", icon: <UserPlusIcon />, label: "リクレーター", roles: ["Admin", "Staff"] },
+        { to: "/bookmarked", icon: <BookmarkIcon />, label: "気になる", roles: ["Recruiter"] },
+    ],
+  },  {
+    section: "GENERAL",
+    items: [
+        { to: "/settings", icon: <SettingsIcon />, label: "設定", roles: ["Admin", "Staff", "Recruiter", "Student"] },
+        { to: "/help", icon: <HelpIcon />, label: "ヘルプ", roles: ["Admin", "Staff", "Recruiter"] },
+    ],
+  },
+];
+
+
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [smallScreen, setSmallScreen] = useState(false);
   const [userData, setUserData] = useState({});
+  const [role, setRole] = useState(sessionStorage.getItem("role")); // Get role from sessionStorage
 
   const [japanTime, setJapanTime] = useState("");
   const [uzbekistanTime, setUzbekistanTime] = useState("");
@@ -124,76 +150,26 @@ const Layout = () => {
       <div className={style.sideBar}>
         <header className={style.left}>
           <nav>
-            <ul>
-              <span className={style.navGroup}>GENERAL</span>
-              <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <HomeIcon />
-                  <div>Home</div>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/student"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <StudentIcon />
-                  <div>学生検索</div>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/staff"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <UserPlusIcon />
-                  <div>職員</div>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/recruiter"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <UserPlusIcon />
-                  <div>リクレーター</div>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/bookmarked"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <BookmarkIcon />
-                  <div>気になる</div>
-                </NavLink>
-              </li>
-            </ul>
-
-            <ul>
-              <span className={style.navGroup}>PREFERENCES</span>
-              <li>
-                <NavLink
-                  to="/settings"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <SettingsIcon />
-                  <div>設定</div>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/help"
-                  className={({ isActive }) => (isActive ? style.active : "")}
-                >
-                  <HelpIcon />
-                  <div>ヘルプ</div>
-                </NavLink>
-              </li>
-            </ul>
+            {navItems.map((section, index) => (
+              <ul key={"ul-" + index}>
+                <span className={style.navGroup}>{section.section}</span>
+                {section.items
+                .filter((item) => checkRole(role, item.roles))
+                .map((item, index) => (
+                  <li key={index}>
+                    <NavLink
+                      to={item.to}
+                      className={({ isActive }) =>
+                        isActive ? style.active : ""
+                      }
+                    >
+                      {item.icon}
+                      <div>{item.label}</div>
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            ))}
 
             <ul className={style.NavbarBottom}>
               <li>
