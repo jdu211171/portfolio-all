@@ -4,9 +4,15 @@ import { Box } from "@mui/material";
 import Table from "../../components/table/Table";
 import Filter from "../../components/filter/Filter";
 
-const Student = () => {
-  const [filterState, setFilterState] = useState({});
+import axios from "../../utils/axiosUtils";
 
+const Student = ({ OnlyBookmarked = false }) => {
+  const [filterState, setFilterState] = useState({});
+  const [updatedBookmark, setUpdatedBookmark] = useState({
+    studentId: null,
+    timestamp: new Date().getTime(),
+  });
+  const recruiterId = JSON.parse(sessionStorage.getItem("loginUser")).id;
   // Ensure filterProps have unique keys matching your database columns
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
@@ -81,18 +87,42 @@ const Student = () => {
 
   const navigate = useNavigate();
 
-  const NavigateToProfile = (studentId) => {
+  const navigateToProfile = (studentId) => {
     navigate(`profile/${studentId}`);
+  };
+
+  const addToBookmark = async (studentId) => {
+    try {
+      const response = await axios.post("/api/bookmarks/toggle", {
+        studentId,
+        recruiterId,
+      });
+      setUpdatedBookmark({
+        studentId: response.data.studentId,
+        timestamp: new Date().getTime(),
+      });
+    } catch (error) {
+      console.error("Error bookmarking student:", error);
+    }
   };
 
   const headers = [
     {
-      id: "name",
+      id: "bookmark",
+      numeric: false,
+      disablePadding: true,
+      label: "",
+      type: "bookmark",
+      onClickAction: addToBookmark,
+    },
+    {
+      id: "first_name",
       numeric: false,
       disablePadding: true,
       label: "学生",
       type: "avatar",
-      onClickAction: NavigateToProfile,
+      minWidth: "220px",
+      onClickAction: navigateToProfile,
     },
     {
       id: "email",
@@ -100,6 +130,7 @@ const Student = () => {
       disablePadding: false,
       label: "メール",
       type: "email",
+      minWidth: "160px",
     },
     {
       id: "jlpt",
@@ -129,6 +160,8 @@ const Student = () => {
     headers: headers,
     dataLink: "/api/students",
     filter: filterState,
+    recruiterId: recruiterId,
+    OnlyBookmarked: OnlyBookmarked,
   };
 
   return (
@@ -140,7 +173,7 @@ const Student = () => {
           onFilterChange={handleFilterChange}
         />
       </Box>
-      <Table tableProps={tableProps} />
+      <Table tableProps={tableProps} updatedBookmark={updatedBookmark} />
     </div>
   );
 };

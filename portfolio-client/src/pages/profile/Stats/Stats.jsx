@@ -74,11 +74,7 @@ const Stats = () => {
           ] = await Promise.all(requests);
 
           setCertificateData("main", "JLPT", jlptResponse.data.records);
-          setCertificateData(
-            "main",
-            "JDU_JLPT",
-            jduJlptResponse.data.records
-          );
+          setCertificateData("main", "JDU_JLPT", jduJlptResponse.data.records);
           setCertificateData("main", "IELTS", ieltsResponse.data.records);
           setCertificateData(
             "other",

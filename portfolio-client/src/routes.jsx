@@ -29,7 +29,7 @@ const AppRoutes = () => {
           <Route element={<ProtectedLayout />}>
             <Route index element={<Home />} />
             <Route path="/student" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}>
-              <Route index element={<Student />} />
+              <Route index element={<Student key="students" />} />
               <Route path="profile/:studentId/*" element={<StudentProfile />}>
               <Route index element={<Navigate to="top"/>} /> {/* Redirect index to top */}
               <Route path="top" element={<Top />} />
@@ -43,6 +43,9 @@ const AppRoutes = () => {
             </Route>
             <Route path="/staff" element={<ProtectedLayout allowedRoles={["Admin"]} />}>
               <Route index element={<Staff />} />
+            </Route>
+            <Route path="/bookmarked" element={<ProtectedLayout allowedRoles={["Recruiter"]} />}>
+              <Route index element={<Student key="bookmarked" OnlyBookmarked={true} />} />
             </Route>
             <Route path="/settings" element={<Setting />} />
             <Route path="/help" element={<FAQ />} />

@@ -25,6 +25,7 @@ import Deliverables from "../../../components/Deliverables/Deliverables";
 import styles from "./Top.module.css";
 
 const Top = () => {
+  const role = sessionStorage.getItem("role");
   const { studentId } = useParams();
 
   const [student, setStudent] = useState(null);
@@ -53,8 +54,8 @@ const Top = () => {
   };
 
   const handleUpdateEditMode = () => {
-    setEditMode(true)
-  }
+    setEditMode(true);
+  };
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
@@ -123,35 +124,39 @@ const Top = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {editMode ? (
+      {role == "Student" && (
         <>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            保存
-          </Button>
+          {editMode ? (
+            <>
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                保存
+              </Button>
 
-          <Button
-            onClick={handleCancel}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            キャンセル
-          </Button>
+              <Button
+                onClick={handleCancel}
+                variant="outlined"
+                color="error"
+                size="small"
+              >
+                キャンセル
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={toggleEditMode}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              プロフィールを編集
+            </Button>
+          )}
         </>
-      ) : (
-        <Button
-          onClick={toggleEditMode}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          プロフィールを編集
-        </Button>
       )}
     </Box>
   );

@@ -16,6 +16,7 @@ import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 
 const Setting = () => {
+  const role = sessionStorage.getItem("role");
   const [user, setUser] = useState({});
   const [avatarImage, setAvatarImage] = useState(jduLogo);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -49,13 +50,16 @@ const Setting = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const role = sessionStorage.getItem("role");
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
         let response;
         if (role === "Admin") {
           response = await axios.get(`/api/admin/${id}`);
         } else if (role === "Student") {
           response = await axios.get(`/api/students/${id}`);
+        } else if (role === "Staff") {
+          response = await axios.get(`/api/staff/${id}`);
+        } else if (role === "Recruiter") {
+          response = await axios.get(`/api/recruiters/${id}`);
         }
         setUser(response.data);
         // Update form default values after fetching user data
@@ -117,7 +121,6 @@ const Setting = () => {
     const passwordValidation = validatePasswords(data);
     if (passwordValidation === true) {
       try {
-        const role = sessionStorage.getItem("role");
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
 
         await axios.put(`/api/admin/${id}`, {
@@ -249,9 +252,11 @@ const Setting = () => {
         </Box>
       </Box>
       <Box my={1} className={SettingStyle.syncButton}>
-        <Button variant="contained" color="primary" onClick={handleSync}>
-          同期
-        </Button>
+        {role === "Admin" && (
+          <Button variant="contained" color="primary" onClick={handleSync}>
+            同期
+          </Button>
+        )}
       </Box>
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} sm={6}>

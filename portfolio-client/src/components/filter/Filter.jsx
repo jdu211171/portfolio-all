@@ -182,12 +182,14 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
         <div className={style.clear} onClick={handleClear}>
           clear
         </div>
-        <IconButton
-          onClick={handleClick}
-          style={{ width: "100%", height: "5px", padding: "0 10px" }}
-        >
-          {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </IconButton>
+        {fields.length > 1 && (
+          <IconButton
+            onClick={handleClick}
+            style={{ width: "100%", height: "5px", padding: "0 10px" }}
+          >
+            {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </IconButton>
+        )}
       </Grid>
       <Collapse in={collapse} timeout={300}>
         <Grid my={1} container spacing={1} className={style.filterFields}>

@@ -16,6 +16,7 @@ import axios from "../../../utils/axiosUtils";
 import { Box, Tabs, Tab, Button, Snackbar, Alert } from "@mui/material";
 
 const QA = () => {
+  const role = sessionStorage.getItem("role");
   const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
   const { studentId } = useParams();
 
@@ -124,35 +125,39 @@ const QA = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {editMode ? (
+      {role == "Student" && (
         <>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            保存
-          </Button>
+          {editMode ? (
+            <>
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                保存
+              </Button>
 
-          <Button
-            onClick={handleCancel}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            キャンセル
-          </Button>
+              <Button
+                onClick={handleCancel}
+                variant="outlined"
+                color="error"
+                size="small"
+              >
+                キャンセル
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={toggleEditMode}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              QAを編集
+            </Button>
+          )}
         </>
-      ) : (
-        <Button
-          onClick={toggleEditMode}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          プロフィールを編集
-        </Button>
       )}
     </Box>
   );

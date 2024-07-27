@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Box } from "@mui/material";
 
 import Table from "../../components/table/Table";
-import Filter from '../../components/filter/Filter'
+import Filter from "../../components/filter/Filter";
 
 const Staff = () => {
   const headers = [
@@ -51,42 +51,16 @@ const Staff = () => {
   // must match with db table col names
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
-    {
-      key: "test1",
-      label: "test1",
-      type: "checkbox",
-      options: ["opt1", "opt2", "opt3"],
-      minWidth: "160px",
-    },
-    {
-      key: "role",
-      label: "役職",
-      type: "checkbox",
-      options: ["Specialty", "Admin", "Manager"],
-      minWidth: "160px",
-    },
-    {
-      key: "phone_number",
-      label: "電話番号",
-      type: "text",
-      minWidth: "160px",
-    },
-    {
-      key: "email",
-      label: "メール",
-      type: "text",
-      minWidth: "160px",
-    }
   ];
 
   const tableProps = {
     headers: headers,
     dataLink: "/api/staff",
-    filter:filterState,
+    filter: filterState,
   };
 
   const handleFilterChange = (value) => {
-    setFilterState(value)
+    setFilterState(value);
   };
 
   return (

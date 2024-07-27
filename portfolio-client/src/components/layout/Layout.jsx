@@ -11,6 +11,7 @@ import { ReactComponent as UserPlusIcon } from "../../assets/icons/userPlus.svg"
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 import { ReactComponent as LogOutIcon } from "../../assets/icons/logOut.svg";
+import { ReactComponent as BookmarkIcon } from "../../assets/icons/bookmark.svg";
 
 import logo from "/src/assets/logo.png";
 import style from "./Layout.module.css";
@@ -159,6 +160,15 @@ const Layout = () => {
                 >
                   <UserPlusIcon />
                   <div>リクレーター</div>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/bookmarked"
+                  className={({ isActive }) => (isActive ? style.active : "")}
+                >
+                  <BookmarkIcon />
+                  <div>気になる</div>
                 </NavLink>
               </li>
             </ul>

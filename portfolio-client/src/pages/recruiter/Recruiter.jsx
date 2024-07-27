@@ -44,34 +44,16 @@ const Recruiter = () => {
   // must match with db table col names
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
-    {
-      key: "company_name",
-      label: "会社名",
-      type: "text",
-      minWidth: "160px",
-    },
-    {
-      key: "phone_number",
-      label: "電話番号",
-      type: "text",
-      minWidth: "160px",
-    },
-    {
-      key: "email",
-      label: "メール",
-      type: "text",
-      minWidth: "160px",
-    }
   ];
 
   const tableProps = {
     headers: headers,
     dataLink: "/api/recruiters",
-    filter:filterState
+    filter: filterState,
   };
 
   const handleFilterChange = (value) => {
-    setFilterState(value)
+    setFilterState(value);
   };
 
   return (
