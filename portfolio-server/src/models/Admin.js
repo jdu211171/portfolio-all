@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     photo: {
       type: DataTypes.STRING,
       allowNull: true,

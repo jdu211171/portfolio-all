@@ -16,6 +16,13 @@ const certificates = {
         N4: '#1E90FF',    // Dodger Blue
         N5: '#32CD32'     // Lime Green
     },
+    JDU_JLPT: {
+        Q1: '#4B0082',    // Indigo
+        Q2: '#9400D3',    // Dark Violet
+        Q3: '#FF1493',    // Deep Pink
+        Q4: '#1E90FF',    // Dodger Blue
+        Q5: '#32CD32'     // Lime Green
+    },
     other: {
         '1位': '#FF4500', // Orange Red
         '2位': '#FF6347', // Tomato

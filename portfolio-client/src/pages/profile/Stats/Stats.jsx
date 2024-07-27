@@ -76,7 +76,7 @@ const Stats = () => {
           setCertificateData("main", "JLPT", jlptResponse.data.records);
           setCertificateData(
             "main",
-            "JDU日本語認定試験",
+            "JDU_JLPT",
             jduJlptResponse.data.records
           );
           setCertificateData("main", "IELTS", ieltsResponse.data.records);

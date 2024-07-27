@@ -1,5 +1,6 @@
 // services/studentService.js
 const { Op } = require('sequelize');
+const bcrypt = require('bcrypt');
 const { Student } = require('../models');
 const { sendEmail } = require('../utils/emailService');
 
@@ -142,10 +143,12 @@ class StudentService {
   static async syncStudentData(studentData) {
     try {
       const results = await Promise.all(studentData.map(async (data) => {
+        // Check if the student already exists
+        const existingStudent = await Student.findOne({ where: { student_id: data.studentId } });
+
         // Prepare data for upsert
         const formattedData = {
           email: data.mail,
-          password: 'default_password', // Set default password or handle as required
           student_id: data.studentId,
           first_name: data.studentName.split(' ')[0], // Assuming first name is the first part
           last_name: data.studentName.split(' ')[1], // Assuming last name is the second part
@@ -161,6 +164,14 @@ class StudentService {
           it_contest: data.it_contest,
         };
 
+        if (!existingStudent) {
+          // If the student does not exist, set a default password
+          const salt = await bcrypt.genSalt(10);
+          formattedData.password = await bcrypt.hash('password123', salt);
+        } else {
+          formattedData.password = existingStudent.password;
+        }
+
         // Perform upsert
         return await Student.upsert(formattedData, {
           returning: true, // Optionally return the created or updated instance
@@ -172,6 +183,7 @@ class StudentService {
       throw error;
     }
   }
+
 
   //this is sample to send email
   static async EmailToStudent(email, password, firstName, lastName) {
