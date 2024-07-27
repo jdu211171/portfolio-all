@@ -1,11 +1,12 @@
 const { Staff } = require('../models'); // Assuming your model file is properly exported
 
 class StaffService {
-  static async createStaff(staffData) {
+  static async createStaff(data) {
     try {
-      const newStaff = await Staff.create(staffData);
+      const newStaff = await Staff.create(data);
       return newStaff;
     } catch (error) {
+      console.error('Error creating staff:', error);  // Log any errors
       throw error;
     }
   }
@@ -46,12 +47,9 @@ class StaffService {
 
   static async deleteStaff(staffId) {
     try {
-      const staff = await Staff.findByPk(staffId);
-      if (!staff) {
-        throw new Error('Staff not found');
-      }
-      await staff.destroy();
+      await Staff.destroy({ where: { kintone_id: staffId } });
     } catch (error) {
+      console.error('Error deleting staff:', error);  // Log any errors
       throw error;
     }
   }

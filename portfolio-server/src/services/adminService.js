@@ -1,5 +1,4 @@
 const { Admin } = require('../models');
-
 class AdminService {
   static async createAdmin(data) {
     return await Admin.create(data);

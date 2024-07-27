@@ -31,8 +31,10 @@
   margin-bottom: 40px;
 }
 
-.h1 {
+.userTitle {
   margin: 0;
+  font-size: 24px;
+  font-weight: 900;
 }
 
 .h2 {

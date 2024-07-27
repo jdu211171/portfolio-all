@@ -48,15 +48,11 @@ class RecruiterService {
     }
   }
 
-  // Service method to delete a recruiter
   static async deleteRecruiter(recruiterId) {
     try {
-      const recruiter = await Recruiter.findByPk(recruiterId);
-      if (!recruiter) {
-        throw new Error('Recruiter not found');
-      }
-      await recruiter.destroy();
+      await Recruiter.destroy({ where: { kintone_id: recruiterId } });
     } catch (error) {
+      console.error('Error deleting recruiter:', error);  // Log any errors
       throw error;
     }
   }

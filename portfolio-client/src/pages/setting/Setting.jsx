@@ -204,7 +204,9 @@ const Setting = () => {
             />
           </Box>
           <Box ml={2}>
-            <h1 className={SettingStyle["h1"]}>{user.first_name || "User"}</h1>
+            <div className={SettingStyle["userTitle"]}>
+              {user.first_name + " " + user.last_name || "User"}
+            </div>
           </Box>
         </Box>
         <Box
@@ -371,11 +373,7 @@ const Setting = () => {
                           onClick={() => togglePasswordVisibility("new")}
                           edge="end"
                         >
-                          {showNewPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
+                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     ),
