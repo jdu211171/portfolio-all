@@ -1,85 +1,46 @@
-const { Bookmark } = require('../models');
+const { Bookmark, Student } = require('../models');
 
 class BookmarkService {
-  // Service method to create a new bookmark
-  static async createBookmark(bookmarkData) {
+  // Service method to create or remove a bookmark
+  static async toggleBookmark(recruiterId, studentId) {
     try {
-      const newBookmark = await Bookmark.create(bookmarkData);
-      return newBookmark;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Service method to retrieve all bookmarks
-  static async getAllBookmarks() {
-    try {
-      const bookmarks = await Bookmark.findAll();
-      return bookmarks;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Service method to retrieve a bookmark by ID
-  static async getBookmarkById(bookmarkId) {
-    try {
-      const bookmark = await Bookmark.findByPk(bookmarkId);
-      if (!bookmark) {
-        throw new Error('Bookmark not found');
-      }
-      return bookmark;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Service method to update a bookmark
-  static async updateBookmark(bookmarkId, bookmarkData) {
-    try {
-      const bookmark = await Bookmark.findByPk(bookmarkId);
-      if (!bookmark) {
-        throw new Error('Bookmark not found');
-      }
-      await bookmark.update(bookmarkData);
-      return bookmark;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Service method to delete a bookmark
-  static async deleteBookmark(bookmarkId) {
-    try {
-      const bookmark = await Bookmark.findByPk(bookmarkId);
-      if (!bookmark) {
-        throw new Error('Bookmark not found');
-      }
-      await bookmark.destroy();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // Service method to retrieve bookmarks by recruiter ID
-  static async getBookmarksByRecruiterId(recruiterId) {
-    try {
-      const bookmarks = await Bookmark.findAll({
-        where: { recruiterId },
+      const bookmark = await Bookmark.findOne({
+        where: { recruiterId, studentId },
       });
-      return bookmarks;
+
+      if (bookmark) {
+        await bookmark.destroy();
+        return bookmark;
+      } else {
+        const newBookmark = await Bookmark.create({ recruiterId, studentId });
+        return newBookmark;
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  // Service method to retrieve bookmarks by student ID
-  static async getBookmarksByStudentId(studentId) {
+  // Service method to retrieve all students with bookmark status for a recruiter
+  static async getStudentsWithBookmarkStatus(recruiterId) {
     try {
-      const bookmarks = await Bookmark.findAll({
-        where: { studentId },
+      const students = await Student.findAll({
+        include: [
+          {
+            model: Bookmark,
+            as: 'bookmarks',
+            where: { recruiterId },
+            required: false, // Allows students without bookmarks to be included
+          },
+        ],
       });
-      return bookmarks;
+
+      // Add `isBookmarked` field to each student
+      const studentsWithBookmarkStatus = students.map(student => {
+        const isBookmarked = student.bookmarks.length > 0;
+        return { ...student.toJSON(), isBookmarked };
+      });
+
+      return studentsWithBookmarkStatus;
     } catch (error) {
       throw error;
     }

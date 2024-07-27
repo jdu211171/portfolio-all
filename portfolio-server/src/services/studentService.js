@@ -1,7 +1,7 @@
 // services/studentService.js
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
-const { Student } = require('../models');
+const { Student, Bookmark, sequelize } = require('../models');
 const { sendEmail } = require('../utils/emailService');
 
 class StudentService {
@@ -16,7 +16,7 @@ class StudentService {
   }
 
   // Service method to retrieve all students
-  static async getAllStudents(filter) {
+  static async getAllStudents(filter, recruiterId, onlyBookmarked) {
     try {
       const semesterMapping = {
         '1年生': ['1', '2'],
@@ -88,9 +88,35 @@ class StudentService {
           }
         }
       });
+
+      if (onlyBookmarked == "true") {
+        if (!query[Op.and]) {
+          query[Op.and] = [];
+        }
+        query[Op.and].push(
+          sequelize.literal(`EXISTS (
+            SELECT 1
+            FROM "Bookmarks" AS "Bookmark"
+            WHERE "Bookmark"."studentId" = "Student"."id"
+              AND "Bookmark"."recruiterId" = ${sequelize.escape(recruiterId)}
+          )`)
+        );
+      }
+
+
       // Execute the query to fetch students
       const students = await Student.findAll({
         where: query,
+        attributes: {
+          include: [
+            [sequelize.literal(`EXISTS (
+              SELECT 1
+              FROM "Bookmarks" AS "Bookmark"
+              WHERE "Bookmark"."studentId" = "Student"."id"
+                AND "Bookmark"."recruiterId" = ${sequelize.escape(recruiterId)}
+            )`), 'isBookmarked']
+          ]
+        },
       });
 
       return students;
@@ -193,7 +219,6 @@ class StudentService {
     const subject = 'Welcome to JDU';
     const text = `Hi ${firstName},\n\nWelcome to JDU. Your account has been created.\n\nBest regards,\nJDU Team`;
     const html = `<p>Hi ${firstName},</p><p>Welcome to JDU. Your account has been created.</p><p>Best regards,<br>JDU Team</p>`;
-    console.log(to, subject, text, html)
     await sendEmail(to, subject, text, html);
 
     return "email send successfully";

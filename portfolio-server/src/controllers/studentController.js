@@ -15,8 +15,17 @@ class StudentController {
   // Controller method to get all students
   static async getAllStudents(req, res, next) {
     try {
-      const filter = req.query;
-      const students = await StudentService.getAllStudents(filter);
+      let filter
+      if (req.query.filter) {
+        filter = req.query.filter
+      } else {
+        filter = {}
+      }
+
+      const recruiterId = req.query.recruiterId;
+      const onlyBookmarked = req.query.onlyBookmarked
+
+      const students = await StudentService.getAllStudents(filter, recruiterId, onlyBookmarked);
       res.status(200).json(students);
     } catch (error) {
       next(error);

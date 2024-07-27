@@ -15,7 +15,6 @@ class KintoneController {
   static async getBy(req, res, next) {
     try {
       const { table, col, val } = req.body;
-      console.log(table, col, val)
       const students = await KintoneService.getRecordBy(table, col, val); //here it can get any app name set in /config/kintoneConfig.js
       res.status(200).json(students);
     } catch (error) {
