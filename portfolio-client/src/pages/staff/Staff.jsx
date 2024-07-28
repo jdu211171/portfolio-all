@@ -20,6 +20,7 @@ const Staff = () => {
       numeric: true,
       disablePadding: false,
       label: "メール",
+      type: "email",
       minWidth: "160px",
     },
     {
@@ -48,6 +49,7 @@ const Staff = () => {
       numeric: true,
       disablePadding: false,
       label: "アクション",
+      minWidth: "160px",
     },
   ];
 
