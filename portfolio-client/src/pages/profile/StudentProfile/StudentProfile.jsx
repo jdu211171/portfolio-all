@@ -12,8 +12,16 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EmailIcon from "@mui/icons-material/Email";
 import styles from "./StudentProfile.module.css";
 
-const StudentProfile = () => {
+const StudentProfile = ({ userId = 0 }) => {
   const { studentId } = useParams();
+
+  let id;
+  if (userId != 0) {
+    id = userId;
+  } else {
+    id = studentId;
+  }
+
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(null);
@@ -21,7 +29,7 @@ const StudentProfile = () => {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const response = await axios.get(`/api/students/${studentId}`);
+        const response = await axios.get(`/api/students/${id}`);
         setStudent(response.data);
       } catch (error) {
         showAlert("Error fetching student data", "error");
@@ -124,22 +132,22 @@ const StudentProfile = () => {
       </Box>
       <Box className={styles.navbar}>
         <NavLink
-          to={`/student/profile/${studentId}/top`}
-          state={{
-            student,
-          }}
+          to={`top`}
+          state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
           トップ
         </NavLink>
         <NavLink
-          to={`/student/profile/${studentId}/qa`}
+          to={`qa`}
+          state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
           Q&A
         </NavLink>
         <NavLink
-          to={`/student/profile/${studentId}/stats`}
+          to={`stats`}
+          state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
           style={{ minWidth: "130px" }}
         >

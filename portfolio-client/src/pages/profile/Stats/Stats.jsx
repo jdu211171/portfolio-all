@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import axios from "../../../utils/axiosUtils";
 import certificateColors from "../../../utils/certificates";
 import { Box, Tabs, Tab, Snackbar, Alert } from "@mui/material";
@@ -8,7 +8,17 @@ import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import styles from "./Stats.module.css";
 
 const Stats = () => {
+  let id;
   const { studentId } = useParams();
+  const location = useLocation();
+  const { userId } = location.state || {};
+
+  if (userId != 0) {
+    id = userId;
+  } else {
+    id = studentId;
+  }
+  
   const [student, setStudent] = useState(null);
   const [kintoneData, setKintoneData] = useState({});
   const [editData, setEditData] = useState({});
@@ -23,7 +33,7 @@ const Stats = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const studentResponse = await axios.get(`/api/students/${studentId}`);
+        const studentResponse = await axios.get(`/api/students/${id}`);
         const studentData = studentResponse.data;
 
         const kintoneResponse = await axios.post(`/api/kintone/getby`, {

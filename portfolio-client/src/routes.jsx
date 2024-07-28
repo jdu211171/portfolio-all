@@ -12,41 +12,59 @@ import Staff from "./pages/staff/Staff";
 import Login from "./pages/login/Login";
 import FAQ from "./pages/faq/Faq";
 
-import LogOut from "./components/LogOut";
-import NotFound from "./pages/NotFound/NotFound";
-import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import FirstLoginPage from "./pages/FirstLoginPage/FirstLoginPage";
 import StudentProfile from "./pages/profile/StudentProfile/StudentProfile";
 import Top from "./pages/profile/Top/Top";
 import Qa from "./pages/profile/Qa/Qa";
 import Stats from "./pages/profile/Stats/Stats";
 
+import LogOut from "./components/LogOut";
+import NotFound from "./pages/NotFound/NotFound";
+import Unauthorized from "./pages/Unauthorized/Unauthorized";
+
 const AppRoutes = () => {
+  const userId = JSON.parse(sessionStorage.getItem("loginUser")).id
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route element={<ProtectedLayout />}>
             <Route index element={<Home />} />
-            <Route path="/student" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}>
+              <Route path="/student" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}>
               <Route index element={<Student key="students" />} />
               <Route path="profile/:studentId/*" element={<StudentProfile />}>
-              <Route index element={<Navigate to="top"/>} /> {/* Redirect index to top */}
-              <Route path="top" element={<Top />} />
-              <Route path="qa" element={<Qa />} />
-              <Route path="stats" element={<Stats />} />
-            </Route>
+                <Route index element={<Navigate to="top"/>} /> {/* Redirect index to top */}
+                <Route path="top" element={<Top />} />
+                <Route path="qa" element={<Qa />} />
+                <Route path="stats" element={<Stats />} />
+              </Route>
           </Route>
            
             <Route path="/recruiter" element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Student"]} />}>
               <Route index element={<Recruiter />} />
             </Route>
+
+            <Route path="/mycompany" element={<ProtectedLayout allowedRoles={["Admin", "Staff",  "Recruiter", "Student"]} />}>
+              <Route index element={<Recruiter />} />
+            </Route>
+
+            <Route path="/profile" element={<ProtectedLayout allowedRoles={["Student"]} />}>
+                <Route path="*" element={<StudentProfile userId={userId} />}>
+                  <Route index element={<Navigate to="top" state={{ userId: userId }} />} /> {/* Redirect index to top */}
+                  <Route path="top" element={<Top />} />
+                  <Route path="qa" element={<Qa />} />
+                  <Route path="stats" element={<Stats />} />
+                </Route>
+            </Route>
+
             <Route path="/staff" element={<ProtectedLayout allowedRoles={["Admin"]} />}>
               <Route index element={<Staff />} />
             </Route>
+
             <Route path="/bookmarked" element={<ProtectedLayout allowedRoles={["Recruiter"]} />}>
               <Route index element={<Student key="bookmarked" OnlyBookmarked={true} />} />
             </Route>
+
             <Route path="/settings" element={<Setting />} />
             <Route path="/help" element={<FAQ />} />
           </Route>

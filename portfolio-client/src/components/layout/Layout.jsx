@@ -11,6 +11,7 @@ import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg"
 import { ReactComponent as HelpIcon } from "../../assets/icons/help.svg";
 import { ReactComponent as LogOutIcon } from "../../assets/icons/logOut.svg";
 import { ReactComponent as BookmarkIcon } from "../../assets/icons/bookmark.svg";
+import { ReactComponent as ProfileIcon } from "../../assets/icons/profile.svg";
 
 import logo from "/src/assets/logo.png";
 import style from "./Layout.module.css";
@@ -28,7 +29,8 @@ const navItems = [
         { to: "/", icon: <HomeIcon />, label: "Home", roles: ["Admin", "Staff", "Recruiter"] },
         { to: "/student", icon: <StudentIcon />, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"] },
         { to: "/staff", icon: <UserPlusIcon />, label: "職員", roles: ["Admin"] },
-        { to: "/recruiter", icon: <UserPlusIcon />, label: "リクレーター", roles: ["Admin", "Staff"] },
+        { to: "/profile", icon: <ProfileIcon />, label: "プロファイル", roles: ["Student"] },
+        { to: "/recruiter", icon: <UserPlusIcon />, label: "リクレーター", roles: ["Admin", "Staff", "Student"] },
         { to: "/bookmarked", icon: <BookmarkIcon />, label: "気になる", roles: ["Recruiter"] },
     ],
   },  {
