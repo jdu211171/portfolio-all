@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosUtils';
 import Cookies from 'js-cookie';
@@ -9,14 +9,17 @@ import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
-
+import { UserContext } from '../../contexts/UserContext';
 const Login = () => {
+  const navigate = useNavigate();
+  const { updateUser } = useContext(UserContext);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loginMode, setLoginMode] = useState(true); // состояние для переключения режимов
-  const navigate = useNavigate();
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -36,6 +39,7 @@ const Login = () => {
       sessionStorage.setItem("token", token)
       sessionStorage.setItem("role", userType)
       sessionStorage.setItem("loginUser", JSON.stringify(userData))
+      updateUser();
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');

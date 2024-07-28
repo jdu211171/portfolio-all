@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
@@ -6,6 +7,13 @@ import Table from "../../components/table/Table";
 import Filter from "../../components/filter/Filter";
 
 const Recruiter = () => {
+  const navigate = useNavigate();
+  const navigateToCompanyProfile = (recruiterId) => {
+    navigate(`/companyprofile`, {
+      state: { recruiterId: recruiterId }, // passing state
+    });
+  };
+
   const headers = [
     {
       id: "name",
@@ -13,6 +21,7 @@ const Recruiter = () => {
       disablePadding: true,
       label: "リクルーター",
       type: "avatar",
+      onClickAction: navigateToCompanyProfile,
     },
     {
       id: "company_name",

@@ -21,6 +21,8 @@ import {
 import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
 
 const EnhancedTable = ({ tableProps, updatedBookmark }) => {
+  const role = sessionStorage.getItem("role");
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
   const [selected, setSelected] = useState([]);
@@ -103,27 +105,30 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
         <Table sx={{ minWidth: 750 }} size="medium">
           <TableHead>
             <TableRow>
-              {tableProps.headers.map((header) => (
-                <TableCell
-                  key={header.id}
-                  align={header.numeric ? "right" : "left"}
-                  padding={header.disablePadding ? "none" : "normal"}
-                  sortDirection={orderBy === header.id ? order : false}
-                >
-                  <TableSortLabel
-                    active={orderBy === header.id}
-                    direction={orderBy === header.id ? order : "asc"}
-                    onClick={() => handleRequestSort(header.id)}
-                  >
-                    {header.label}
-                    {orderBy === header.id ? (
-                      <Box component="span" sx={{ visuallyHidden: true }}>
-                        {order === "desc" ? "" : ""}
-                      </Box>
-                    ) : null}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
+              {tableProps.headers.map(
+                (header) =>
+                  (header.role == undefined || header.role == role) && (
+                    <TableCell
+                      key={"header" + header.id}
+                      align={header.numeric ? "right" : "left"}
+                      padding={header.disablePadding ? "none" : "normal"}
+                      sortDirection={orderBy === header.id ? order : false}
+                    >
+                      <TableSortLabel
+                        active={orderBy === header.id}
+                        direction={orderBy === header.id ? order : "asc"}
+                        onClick={() => handleRequestSort(header.id)}
+                      >
+                        {header.label}
+                        {orderBy === header.id ? (
+                          <Box component="span" sx={{ visuallyHidden: true }}>
+                            {order === "desc" ? "" : ""}
+                          </Box>
+                        ) : null}
+                      </TableSortLabel>
+                    </TableCell>
+                  )
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -145,84 +150,87 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                     selected={isSelected(row.id)}
                     sx={{ cursor: "pointer" }}
                   >
-                    {tableProps.headers.map((header) => (
-                      <TableCell
-                        key={header.id}
-                        align={header.numeric ? "right" : "left"}
-                        padding={header.disablePadding ? "none" : "normal"}
-                        onClick={() =>
-                          header.onClickAction
-                            ? header.onClickAction(row.id)
-                            : null
-                        }
-                        className={
-                          header.onClickAction
-                            ? style.hoverEffect
-                            : style.default
-                        }
-                        style={{ minWidth: header.minWidth }}
-                      >
-                        {header.type === "bookmark" ? (
-                          <>
-                            {row.isBookmarked ? (
-                              <svg
-                                width="19"
-                                height="18"
-                                viewBox="0 0 19 18"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M9.3275 14.1233L4.18417 16.8275L5.16667 11.1L1 7.04417L6.75 6.21083L9.32167 1L11.8933 6.21083L17.6433 7.04417L13.4767 11.1L14.4592 16.8275L9.3275 14.1233Z"
-                                  fill="#F7C02F"
-                                  stroke="#F7C02F"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
+                    {tableProps.headers.map(
+                      (header) =>
+                        (header.role == undefined || header.role == role) && (
+                          <TableCell
+                            key={"data" + header.id}
+                            align={header.numeric ? "right" : "left"}
+                            padding={header.disablePadding ? "none" : "normal"}
+                            onClick={() =>
+                              header.onClickAction
+                                ? header.onClickAction(row.id)
+                                : null
+                            }
+                            className={
+                              header.onClickAction
+                                ? style.hoverEffect
+                                : style.default
+                            }
+                            style={{ minWidth: header.minWidth }}
+                          >
+                            {header.type === "bookmark" ? (
+                              <>
+                                {row.isBookmarked ? (
+                                  <svg
+                                    width="19"
+                                    height="18"
+                                    viewBox="0 0 19 18"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M9.3275 14.1233L4.18417 16.8275L5.16667 11.1L1 7.04417L6.75 6.21083L9.32167 1L11.8933 6.21083L17.6433 7.04417L13.4767 11.1L14.4592 16.8275L9.3275 14.1233Z"
+                                      fill="#F7C02F"
+                                      stroke="#F7C02F"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    width="18"
+                                    height="17"
+                                    viewBox="0 0 18 17"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M9.00035 13.7913L3.85702 16.4955L4.83952 10.768L0.672852 6.71214L6.42285 5.8788L8.99452 0.667969L11.5662 5.8788L17.3162 6.71214L13.1495 10.768L14.132 16.4955L9.00035 13.7913Z"
+                                      stroke="#F7C02F"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                )}
+                              </>
+                            ) : header.type === "avatar" ? (
+                              <UserAvatar
+                                photo={row.photo}
+                                name={row.first_name + " " + row.last_name}
+                                studentId={row.student_id}
+                              />
+                            ) : header.type === "status" ? (
+                              <Chip
+                                label={row[header.id] ? "○" : "×"}
+                                color={row[header.id] ? "primary" : "default"}
+                              />
+                            ) : header.type === "email" ? (
+                              <a href={`mailto:${row[header.id]}`}>
+                                {row[header.id]}
+                              </a>
+                            ) : header.isJSON ? (
+                              JSON.parse(row[header.id])?.highest ? (
+                                JSON.parse(row[header.id])?.highest
+                              ) : (
+                                "無し"
+                              )
                             ) : (
-                              <svg
-                                width="18"
-                                height="17"
-                                viewBox="0 0 18 17"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M9.00035 13.7913L3.85702 16.4955L4.83952 10.768L0.672852 6.71214L6.42285 5.8788L8.99452 0.667969L11.5662 5.8788L17.3162 6.71214L13.1495 10.768L14.132 16.4955L9.00035 13.7913Z"
-                                  stroke="#F7C02F"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
+                              row[header.id]
                             )}
-                          </>
-                        ) : header.type === "avatar" ? (
-                          <UserAvatar
-                            photo={row.photo}
-                            name={row.first_name + " " + row.last_name}
-                            studentId={row.student_id}
-                          />
-                        ) : header.type === "status" ? (
-                          <Chip
-                            label={row[header.id] ? "○" : "×"}
-                            color={row[header.id] ? "primary" : "default"}
-                          />
-                        ) : header.type === "email" ? (
-                          <a href={`mailto:${row[header.id]}`}>
-                            {row[header.id]}
-                          </a>
-                        ) : header.isJSON ? (
-                          JSON.parse(row[header.id])?.highest ? (
-                            JSON.parse(row[header.id])?.highest
-                          ) : (
-                            "無し"
-                          )
-                        ) : (
-                          row[header.id]
-                        )}
-                      </TableCell>
-                    ))}
+                          </TableCell>
+                        )
+                    )}
                   </TableRow>
                 ))}
                 {emptyRows > 0 && (

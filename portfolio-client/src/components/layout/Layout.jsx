@@ -27,6 +27,7 @@ const navItems = [
     section: "GENERAL",
     items: [
         { to: "/", icon: <HomeIcon />, label: "Home", roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/companyprofile", icon: <ProfileIcon />, label: "プロファイル", roles: ["Recruiter"] },
         { to: "/student", icon: <StudentIcon />, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"] },
         { to: "/staff", icon: <UserPlusIcon />, label: "職員", roles: ["Admin"] },
         { to: "/profile", icon: <ProfileIcon />, label: "プロファイル", roles: ["Student"] },
@@ -37,7 +38,7 @@ const navItems = [
     section: "GENERAL",
     items: [
         { to: "/settings", icon: <SettingsIcon />, label: "設定", roles: ["Admin", "Staff", "Recruiter", "Student"] },
-        { to: "/help", icon: <HelpIcon />, label: "ヘルプ", roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/help", icon: <HelpIcon />, label: "ヘルプ", roles: ["Admin", "Staff", "Recruiter", "Student"] },
     ],
   },
 ];

@@ -22,6 +22,7 @@ const StudentProfile = ({ userId = 0 }) => {
     id = studentId;
   }
 
+  
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(null);
@@ -37,7 +38,7 @@ const StudentProfile = ({ userId = 0 }) => {
     };
 
     fetchStudent();
-  }, [studentId]);
+  }, [id]);
 
   const handleBackClick = () => {
     const isRootPath = location.pathname.endsWith("/top");

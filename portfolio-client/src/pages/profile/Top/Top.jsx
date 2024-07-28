@@ -7,7 +7,6 @@ import {
   Box,
   Tabs,
   Tab,
-  Typography,
   Button,
   Snackbar,
   Alert,
@@ -31,7 +30,7 @@ const Top = () => {
   const location = useLocation();
   const { userId } = location.state || {};
 
-  if (userId != 0) {
+  if (userId != 0 && userId) {
     id = userId;
   } else {
     id = studentId;

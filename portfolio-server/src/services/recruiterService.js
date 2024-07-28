@@ -24,7 +24,9 @@ class RecruiterService {
   // Service method to retrieve a recruiter by ID
   static async getRecruiterById(recruiterId) {
     try {
-      const recruiter = await Recruiter.findByPk(recruiterId);
+      const recruiter = await Recruiter.findByPk(recruiterId, {
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
       if (!recruiter) {
         throw new Error('Recruiter not found');
       }
@@ -37,7 +39,9 @@ class RecruiterService {
   // Service method to update a recruiter
   static async updateRecruiter(recruiterId, recruiterData) {
     try {
-      const recruiter = await Recruiter.findByPk(recruiterId);
+      const recruiter = await Recruiter.findByPk(recruiterId, {
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
       if (!recruiter) {
         throw new Error('Recruiter not found');
       }

@@ -116,7 +116,7 @@ class StudentService {
                 AND "Bookmark"."recruiterId" = ${sequelize.escape(recruiterId)}
             )`), 'isBookmarked']
           ]
-        },
+        }
       });
 
       return students;
@@ -128,7 +128,9 @@ class StudentService {
   // Service method to retrieve a student by ID
   static async getStudentById(studentId) {
     try {
-      const student = await Student.findByPk(studentId);
+      const student = await Student.findByPk(studentId, {
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
       if (!student) {
         throw new Error('Student not found');
       }
@@ -141,7 +143,9 @@ class StudentService {
   // Service method to update a student
   static async updateStudent(studentId, studentData) {
     try {
-      const student = await Student.findByPk(studentId);
+      const student = await Student.findByPk(studentId, {
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
       if (!student) {
         throw new Error('Student not found');
       }

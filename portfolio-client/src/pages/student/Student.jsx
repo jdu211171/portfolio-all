@@ -113,6 +113,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       disablePadding: true,
       label: "",
       type: "bookmark",
+      role: "Recruiter",
       onClickAction: addToBookmark,
     },
     {

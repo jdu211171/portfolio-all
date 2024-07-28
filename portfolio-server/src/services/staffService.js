@@ -22,7 +22,9 @@ class StaffService {
 
   static async getStaffById(staffId) {
     try {
-      const staff = await Staff.findByPk(staffId);
+      const staff = await Staff.findByPk(staffId, {
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
       if (!staff) {
         throw new Error('Staff not found');
       }
@@ -34,7 +36,9 @@ class StaffService {
 
   static async updateStaff(staffId, staffData) {
     try {
-      const staff = await Staff.findByPk(staffId);
+      const staff = await Staff.findByPk(staffId, {
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
       if (!staff) {
         throw new Error('Staff not found');
       }

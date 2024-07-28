@@ -80,10 +80,10 @@ const Deliverables = ({
     const { zoomIn, zoomOut, resetTransform } = useControls();
     return (
       <div className={styles.zoomContainer}>
-        <button className={styles.zoomButtonR} onClick={zoomIn}>
+        <button className={styles.zoomButtonR} onClick={() => zoomIn()}>
           +
         </button>
-        <button className={styles.resetButton} onClick={resetTransform}>
+        <button className={styles.resetButton} onClick={() => resetTransform()}>
           <svg
             width="16"
             height="16"
@@ -97,7 +97,7 @@ const Deliverables = ({
             />
           </svg>
         </button>
-        <button className={styles.zoomButtonL} onClick={zoomOut}>
+        <button className={styles.zoomButtonL} onClick={() => zoomOut()}>
           -
         </button>
       </div>
@@ -176,6 +176,7 @@ const Deliverables = ({
       </table>
       <Box className={styles.imageBox}>
         <TransformWrapper>
+          
           <TransformComponent>
             <img
               src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
