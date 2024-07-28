@@ -16,6 +16,7 @@ import StudentProfile from "./pages/profile/StudentProfile/StudentProfile";
 import Top from "./pages/profile/Top/Top";
 import Qa from "./pages/profile/Qa/Qa";
 import Stats from "./pages/profile/Stats/Stats";
+import CreditDetails from "./pages/CreditDetails/CreditDetails";
 import Setting from "./pages/setting/Setting";
 import FAQ from "./pages/faq/Faq";
 import NotFound from "./pages/NotFound/NotFound";
@@ -82,6 +83,7 @@ const AppRoutes = () => {
           </Route>
           <Route path="/unauthorized" element={<Unauthorized />} />
         </Route>
+        <Route path="/credit-details" element={<CreditDetails />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<LogOut updateUser={updateUser} />} />

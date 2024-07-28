@@ -15,7 +15,6 @@ const Student = ({ OnlyBookmarked = false }) => {
   const recruiterId = JSON.parse(sessionStorage.getItem("loginUser")).id;
   // Ensure filterProps have unique keys matching your database columns
   const filterProps = [
-    { key: "name", label: "名前", type: "text", minWidth: "160px" },
     {
       key: "semester",
       label: "学年",

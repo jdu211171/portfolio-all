@@ -28,7 +28,7 @@ const Staff = () => {
       label: "役職",
     },
     {
-      id: "phone_number",
+      id: "phone",
       numeric: true,
       disablePadding: false,
       label: "電話番号",

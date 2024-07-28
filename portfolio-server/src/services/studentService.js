@@ -180,9 +180,10 @@ class StudentService {
         const formattedData = {
           email: data.mail,
           student_id: data.studentId,
-          first_name: data.studentName.split(' ')[0], // Assuming first name is the first part
+          first_name: data.studentName.split(' ')[0], // Asseuming first name is the first part
           last_name: data.studentName.split(' ')[1], // Assuming last name is the second part
           date_of_birth: data.jduDate,
+          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           // Include other fields as needed
           semester: data.semester,
           partner_university: data.univer,

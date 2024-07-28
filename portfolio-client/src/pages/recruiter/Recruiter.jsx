@@ -30,7 +30,7 @@ const Recruiter = () => {
       label: "会社名",
     },
     {
-      id: "phone_number",
+      id: "phone",
       numeric: true,
       disablePadding: false,
       label: "電話番号",

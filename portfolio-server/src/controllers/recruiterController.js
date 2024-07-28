@@ -24,7 +24,7 @@ class RecruiterController {
           last_name: record.recruiterLastName.value,
           company_name: record.companyName.value,
           phone: record.phoneNumber.value,
-          photo: '',
+          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           active: false,
           kintone_id: record['$id'].value
         };
@@ -63,7 +63,14 @@ class RecruiterController {
 
   static async getAll(req, res, next) {
     try {
-      const recruiters = await RecruiterService.getAllRecruiters();
+      let filter
+      if (req.query.filter) {
+        filter = req.query.filter
+      } else {
+        filter = {}
+      }
+
+      const recruiters = await RecruiterService.getAllRecruiters(filter);
       res.status(200).json(recruiters);
     } catch (error) {
       next(error);

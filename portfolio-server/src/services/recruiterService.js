@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const { Recruiter } = require('../models');
 
 class RecruiterService {
@@ -8,13 +10,37 @@ class RecruiterService {
       return newRecruiter;
     } catch (error) {
       throw error; // Throw the error for the controller to handle
-    }
+    }å
   }
 
   // Service method to retrieve all recruiters
-  static async getAllRecruiters() {
+  static async getAllRecruiters(filter) {
     try {
-      const recruiters = await Recruiter.findAll();
+      let query = {}; // Initialize an empty query object
+      const searchableColumns = ['email', 'first_name', 'last_name', "company_name", 'company_description', 'phone']; // Example list of searchable columns
+
+      // Iterate through filter keys
+      Object.keys(filter).forEach(key => {
+        if (filter[key]) {
+          // Handle different types of filter values
+          if (key === 'search') {
+            // Search across all searchable columns
+            query[Op.or] = searchableColumns.map(column => {
+              // Use Op.iLike for case insensitive search on other columns
+              return { [column]: { [Op.iLike]: `%${filter[key]}%` } };
+            });
+          } else if (Array.isArray(filter[key])) {
+            // If filter value is an array, use $in operator
+            query[key] = { [Op.in]: filter[key] };
+          } else if (typeof filter[key] === 'string') {
+            query[key] = { [Op.like]: `%${filter[key]}%` };
+          } else {
+            // Handle other types of filter values as needed
+            query[key] = filter[key];
+          }
+        }
+      });
+      const recruiters = await Recruiter.findAll({ where: query, });
       return recruiters;
     } catch (error) {
       throw error;

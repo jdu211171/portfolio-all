@@ -27,9 +27,9 @@ const apps = {
     appId: "140",
     token: "vxcMSuOmpTctlwRhP2p5sQlC7fv6b2r33YjOMUfR"
   },
-  recruiters: {
-    appId: "107",
-    token: "some other token"
+  credit_details: {
+    appId: "160",
+    token: "vWvQrg6JprrOq2oQIGvIhj1E3q4WtViLpQMyHDD8"
   }
 };
 

@@ -22,7 +22,7 @@ class StaffController {
           last_name: record.staffLastName.value,
           department: record.department.value,
           position: record.status.value,
-          photo: '',
+          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           kintone_id: record['$id'].value
         };
 
@@ -47,7 +47,13 @@ class StaffController {
 
   static async getAllStaff(req, res) {
     try {
-      const staffList = await StaffService.getAllStaff();
+      let filter
+      if (req.query.filter) {
+        filter = req.query.filter
+      } else {
+        filter = {}
+      }
+      const staffList = await StaffService.getAllStaff(filter);
       res.json(staffList);
     } catch (error) {
       res.status(400).json({ error: error.message });

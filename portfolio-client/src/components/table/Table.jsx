@@ -226,7 +226,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 "無し"
                               )
                             ) : (
-                              row[header.id]
+                              row[header.id] ? row[header.id] : "無し"
                             )}
                           </TableCell>
                         )

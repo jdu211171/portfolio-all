@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
 import axios from "../../../utils/axiosUtils";
 import certificateColors from "../../../utils/certificates";
 import { Box, Tabs, Tab, Snackbar, Alert } from "@mui/material";
@@ -8,6 +8,7 @@ import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import styles from "./Stats.module.css";
 
 const Stats = () => {
+  const navigate = useNavigate();
   let id;
   const { studentId } = useParams();
   const location = useLocation();
@@ -129,9 +130,12 @@ const Stats = () => {
     } else {
       data.forEach((x) => {
         let obj = {
-          name: x.level.value,
+          name: type == "ITコンテスト学内" ? x["学内賞"].value : x.level.value,
           date: x.date.value.slice(0, 7),
-          color: certificateColors[key][x.level.value],
+          color:
+            certificateColors[key][
+              type == "ITコンテスト学内" ? x["学内賞"].value : x.level.value
+            ],
         };
         temp.push(obj);
       });
@@ -149,6 +153,20 @@ const Stats = () => {
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
+  };
+
+  const openCreditDetails = (event) => {
+    event.preventDefault();
+    const newWindow = window.open(
+      "/credit-details",
+      "_blank",
+      "width=600,height=400"
+    );
+    if (newWindow) {
+      newWindow.onload = () => {
+        newWindow.postMessage({ student: student }, "*");
+      };
+    }
   };
 
   const showAlert = (message, severity) => {
@@ -178,8 +196,6 @@ const Stats = () => {
     { label: "3年", point: 93 },
     { label: "4年", point: 124 },
   ];
-
-  const credits = 40;
 
   return (
     <Box my={2}>
@@ -230,6 +246,15 @@ const Stats = () => {
           />
         </Box>
       )}
+      <Link
+        href="#"
+        underline="hover"
+        color="primary"
+        style={{ fontWeight: 800 }}
+        onClick={openCreditDetails}
+      >
+        詳細はこちらへ
+      </Link>
       <Box my={2}>
         <SkillSelector
           title="資格"
