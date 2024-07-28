@@ -5,6 +5,5 @@ const recruiterController = require('../controllers/recruiterController');
 
 router.post('/staff', staffController.webhookHandler);
 router.post('/recruiter', recruiterController.webhookHandler);
-router.post('/totest', recruiterController.totest);
 
 module.exports = router;
