@@ -15,14 +15,14 @@ const Staff = () => {
       type: "avatar",
     },
     {
-      id: "staff_id",
+      id: "department",
       numeric: true,
       disablePadding: false,
-      label: "職員ID",
+      label: "部署",
       type: "status",
     },
     {
-      id: "role",
+      id: "position",
       numeric: true,
       disablePadding: false,
       label: "役職",
