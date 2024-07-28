@@ -86,9 +86,9 @@ class EmailService {
       </html>
     `;
 
-    sendEmail(to, subject, text, html);
+    await sendEmail(to, subject, text, html);
 
-    return "check your email";
+    return "Email sent successfully";
   }
 }
 
