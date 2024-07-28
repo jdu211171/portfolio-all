@@ -46,6 +46,17 @@ class RecruiterController {
     }
   }
 
+  static async totest(req, res) {
+    try {
+      console.log("here")
+      let email = await EmailToStaff("botirovs03@gmail.com", "pass", "Saydiakhror", "Botirov");
+      res.status(201).json(email);
+    } catch (error) {
+      console.error('Error in webhook handler:', error);  // Log any errors
+      res.status(400).json({ error: error });
+    }
+  }
+
 
   static async create(req, res, next) {
     try {

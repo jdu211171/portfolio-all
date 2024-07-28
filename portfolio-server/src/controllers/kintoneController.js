@@ -58,7 +58,7 @@ class KintoneController {
       await KintoneService.syncData();
       res.status(204).json();
     } catch (error) {
-      res.status(500).json({ message: 'Error deleting student', error: error.message });
+      res.status(500).json({ message: error });
     }
   }
 }
