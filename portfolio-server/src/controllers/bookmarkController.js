@@ -1,4 +1,4 @@
-const BookmarkService = require('../services/BookmarkService');
+const BookmarkService = require('../services/bookmarkService');
 
 class BookmarkController {
   // Method to toggle bookmark
