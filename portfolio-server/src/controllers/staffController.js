@@ -28,11 +28,11 @@ class StaffController {
 
 
         const newStaff = await StaffService.createStaff(data);
-
+        let email
         if (newStaff) {
-          EmailToStaff(newStaff.email, password, newStaff.first_name, newStaff.last_name);
+          email = await EmailToStaff(newStaff.email, password, newStaff.first_name, newStaff.last_name);
         }
-        res.status(201).json(newStaff);
+        res.status(201).json(email);
       } else {
         const staffId = recordId;
         await StaffService.deleteStaff(staffId);
