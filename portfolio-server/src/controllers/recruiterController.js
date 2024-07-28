@@ -30,11 +30,11 @@ class RecruiterController {
         };
 
         const newRecruiter = await RecruiterService.createRecruiter(data);
-
+        let email
         if (newRecruiter) {
-          EmailToStaff(newRecruiter.email, password, newRecruiter.first_name, newRecruiter.last_name);
+          email = await EmailToStaff(newRecruiter.email, password, newRecruiter.first_name, newRecruiter.last_name);
         }
-        res.status(201).json(newRecruiter);
+        res.status(201).json(email);
       } else {
         const recruiterId = recordId;
         await RecruiterService.deleteRecruiter(recruiterId);
