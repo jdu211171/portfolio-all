@@ -4,7 +4,9 @@ class AuthController {
   static async login(req, res) {
     const { email, password } = req.body;
     try {
+      
       const { userType } = await AuthService.login(email, password, res);
+      console.log(req.body);
       res.json({ userType });
     } catch (error) {
       res.status(400).json({ error: error.message });
