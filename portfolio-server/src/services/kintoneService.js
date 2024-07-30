@@ -151,6 +151,7 @@ class KintoneService {
         studentName: record.studentName.value,
         mail: record.mail.value,
         jduDate: record.jduDate.value,
+        birthday: record.birthday.value,
         semester: record.semester.value,
         univer: record.univer.value,
         レコード番号: record['レコード番号'],

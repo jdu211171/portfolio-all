@@ -22,7 +22,6 @@ const StudentProfile = ({ userId = 0 }) => {
     id = studentId;
   }
 
-  
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(null);
@@ -47,6 +46,22 @@ const StudentProfile = ({ userId = 0 }) => {
     } else {
       navigate(-1);
     }
+  };
+
+  const calculateAge = (birthDateString) => {
+    const today = new Date();
+    const birthDate = new Date(birthDateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
   };
 
   if (!student) {
@@ -116,9 +131,7 @@ const StudentProfile = ({ userId = 0 }) => {
               }}
             />
             <Chip
-              label={`生年月日: ${new Date(
-                student.date_of_birth
-              ).toLocaleDateString()}`}
+              label={`年齢: ${calculateAge(student.date_of_birth)}`}
               variant="outlined"
               sx={{
                 fontSize: "12px",

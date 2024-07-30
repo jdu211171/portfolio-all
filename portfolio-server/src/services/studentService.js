@@ -182,7 +182,7 @@ class StudentService {
           student_id: data.studentId,
           first_name: data.studentName.split(' ')[0], // Asseuming first name is the first part
           last_name: data.studentName.split(' ')[1], // Assuming last name is the second part
-          date_of_birth: data.jduDate,
+          date_of_birth: data.birthday,
           photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           // Include other fields as needed
           semester: data.semester,

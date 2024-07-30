@@ -22,22 +22,20 @@ const StyledBox = styled(Box)({
 const CreditDetails = () => {
   const [student, setStudent] = useState(null);
   const [creditData, setCreditData] = useState([]);
-  const [studentDetails, setStudentDetails] = useState({
-    name: "Hamdumov Umid",
-    university: "東京通信大学",
-    universityEntryDate: "2021-09-03",
-    status: "在学中",
-  });
+
+  function base64DecodeUnicode(str) {
+    return decodeURIComponent(atob(str).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  }
 
   useEffect(() => {
-    const handleMessage = (event) => {
-      if (event.data && event.data.student) {
-        setStudent(event.data.student);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
+    const params = new URLSearchParams(window.location.search);
+    const encodedData = params.get("student");
+    if (encodedData) {
+      const decodedData = JSON.parse(base64DecodeUnicode(encodedData)); // Decode the Base64 and parse the JSON string
+      setStudent(decodedData);
+    }
   }, []);
 
   useEffect(() => {
@@ -47,6 +45,10 @@ const CreditDetails = () => {
         col: "studentId",
         val: studentId,
       });
+
+      setTimeout(() => {
+        console.log(response.data.records);
+      }, 5000);
       setCreditData(response.data.records);
     };
 
@@ -81,9 +83,9 @@ const CreditDetails = () => {
         </TableContainer>
       </Box>
 
-      <Box>
+      <Box mb={3}>
         <Typography variant="h6" gutterBottom>
-          単位数
+          JDU単位数
         </Typography>
         <TableContainer component={Paper}>
           <Table>
@@ -96,14 +98,48 @@ const CreditDetails = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {creditData.map((record) => (
-                <TableRow key={record.$id.value}>
-                  <TableCell>{record.subject.value}</TableCell>
-                  <TableCell>{record.hyouka.value}</TableCell>
-                  <TableCell>{record.credit.value}</TableCell>
-                  <TableCell>{record.date.value}</TableCell>
-                </TableRow>
-              ))}
+              {creditData.map(
+                (record) =>
+                  record.gradeUniverGroup.value !== "大学資格" && (
+                    <TableRow key={record.$id.value}>
+                      <TableCell>{record.subject.value}</TableCell>
+                      <TableCell>{record.hyouka.value}</TableCell>
+                      <TableCell>{record.manualCredit.value}</TableCell>
+                      <TableCell>{record.date.value}</TableCell>
+                    </TableRow>
+                  )
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      <Box>
+        <Typography variant="h6" gutterBottom>
+          提携大学単位数
+        </Typography>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>科目名</TableCell>
+                <TableCell>評価</TableCell>
+                <TableCell>単位数</TableCell>
+                <TableCell>取得日</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {creditData.map(
+                (record) =>
+                  record.gradeUniverGroup.value == "大学資格" && (
+                    <TableRow key={record.$id.value}>
+                      <TableCell>{record.subject.value}</TableCell>
+                      <TableCell>{record.hyouka.value}</TableCell>
+                      <TableCell>{record.manualCredit.value}</TableCell>
+                      <TableCell>{record.date.value}</TableCell>
+                    </TableRow>
+                  )
+              )}
             </TableBody>
           </Table>
         </TableContainer>

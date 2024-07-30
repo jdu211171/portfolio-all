@@ -157,17 +157,25 @@ const Stats = () => {
 
   const openCreditDetails = (event) => {
     event.preventDefault();
+    let tempStudent = {
+      student_id: student.student_id,
+      first_name: student.first_name,
+      last_name: student.last_name,
+      partner_university: student.partner_university,
+    };
+    const studentData = base64EncodeUnicode(JSON.stringify(tempStudent)); // Encode the JSON string with Base64
     const newWindow = window.open(
-      "/credit-details",
+      `/credit-details?student=${studentData}`,
       "_blank",
       "width=600,height=400"
     );
-    if (newWindow) {
-      newWindow.onload = () => {
-        newWindow.postMessage({ student: student }, "*");
-      };
-    }
   };
+
+  function base64EncodeUnicode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+      return String.fromCharCode('0x' + p1);
+    }));
+  }
 
   const showAlert = (message, severity) => {
     setAlert({ open: true, message, severity });
