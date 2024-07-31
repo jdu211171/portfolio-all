@@ -1,5 +1,5 @@
 'use strict';
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
     date_of_birth: {
       type: DataTypes.DATE,
       allowNull: false,
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     photo: {
       type: DataTypes.STRING,

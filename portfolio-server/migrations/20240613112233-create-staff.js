@@ -1,5 +1,5 @@
 'use strict';
-
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Staff', {
@@ -47,11 +47,11 @@ module.exports = {
       },
       active: {
         type: Sequelize.BOOLEAN,
-        allowNull: true,
+        allowNull: false,
         defaultValue: false,
       },
       kintone_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {

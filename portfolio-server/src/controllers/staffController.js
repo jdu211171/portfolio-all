@@ -5,7 +5,7 @@ const { EmailToStaff } = require('../utils/emailToStaff');
 class StaffController {
   static async webhookHandler(req, res) {
     try {
-      const { type, record, recordId } = req.body
+      const { type, record, recordId } = req.body;
       if (type == "ADD_RECORD") {
         const password = generatePassword.generate({
           length: 12,
@@ -14,36 +14,46 @@ class StaffController {
           uppercase: true,
           excludeSimilarCharacters: true
         });
+
         const data = {
           email: record.mail.value,
           password: password, // This will be hashed by the beforeCreate hook
           first_name: record.staffName.value,
-          last_name: record.staffName.value,
-          date_of_birth: '1980-01-01',
-          department: record['部署'].value,
+          last_name: record.staffLastName.value,
+          department: record.department.value,
           position: record.status.value,
-          photo: '',
-          active: true,
+          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           kintone_id: record['$id'].value
         };
+
+
         const newStaff = await StaffService.createStaff(data);
+        let email
         if (newStaff) {
-          EmailToStaff(newStaff.email, password, newStaff.first_name, newStaff.last_name)
+          email = await EmailToStaff(newStaff.email, password, newStaff.first_name, newStaff.last_name);
         }
-        res.status(201).json(newStaff);
+        res.status(201).json(email);
       } else {
-        const staffId = req.params.id;
+        const staffId = recordId;
         await StaffService.deleteStaff(staffId);
         res.status(204).end();
       }
     } catch (error) {
+      console.error('Error in webhook handler:', error);  // Log any errors
       res.status(400).json({ error: error.message });
     }
   }
 
+
   static async getAllStaff(req, res) {
     try {
-      const staffList = await StaffService.getAllStaff();
+      let filter
+      if (req.query.filter) {
+        filter = req.query.filter
+      } else {
+        filter = {}
+      }
+      const staffList = await StaffService.getAllStaff(filter);
       res.json(staffList);
     } catch (error) {
       res.status(400).json({ error: error.message });

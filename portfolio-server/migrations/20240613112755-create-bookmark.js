@@ -1,4 +1,5 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Bookmarks', {
@@ -12,7 +13,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Recruiters', // Make sure this matches your actual Users table name
+          model: 'Recruiters',
+          tableName: 'Recruiters',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -22,7 +24,8 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Students', // Make sure this matches your actual Students table name
+          model: 'Students', // Ensure this matches your actual Students table name
+          tableName: 'Students',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -30,11 +33,13 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now') // Default value to current time
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.fn('now') // Default value to current time
       }
     });
   },

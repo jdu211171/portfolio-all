@@ -1,7 +1,52 @@
 const { validationResult } = require('express-validator');
 const RecruiterService = require('../services/recruiterService');
 
+const { EmailToStaff } = require('../utils/emailToStaff');
+const generatePassword = require('generate-password');
 class RecruiterController {
+
+  static async webhookHandler(req, res) {
+    try {
+      const { type, record, recordId } = req.body;
+      if (type == "ADD_RECORD") {
+        const password = generatePassword.generate({
+          length: 12,
+          numbers: true,
+          symbols: true,
+          uppercase: true,
+          excludeSimilarCharacters: true
+        });
+
+        const data = {
+          email: record.mail.value,
+          password: password, // This will be hashed by the beforeCreate hook
+          first_name: record.recruiterName.value,
+          last_name: record.recruiterLastName.value,
+          company_name: record.companyName.value,
+          phone: record.phoneNumber.value,
+          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
+          active: false,
+          kintone_id: record['$id'].value
+        };
+
+        const newRecruiter = await RecruiterService.createRecruiter(data);
+        let email
+        if (newRecruiter) {
+          email = await EmailToStaff(newRecruiter.email, password, newRecruiter.first_name, newRecruiter.last_name);
+        }
+        res.status(201).json(email);
+      } else {
+        const recruiterId = recordId;
+        await RecruiterService.deleteRecruiter(recruiterId);
+        res.status(204).end();
+      }
+    } catch (error) {
+      console.error('Error in webhook handler:', error);  // Log any errors
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+
   static async create(req, res, next) {
     try {
       const errors = validationResult(req);
@@ -18,7 +63,14 @@ class RecruiterController {
 
   static async getAll(req, res, next) {
     try {
-      const recruiters = await RecruiterService.getAllRecruiters();
+      let filter
+      if (req.query.filter) {
+        filter = req.query.filter
+      } else {
+        filter = {}
+      }
+
+      const recruiters = await RecruiterService.getAllRecruiters(filter);
       res.status(200).json(recruiters);
     } catch (error) {
       next(error);

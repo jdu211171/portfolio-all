@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, useLocation, Outlet, NavLink } from "react-router-dom";
-import axios from "../../../utils/axiosUtils";
 import {
-  Box,
-  Typography,
-  IconButton,
-  Chip,
-  Avatar,
-  Grid
-} from "@mui/material";
+  useParams,
+  useNavigate,
+  useLocation,
+  Outlet,
+  NavLink,
+} from "react-router-dom";
+import axios from "../../../utils/axiosUtils";
+import { Box, Typography, IconButton, Chip, Avatar, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EmailIcon from "@mui/icons-material/Email";
 import styles from "./StudentProfile.module.css";
 
-const StudentProfile = () => {
+const StudentProfile = ({ userId = 0 }) => {
   const { studentId } = useParams();
+
+  let id;
+  if (userId != 0) {
+    id = userId;
+  } else {
+    id = studentId;
+  }
+
   const navigate = useNavigate();
   const location = useLocation();
   const [student, setStudent] = useState(null);
@@ -22,7 +29,7 @@ const StudentProfile = () => {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const response = await axios.get(`/api/students/${studentId}`);
+        const response = await axios.get(`/api/students/${id}`);
         setStudent(response.data);
       } catch (error) {
         showAlert("Error fetching student data", "error");
@@ -30,17 +37,31 @@ const StudentProfile = () => {
     };
 
     fetchStudent();
-  }, [studentId]);
-  
+  }, [id]);
 
   const handleBackClick = () => {
-    const isRootPath = location.pathname.endsWith('/top');
-    if(isRootPath) {
-      navigate('/student');
+    const isRootPath = location.pathname.endsWith("/top");
+    if (isRootPath) {
+      navigate("/student");
     } else {
       navigate(-1);
     }
-    
+  };
+
+  const calculateAge = (birthDateString) => {
+    const today = new Date();
+    const birthDate = new Date(birthDateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
   };
 
   if (!student) {
@@ -57,7 +78,12 @@ const StudentProfile = () => {
         <Box
           display="flex"
           alignItems="center"
-          sx={{ border: 1, borderRadius: 1, borderColor: "grey.300", flexGrow: 1, }}
+          sx={{
+            border: 1,
+            borderRadius: 1,
+            borderColor: "grey.300",
+            flexGrow: 1,
+          }}
         >
           <IconButton onClick={handleBackClick}>
             <ArrowBackIcon />
@@ -69,11 +95,7 @@ const StudentProfile = () => {
       <Box className={styles.container}>
         <Box className={styles.avatarContainer}>
           <Avatar
-            src={
-              "https://randomuser.me/api/portraits/med/men/" +
-              parseInt(Math.random() * 100) +
-              ".jpg"
-            }
+            src={student.photo}
             alt={student.first_name}
             sx={{ width: 130, height: 130 }}
           />
@@ -109,9 +131,7 @@ const StudentProfile = () => {
               }}
             />
             <Chip
-              label={`生年月日: ${new Date(
-                student.date_of_birth
-              ).toLocaleDateString()}`}
+              label={`年齢: ${calculateAge(student.date_of_birth)}`}
               variant="outlined"
               sx={{
                 fontSize: "12px",
@@ -126,22 +146,22 @@ const StudentProfile = () => {
       </Box>
       <Box className={styles.navbar}>
         <NavLink
-          to={`/student/profile/${studentId}/top`}
-          state={{
-            student,
-          }}
+          to={`top`}
+          state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
           トップ
         </NavLink>
         <NavLink
-          to={`/student/profile/${studentId}/qa`}
+          to={`qa`}
+          state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
           Q&A
         </NavLink>
         <NavLink
-          to={`/student/profile/${studentId}/stats`}
+          to={`stats`}
+          state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
           style={{ minWidth: "130px" }}
         >

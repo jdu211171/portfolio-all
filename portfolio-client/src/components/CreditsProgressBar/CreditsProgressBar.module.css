@@ -1,6 +1,6 @@
 .graphContainer {
-  padding: 30px 20px;
-  overflow-x: hidden; /* Start hidden */
+  padding: 30px 40px;
+  overflow-x:visible; /* Start hidden */
   position: relative;
 }
 

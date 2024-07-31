@@ -1,4 +1,5 @@
 'use strict';
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Students', {
@@ -52,45 +53,80 @@ module.exports = {
       gallery: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {}
       },
       skills: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {
+          "上級": [
+          ],
+          "中級": [
+          ],
+          "初級": [
+          ]
+        }
       },
       it_skills: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {
+          "上級": [
+          ],
+          "中級": [
+          ],
+          "初級": [
+          ]
+        }
       },
       other_information: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      semester: {
+        type: Sequelize.ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),
+        allowNull: false,
+        defaultValue: '1', // Note that the default value should be a string to match ENUM options
+      },
       partner_university: {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      partner_university_credits: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       deliverables: {
         type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: [{
+          title: "",
+          link: "",
+          role: [],
+          codeLink: "",
+          imageLink: "",
+          description: "",
+        }]
       },
       jlpt: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       ielts: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       jdu_japanese_certification: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       japanese_speech_contest: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       it_contest: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       active: {

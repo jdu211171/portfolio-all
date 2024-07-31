@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const cors = require('cors');
-
 const configureRoutes = require('./routes');
 
 const PORT = process.env.PORT || 5000;
@@ -23,7 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve(__dirname, "../../portfolio-client/dist")));
 // Example middleware (you can define middleware functions in middlewares folder)
 // app.use(require('./middlewares/authMiddleware'));
+
 app.use(cors({ origin: '*' }));
+
 // Configure routes
 configureRoutes(app);
 

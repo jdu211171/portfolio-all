@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import styles from "./Qa.module.css";
 import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
 import qaList from "../../../utils/qaList";
 import {
-  Close,
   School,
   AutoStories,
   Face,
@@ -17,8 +16,18 @@ import axios from "../../../utils/axiosUtils";
 import { Box, Tabs, Tab, Button, Snackbar, Alert } from "@mui/material";
 
 const QA = () => {
+  const role = sessionStorage.getItem("role");
   const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
+  let id;
   const { studentId } = useParams();
+  const location = useLocation();
+  const { userId } = location.state || {};
+
+  if (userId != 0 && userId) {
+    id = userId;
+  } else {
+    id = studentId;
+  }
 
   const [studentQA, setStudentQA] = useState(null);
   const [editData, setEditData] = useState({});
@@ -28,10 +37,10 @@ const QA = () => {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const response = await axios.get(`/api/qa/student/${studentId}`);
+        const response = await axios.get(`/api/qa/student/${id}`);
         setStudentQA(response.data);
 
-        if (response.data.length === 0) {
+        if (Object.keys(response.data.idList).length === 0) {
           // Initialize editData based on qaList if response.data is empty
           let tempData = {};
           Object.entries(qaList.QAPage).forEach(([category, questions]) => {
@@ -51,7 +60,7 @@ const QA = () => {
     };
 
     fetchStudent();
-  }, [studentId]);
+  }, [id]);
 
   const handleUpdate = (category, keyName, value) => {
     setEditData((prevEditData) => {
@@ -77,9 +86,9 @@ const QA = () => {
     try {
       let res;
       if (isFirstTime) {
-        res = await axios.post("/api/qa/", { studentId, data: editData });
+        res = await axios.post("/api/qa/", { studentId: id, data: editData });
       } else {
-        res = await axios.put(`/api/qa/${studentId}`, { data: editData });
+        res = await axios.put(`/api/qa/${id}`, { data: editData });
       }
       setStudentQA(res.data);
       setEditMode(false);
@@ -125,35 +134,39 @@ const QA = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {editMode ? (
+      {role == "Student" && (
         <>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            保存
-          </Button>
+          {editMode ? (
+            <>
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                保存
+              </Button>
 
-          <Button
-            onClick={handleCancel}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            キャンセル
-          </Button>
+              <Button
+                onClick={handleCancel}
+                variant="outlined"
+                color="error"
+                size="small"
+              >
+                キャンセル
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={toggleEditMode}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              QAを編集
+            </Button>
+          )}
         </>
-      ) : (
-        <Button
-          onClick={toggleEditMode}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          プロフィールを編集
-        </Button>
       )}
     </Box>
   );
@@ -205,7 +218,11 @@ const QA = () => {
         {!editMode &&
           Object.entries(getCategoryData(subTabIndex)).map(
             ([key, { question, answer }]) => (
-              <QAAccordion key={key} question={question} answer={answer} />
+              <QAAccordion
+                key={key}
+                question={question.split("]")[1]}
+                answer={answer}
+              />
             )
           )}
       </Box>

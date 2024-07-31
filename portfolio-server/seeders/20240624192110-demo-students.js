@@ -44,7 +44,7 @@ module.exports = {
           codeLink: "link1",
           imageLink: "link1",
           description: "description1",
-          role: ["role1","role2"]
+          role: ["role1", "role2"]
         },
         {
           title: "title1",
@@ -52,13 +52,30 @@ module.exports = {
           codeLink: "link2",
           imageLink: "link2",
           description: "description2",
-          role: ["role1","role2"]
+          role: ["role1", "role2"]
         }
       ];
+
+
 
       const jlptLevels = ["N1", "N2", "N3", "N4", "N5"];
       const jlpt = jlptLevels[Math.floor(Math.random() * jlptLevels.length)];
 
+      let jlptString = {
+        highest: jlpt,
+        jlptlist: [
+          { level: "n5", date: "2022-12" },
+          { level: "n5", date: "2020-12" }
+        ]
+      }
+
+      let ieltsString = {
+        highest: (faker.datatype.number({ min: 12, max: 16 }) / 2).toString(),
+        ieltslist: [
+          { level: "6.5", date: "2022-12" },
+          { level: "6.0", date: "2020-12" }
+        ]
+      }
       // Generate an array of image links for the gallery
       const gallery = Array.from({ length: 5 }, () => faker.image.image());
 
@@ -69,18 +86,20 @@ module.exports = {
         first_name: faker.name.firstName(),
         last_name: faker.name.lastName(),
         date_of_birth: faker.date.past(),
-        photo: faker.image.avatar(),
+        photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
         self_introduction: faker.lorem.paragraph(),
         hobbies: faker.random.words(),
         gallery: JSON.stringify(gallery), // Store as JSON string in seed
         skills: JSON.stringify(skills), // Store as JSON string in seed
         it_skills: JSON.stringify(itSkills), // Store as JSON string in seed
         other_information: faker.lorem.paragraph(),
+        semester: faker.datatype.number({ min: 1, max: 9 }).toString(),
         partner_university: faker.company.companyName(),
+        partner_university_credits: faker.datatype.number({ min: 0, max: 124 }),
         deliverables: JSON.stringify(deliverables),
-        jlpt: jlpt,
-        ielts: faker.random.word(),
-        jdu_japanese_certification: faker.random.word(),
+        jlpt: JSON.stringify(jlptString),
+        ielts: JSON.stringify(ieltsString),
+        jdu_japanese_certification: JSON.stringify(jlptString),
         japanese_speech_contest: faker.random.word(),
         it_contest: faker.random.word(),
         active: true,

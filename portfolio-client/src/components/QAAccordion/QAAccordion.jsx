@@ -10,12 +10,6 @@ import { styled } from "@mui/material/styles";
 import styles from "./QAAccordion.module.css";
 
 const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  minHeight: 50,
-  maxHeight: 50,
-  "&.Mui-expanded": {
-    minHeight: 50,
-    maxHeight: 50,
-  },
   ".MuiAccordionSummary-expandIcon": {
     order: -1,
   },

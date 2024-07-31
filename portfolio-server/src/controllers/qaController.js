@@ -1,4 +1,4 @@
-const QAService = require('../services/QAService');
+const QAService = require('../services/qaService');
 
 class QAController {
   // Controller method to create a new QA entry

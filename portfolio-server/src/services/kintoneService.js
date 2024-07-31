@@ -1,5 +1,6 @@
 const axios = require('axios');
 const kintoneConfig = require('../config/kintoneConfig');
+const StudentService = require('./studentService');
 
 class KintoneService {
   static baseUrl = process.env.KINTONE_API_BASE_URL;
@@ -127,6 +128,97 @@ class KintoneService {
       throw error;
     }
   }
+
+  // Service method to delete a record
+  static async syncData() {
+    try {
+      let students = (await this.getAllRecords("students")).records
+
+      let certificate_jlpt = (await this.getAllRecords("certificate_jlpt")).records
+      let certificate_jdu_jlpt = (await this.getAllRecords("certificate_jdu_jlpt")).records
+      let certificate_ielts = (await this.getAllRecords("certificate_ielts")).records
+      let certificate_benron = (await this.getAllRecords("certificate_benron")).records
+      let certificate_it_contest = (await this.getAllRecords("certificate_it_contest")).records
+
+      let jlptData = this.formatCertificateData(certificate_jlpt, "jlptLevel", true);
+      let jduJlptData = this.formatCertificateData(certificate_jdu_jlpt, "jlptLevel", true);
+      let ieltsData = this.formatCertificateData(certificate_ielts, "awards");
+      let benronData = this.formatCertificateData(certificate_benron, "level", true);
+      let itContestData = this.formatCertificateData(certificate_it_contest, "学内賞", true);
+
+      const formattedStudentData = students.map(record => ({
+        studentId: record.studentId.value,
+        studentName: record.studentName.value,
+        mail: record.mail.value,
+        jduDate: record.jduDate.value,
+        birthday: record.birthday.value,
+        semester: record.semester.value,
+        univer: record.univer.value,
+        レコード番号: record['レコード番号'],
+        jlpt: JSON.stringify(jlptData[record.studentId.value] ? jlptData[record.studentId.value] : ""),
+        jdu_japanese_certification: JSON.stringify(jduJlptData[record.studentId.value] ? jduJlptData[record.studentId.value] : ""),
+        ielts: JSON.stringify(ieltsData[record.studentId.value] ? ieltsData[record.studentId.value] : ""),
+        japanese_speech_contest: JSON.stringify(benronData[record.studentId.value] ? benronData[record.studentId.value] : ""),
+        it_contest: JSON.stringify(itContestData[record.studentId.value] ? itContestData[record.studentId.value] : ""),
+      }));
+
+      let result = await StudentService.syncStudentData(formattedStudentData);
+    } catch (error) {
+      console.log(error)
+      throw error;
+    }
+  }
+
+  static formatCertificateData(certificateJlpt, level, isReverse) {
+    const data = {};
+
+    certificateJlpt.forEach(record => {
+      const studentId = record.studentId.value;
+      const nLevel = record[level].value;
+      const date = record.date.value;
+
+      if (!data[studentId]) {
+        data[studentId] = {
+          highest: nLevel,
+          list: [{ level: nLevel, date: date }]
+        };
+      } else {
+        data[studentId].list.push({ level: nLevel, date: date });
+
+        // Update the highest level if the current level is higher
+        if (this.isHigherLevel(nLevel, data[studentId].highest, isReverse)) {
+          data[studentId].highest = nLevel;
+        }
+      }
+    });
+
+    return data;
+  }
+
+  static extractLevelNumber(level) {
+    const match = level.match(/\d+/); // Extract digits from the string
+    return match ? parseInt(match[0], 10) : null;
+  }
+
+  static isHigherLevel(level1, level2, isReverse = false) {
+    const level1Number = this.extractLevelNumber(level1);
+    const level2Number = this.extractLevelNumber(level2);
+
+    // Ensure that levels are valid and numbers are extracted
+    if (level1Number === null || level2Number === null) {
+      throw new Error("Invalid level format.");
+    }
+
+    // Compare the numeric values
+    if (isReverse) {
+      return level1Number < level2Number;
+    } else {
+      return level1Number > level2Number;
+    }// Lower number means a higher level
+  }
+
+
+
 }
 
 module.exports = KintoneService;

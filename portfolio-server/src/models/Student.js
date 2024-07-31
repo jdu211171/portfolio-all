@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Student.hasMany(models.Bookmark, { foreignKey: 'studentId', as: 'bookmarks' });
     }
   }
 
@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     student_id: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     first_name: {
       type: DataTypes.STRING,
@@ -58,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     gallery: {
       type: DataTypes.JSONB,
       allowNull: true,
-    },    
+    },
     skills: {
       type: DataTypes.JSONB,
       allowNull: true,
@@ -71,32 +72,42 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    semester: {
+      type: DataTypes.ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),
+      allowNull: false,
+      defaultValue: '1',
+    },
     partner_university: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    partner_university_credits: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
     deliverables: {
       type: DataTypes.JSONB,
       allowNull: true,
     },
     jlpt: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     ielts: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     jdu_japanese_certification: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     japanese_speech_contest: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     it_contest: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     active: {

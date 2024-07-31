@@ -14,8 +14,8 @@ class KintoneController {
 
   static async getBy(req, res, next) {
     try {
-      const { col, val } = req.body;
-      const students = await KintoneService.getRecordBy("students", col, val); //here it can get any app name set in /config/kintoneConfig.js
+      const { table, col, val } = req.body;
+      const students = await KintoneService.getRecordBy(table, col, val); //here it can get any app name set in /config/kintoneConfig.js
       res.status(200).json(students);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching students', error: error });
@@ -25,7 +25,6 @@ class KintoneController {
   // Controller method to create a new student
   static async create(req, res) {
     try {
-      console.log(req)
       const newStudent = await KintoneService.createRecord(KINTONE_APP_ID_STUDENTS, req.body);
       res.status(201).json(newStudent);
     } catch (error) {
@@ -50,6 +49,16 @@ class KintoneController {
       res.status(204).json();
     } catch (error) {
       res.status(500).json({ message: 'Error deleting student', error: error.message });
+    }
+  }
+
+  // Controller method to delete a student
+  static async sync(req, res) {
+    try {
+      await KintoneService.syncData();
+      res.status(204).json();
+    } catch (error) {
+      res.status(500).json({ message: error });
     }
   }
 }

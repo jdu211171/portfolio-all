@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
@@ -6,6 +7,13 @@ import Table from "../../components/table/Table";
 import Filter from "../../components/filter/Filter";
 
 const Recruiter = () => {
+  const navigate = useNavigate();
+  const navigateToCompanyProfile = (recruiterId) => {
+    navigate(`/companyprofile`, {
+      state: { recruiterId: recruiterId }, // passing state
+    });
+  };
+
   const headers = [
     {
       id: "name",
@@ -13,6 +21,7 @@ const Recruiter = () => {
       disablePadding: true,
       label: "リクルーター",
       type: "avatar",
+      onClickAction: navigateToCompanyProfile,
     },
     {
       id: "company_name",
@@ -21,7 +30,7 @@ const Recruiter = () => {
       label: "会社名",
     },
     {
-      id: "phone_number",
+      id: "phone",
       numeric: true,
       disablePadding: false,
       label: "電話番号",
@@ -44,34 +53,16 @@ const Recruiter = () => {
   // must match with db table col names
   const filterProps = [
     { key: "name", label: "名前", type: "text", minWidth: "160px" },
-    {
-      key: "company_name",
-      label: "会社名",
-      type: "text",
-      minWidth: "160px",
-    },
-    {
-      key: "phone_number",
-      label: "電話番号",
-      type: "text",
-      minWidth: "160px",
-    },
-    {
-      key: "email",
-      label: "メール",
-      type: "text",
-      minWidth: "160px",
-    }
   ];
 
   const tableProps = {
     headers: headers,
     dataLink: "/api/recruiters",
-    filter:filterState
+    filter: filterState,
   };
 
   const handleFilterChange = (value) => {
-    setFilterState(value)
+    setFilterState(value);
   };
 
   return (

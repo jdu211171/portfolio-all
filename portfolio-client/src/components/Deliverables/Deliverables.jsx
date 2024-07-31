@@ -26,6 +26,7 @@ const Deliverables = ({
   useEffect(() => {
     setNewData(editData);
   }, [editData]);
+
   const handleChange = (key, value) => {
     const updatedData = newData.map((item, index) => {
       if (index === activeDeliverable) {
@@ -33,11 +34,13 @@ const Deliverables = ({
       }
       return item;
     });
+    setNewData(updatedData);
     updateEditData(keyName, updatedData);
   };
 
-  const addNewDeliverable = async () => {
+  const addNewDeliverable = () => {
     const deliverable = {
+      title: "",
       link: "",
       role: [],
       codeLink: "",
@@ -45,21 +48,32 @@ const Deliverables = ({
       description: "",
     };
     const updatedData = [...newData, deliverable];
+    setNewData(updatedData);
     updateEditData(keyName, updatedData);
     updateEditMode();
     setActiveDeliverable(updatedData.length - 1);
     setTimeout(() => {
-      textFieldRef.current.focus();
+      textFieldRef.current?.focus();
     }, 0);
   };
 
-  const deleteDeliverable = async (index) => {
-    let temp = newData.filter((_, i) => i !== index);
-    updateEditData(keyName, temp);
+  useEffect(() => {
+    if (editData.length == 0) {
+      addNewDeliverable();
+    }
+  }, []);
+
+  const deleteDeliverable = (index) => {
+    const updatedData = newData.filter((_, i) => i !== index);
+    setNewData(updatedData);
+    updateEditData(keyName, updatedData);
+    if (activeDeliverable >= updatedData.length) {
+      setActiveDeliverable(updatedData.length - 1);
+    }
   };
 
-  const handleChangeActive = (n) => {
-    setActiveDeliverable(n);
+  const handleChangeActive = (index) => {
+    setActiveDeliverable(index);
   };
 
   const Controls = () => {
@@ -101,7 +115,7 @@ const Deliverables = ({
                 <MuiTextField
                   inputRef={textFieldRef}
                   value={newData[activeDeliverable]?.title || ""}
-                  onChange={(e) => handleChange("link", e.target.value)}
+                  onChange={(e) => handleChange("title", e.target.value)}
                   fullWidth
                   multiline
                 />
@@ -124,7 +138,11 @@ const Deliverables = ({
                 />
               ) : (
                 <div className={styles.cell}>
-                  <a href={newData[activeDeliverable]?.link}>
+                  <a
+                    href={newData[activeDeliverable]?.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {newData[activeDeliverable]?.link}
                   </a>
                 </div>
@@ -143,7 +161,11 @@ const Deliverables = ({
                 />
               ) : (
                 <div className={styles.cell}>
-                  <a href={newData[activeDeliverable]?.codeLink}>
+                  <a
+                    href={newData[activeDeliverable]?.codeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {newData[activeDeliverable]?.codeLink}
                   </a>
                 </div>
@@ -154,6 +176,7 @@ const Deliverables = ({
       </table>
       <Box className={styles.imageBox}>
         <TransformWrapper>
+          
           <TransformComponent>
             <img
               src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
@@ -194,12 +217,9 @@ const Deliverables = ({
                 className={styles.image}
               >
                 <img
-                  src={`https://picsum.photos/300/200?random=${Math.random(
-                    100
-                  )}`}
-                  alt={newData[activeDeliverable]?.imageLink}
+                  src={`https://picsum.photos/300/200?random=${index}`}
+                  alt={pr.imageLink}
                 />
-
                 {editMode && (
                   <IconButton
                     onClick={(e) => {
@@ -215,7 +235,6 @@ const Deliverables = ({
               </div>
             )
         )}
-
         {editMode && (
           <div className={styles.image}>
             <IconButton

@@ -31,12 +31,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    phone_number: {
+    phone: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isNumeric: true,
-      },
     },
     company_description: {
       type: DataTypes.TEXT,

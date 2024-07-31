@@ -7,7 +7,6 @@ import {
   Box,
   Tabs,
   Tab,
-  Typography,
   Button,
   Snackbar,
   Alert,
@@ -25,7 +24,17 @@ import Deliverables from "../../../components/Deliverables/Deliverables";
 import styles from "./Top.module.css";
 
 const Top = () => {
+  let id;
+  const role = sessionStorage.getItem("role");
   const { studentId } = useParams();
+  const location = useLocation();
+  const { userId } = location.state || {};
+
+  if (userId != 0 && userId) {
+    id = userId;
+  } else {
+    id = studentId;
+  }
 
   const [student, setStudent] = useState(null);
   const [editData, setEditData] = useState({});
@@ -34,7 +43,7 @@ const Top = () => {
   useEffect(() => {
     const fetchStudent = async () => {
       try {
-        const response = await axios.get(`/api/students/${studentId}`);
+        const response = await axios.get(`/api/students/${id}`);
         await setStudent(response.data);
         setEditData(response.data);
       } catch (error) {
@@ -43,7 +52,7 @@ const Top = () => {
     };
 
     fetchStudent();
-  }, [studentId]);
+  }, [id]);
 
   const handleUpdateEditData = (key, value) => {
     setEditData((prevEditData) => ({
@@ -53,8 +62,8 @@ const Top = () => {
   };
 
   const handleUpdateEditMode = () => {
-    setEditMode(true)
-  }
+    setEditMode(true);
+  };
 
   const toggleEditMode = () => {
     setEditMode(!editMode);
@@ -62,7 +71,7 @@ const Top = () => {
 
   const handleSave = async () => {
     try {
-      await axios.put(`/api/students/${studentId}`, editData);
+      await axios.put(`/api/students/${id}`, editData);
       setStudent(editData);
       setEditMode(false);
       showAlert("Changes saved successfully!", "success");
@@ -123,35 +132,39 @@ const Top = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {editMode ? (
+      {role == "Student" && (
         <>
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            保存
-          </Button>
+          {editMode ? (
+            <>
+              <Button
+                onClick={handleSave}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                保存
+              </Button>
 
-          <Button
-            onClick={handleCancel}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            キャンセル
-          </Button>
+              <Button
+                onClick={handleCancel}
+                variant="outlined"
+                color="error"
+                size="small"
+              >
+                キャンセル
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={toggleEditMode}
+              variant="contained"
+              color="primary"
+              size="small"
+            >
+              プロフィールを編集
+            </Button>
+          )}
         </>
-      ) : (
-        <Button
-          onClick={toggleEditMode}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          プロフィールを編集
-        </Button>
       )}
     </Box>
   );

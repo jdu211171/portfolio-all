@@ -1,88 +1,194 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
-
+import { useLocation, useParams, Link, useNavigate } from "react-router-dom";
 import axios from "../../../utils/axiosUtils";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Typography,
-  Button,
-  Snackbar,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import Gallery from "../../../components/Gallery";
-import TextField from "../../../components/TextField/TextField";
+import certificateColors from "../../../utils/certificates";
+import { Box, Tabs, Tab, Snackbar, Alert } from "@mui/material";
 import CreditsProgressBar from "../../../components/CreditsProgressBar/CreditsProgressBar";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import styles from "./Stats.module.css";
 
 const Stats = () => {
+  const navigate = useNavigate();
+  let id;
   const { studentId } = useParams();
+  const location = useLocation();
+  const { userId } = location.state || {};
+
+  if (userId != 0 && userId) {
+    id = userId;
+  } else {
+    id = studentId;
+  }
 
   const [student, setStudent] = useState(null);
+  const [kintoneData, setKintoneData] = useState({});
   const [editData, setEditData] = useState({});
-  const [editMode, setEditMode] = useState(false);
-
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get(`/api/students/${studentId}`);
-        await setStudent(response.data);
-        setEditData(response.data);
-      } catch (error) {
-        showAlert("Error fetching student data", "error");
-      }
-    };
-
-    fetchStudent();
-  }, [studentId]);
-
-  const handleUpdateEditData = (key, value) => {
-    setEditData((prevEditData) => ({
-      ...prevEditData,
-      [key]: value,
-    }));
-  };
-
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
-
-  const handleSave = async () => {
-    try {
-      await axios.put(`/api/students/${studentId}`, editData);
-      setStudent(editData);
-      setEditMode(false);
-      showAlert("Changes saved successfully!", "success");
-    } catch (error) {
-      console.error("Error saving student data:", error);
-      showAlert("Error saving changes.", "error");
-    }
-  };
-
-  const handleCancel = () => {
-    setEditData(student);
-    setEditMode(!editMode);
-  };
-
+  const [certificates, setCertificates] = useState({});
   const [subTabIndex, setSubTabIndex] = useState(0);
   const [alert, setAlert] = useState({
     open: false,
     message: "",
     severity: "",
   });
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [galleryUrls, setGalleryUrls] = useState([]);
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const studentResponse = await axios.get(`/api/students/${id}`);
+        const studentData = studentResponse.data;
+
+        const kintoneResponse = await axios.post(`/api/kintone/getby`, {
+          table: "student_credits",
+          col: "studentId",
+          val: studentData.student_id,
+        });
+
+        if (kintoneResponse.data.records.length > 0) {
+          setKintoneData(kintoneResponse.data.records[0]);
+        }
+
+        const fetchCertificates = async () => {
+          const requests = [
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_ielts",
+              col: "studentId",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_jlpt",
+              col: "studentId",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_jdu_jlpt",
+              col: "studentId",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_benron",
+              col: "studentId",
+              val: studentData.student_id,
+            }),
+            axios.post(`/api/kintone/getby`, {
+              table: "certificate_it_contest",
+              col: "studentId",
+              val: studentData.student_id,
+            }),
+          ];
+
+          const [
+            ieltsResponse,
+            jlptResponse,
+            jduJlptResponse,
+            benronResponse,
+            itContestResponse,
+          ] = await Promise.all(requests);
+
+          setCertificateData("main", "JLPT", jlptResponse.data.records);
+          setCertificateData("main", "JDU_JLPT", jduJlptResponse.data.records);
+          setCertificateData("main", "IELTS", ieltsResponse.data.records);
+          setCertificateData(
+            "other",
+            "日本語弁論大会学内",
+            benronResponse.data.records
+          );
+          setCertificateData(
+            "other",
+            "ITコンテスト学内",
+            itContestResponse.data.records
+          );
+
+          setStudent(studentData);
+        };
+
+        await fetchCertificates();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchStudentData();
+  }, [studentId]);
+
+  const setCertificateData = (key, type, data) => {
+    // Create a temporary array to hold the processed data
+    let temp = [];
+
+    // Process each item in the data array
+    if (key == "main") {
+      data.forEach((x) => {
+        let obj = {
+          name: type == "IELTS" ? x.awards.value : x.jlptLevel.value,
+          date: x.date.value.slice(0, 7),
+          color:
+            certificateColors[type][
+              type == "IELTS" ? x.awards.value : x.jlptLevel.value
+            ],
+        };
+        temp.push(obj);
+      });
+    } else {
+      data.forEach((x) => {
+        let obj = {
+          name: type == "ITコンテスト学内" ? x["学内賞"].value : x.level.value,
+          date: x.date.value.slice(0, 7),
+          color:
+            certificateColors[key][
+              type == "ITコンテスト学内" ? x["学内賞"].value : x.level.value
+            ],
+        };
+        temp.push(obj);
+      });
+    }
+
+    // Update the certificates state immutably
+    setCertificates((prevCertificates) => ({
+      ...prevCertificates,
+      [key]: {
+        ...prevCertificates[key],
+        [type]: temp,
+      },
+    }));
+  };
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
   };
+
+  const openCreditDetails = (event) => {
+    event.preventDefault();
+    // Create an object with student data
+    let tempStudent = {
+      student_id: student.student_id,
+      first_name: student.first_name,
+      last_name: student.last_name,
+      partner_university: student.partner_university,
+    };
+  
+    // Convert the object to a JSON string
+    const studentData = JSON.stringify(tempStudent);
+  
+    // Open a new window with the student data included in the URL as a parameter
+    const newWindow = window.open(
+      `/credit-details?student=${encodeURIComponent(studentData)}`,
+      "_blank",
+      "width=600,height=400"
+    );
+  };
+  
+  
+
+  function base64EncodeUnicode(str) {
+    // Encode to Base64
+    return btoa(
+      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
+        String.fromCharCode("0x" + p1)
+      )
+    )
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
 
   const showAlert = (message, severity) => {
     setAlert({ open: true, message, severity });
@@ -91,25 +197,6 @@ const Stats = () => {
   const handleCloseAlert = () => {
     setAlert({ open: false, message: "", severity: "" });
   };
-
-  const handleGalleryOpen = () => {
-    setGalleryOpen(true);
-  };
-
-  const handleGalleryClose = () => {
-    setGalleryOpen(false);
-  };
-
-  const generateGalleryUrls = (numImages) => {
-    return Array.from(
-      { length: numImages },
-      (_, index) => `https://picsum.photos/300/200?random=${index + 1}`
-    );
-  };
-
-  useEffect(() => {
-    setGalleryUrls(generateGalleryUrls(8));
-  }, []);
 
   if (!student) {
     return <div>Loading...</div>;
@@ -131,8 +218,6 @@ const Stats = () => {
     { label: "4年", point: 124 },
   ];
 
-  const credits = 40;
-
   return (
     <Box my={2}>
       <Tabs
@@ -141,7 +226,7 @@ const Stats = () => {
         onChange={handleSubTabChange}
       >
         <Tab label="JDU" />
-        <Tab label="東京通信大学" />
+        <Tab label={student.partner_university} />
       </Tabs>
       {subTabIndex === 0 && (
         <Box my={2}>
@@ -149,39 +234,61 @@ const Stats = () => {
           <CreditsProgressBar
             breakpoints={breakpoints}
             unit="単位"
-            credits={40}
-            color="green"
+            credits={
+              JSON.stringify(kintoneData) !== "{}"
+                ? Number(kintoneData.businessSkillsCredits?.value) +
+                  Number(kintoneData.japaneseEmploymentCredits?.value)
+                : 0
+            }
+            semester={
+              JSON.stringify(kintoneData) !== "{}"
+                ? kintoneData.semester?.value
+                : 0
+            }
           />
         </Box>
       )}
-      {/* 成果物 starts from here */}
       {subTabIndex === 1 && (
         <Box my={2}>
-          TOU
+          {student.partner_university}
           <CreditsProgressBar
             breakpoints={breakpoints2}
             unit="単位"
-            credits={50}
-            color="red"
+            credits={
+              JSON.stringify(kintoneData) !== "{}"
+                ? kintoneData.partnerUniversityCredits.value
+                : 0
+            }
+            semester={
+              JSON.stringify(kintoneData) !== "{}"
+                ? kintoneData.semester?.value
+                : 0
+            }
           />
         </Box>
       )}
-
+      <Link
+        href="#"
+        underline="hover"
+        color="primary"
+        style={{ fontWeight: 800 }}
+        onClick={openCreditDetails}
+      >
+        詳細はこちらへ
+      </Link>
       <Box my={2}>
         <SkillSelector
-          title="ITスキル"
+          title="資格"
           headers={{
-            上級: "3年間以上",
-            中級: "1年間〜1年間半",
-            初級: "基礎",
+            JLPT: "",
+            JDU日本語認定試験: "",
+            IELTS: "",
           }}
-          data={student}
+          data={certificates}
           editData={editData}
-          editMode={editMode}
-          updateEditData={handleUpdateEditData}
           showAutocomplete={true}
-          showHeaders={true}
-          keyName="it_skills"
+          showHeaders={false}
+          keyName="main"
         />
         <SkillSelector
           title="その他"
@@ -190,13 +297,11 @@ const Stats = () => {
             中級: "1年間〜1年間半",
             初級: "基礎",
           }}
-          data={student}
-          editMode={editMode}
+          data={certificates}
           editData={editData}
-          updateEditData={handleUpdateEditData}
           showAutocomplete={false}
           showHeaders={false}
-          keyName="skills"
+          keyName="other"
         />
       </Box>
       <Snackbar
@@ -213,40 +318,6 @@ const Stats = () => {
           {alert.message}
         </Alert>
       </Snackbar>
-      <Dialog
-        open={galleryOpen}
-        onClose={handleGalleryClose}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle>
-          Gallery
-          <IconButton
-            aria-label="close"
-            onClick={handleGalleryClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Box className={styles.fullGalleryContainer}>
-            {galleryUrls.map((url, index) => (
-              <img
-                key={index}
-                src={url}
-                alt={`Gallery ${index}`}
-                className={styles.fullGalleryImage}
-              />
-            ))}
-          </Box>
-        </DialogContent>
-      </Dialog>
     </Box>
   );
 };

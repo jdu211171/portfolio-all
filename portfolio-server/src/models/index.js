@@ -28,8 +28,10 @@ db.QA = require('./QA')(sequelize, Sequelize);
 
 // Apply associations here if needed
 // Example:
-// db.User.hasMany(db.Post);
-// db.Post.belongsTo(db.User);
+db.Recruiter.hasMany(db.Bookmark, { foreignKey: 'recruiterId', as: 'bookmarks' });
+db.Student.hasMany(db.Bookmark, { foreignKey: 'studentId', as: 'bookmarks' });
+db.Bookmark.belongsTo(db.Recruiter, { foreignKey: 'recruiterId', as: 'recruiter' });
+db.Bookmark.belongsTo(db.Student, { foreignKey: 'studentId', as: 'student' });
 
 module.exports = {
   sequelize,
