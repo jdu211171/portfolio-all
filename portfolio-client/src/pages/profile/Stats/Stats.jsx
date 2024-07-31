@@ -157,24 +157,37 @@ const Stats = () => {
 
   const openCreditDetails = (event) => {
     event.preventDefault();
+    // Create an object with student data
     let tempStudent = {
       student_id: student.student_id,
       first_name: student.first_name,
       last_name: student.last_name,
       partner_university: student.partner_university,
     };
-    const studentData = base64EncodeUnicode(JSON.stringify(tempStudent)); // Encode the JSON string with Base64
+  
+    // Convert the object to a JSON string
+    const studentData = JSON.stringify(tempStudent);
+  
+    // Open a new window with the student data included in the URL as a parameter
     const newWindow = window.open(
-      `/credit-details?student=${studentData}`,
+      `/credit-details?student=${encodeURIComponent(studentData)}`,
       "_blank",
       "width=600,height=400"
     );
   };
+  
+  
 
   function base64EncodeUnicode(str) {
-    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-      return String.fromCharCode('0x' + p1);
-    }));
+    // Encode to Base64
+    return btoa(
+      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
+        String.fromCharCode("0x" + p1)
+      )
+    )
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
   }
 
   const showAlert = (message, severity) => {

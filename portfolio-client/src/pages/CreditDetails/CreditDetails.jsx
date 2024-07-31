@@ -24,19 +24,33 @@ const CreditDetails = () => {
   const [creditData, setCreditData] = useState([]);
 
   function base64DecodeUnicode(str) {
-    return decodeURIComponent(atob(str).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
+    // Convert URL-safe Base64 to standard Base64
+    const base64 = (str + '==').replace(/-/g, '+').replace(/_/g, '/');
+    
+    // Decode Base64 to bytes
+    const binaryString = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+    
+    // Convert bytes to a string
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(binaryString);
   }
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const encodedData = params.get("student");
+  
     if (encodedData) {
-      const decodedData = JSON.parse(base64DecodeUnicode(encodedData)); // Decode the Base64 and parse the JSON string
-      setStudent(decodedData);
+      try {
+        // Decode the URI component and parse the JSON
+        const decodedData = JSON.parse(decodeURIComponent(encodedData));
+        // Handle the student data
+        setStudent(decodedData);
+      } catch (e) {
+        console.error('Failed to decode or parse student data:', e);
+      }
     }
   }, []);
+  
 
   useEffect(() => {
     const fetchCreditDetails = async (studentId) => {
