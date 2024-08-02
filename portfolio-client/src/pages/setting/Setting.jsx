@@ -122,20 +122,21 @@ const Setting = () => {
     if (passwordValidation === true) {
       try {
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
-
-        await axios.put(`/api/admin/${id}`, {
+        const updateData = {
           first_name: data.first_name,
           last_name: data.last_name,
           phone: data.phone,
           email: data.email,
-          currentPassword: data.currentPassword,
-          password: data.password,
           contactEmail: data.contactEmail,
           contactPhone: data.contactPhone,
           workingHours: data.workingHours,
           location: data.location,
-        });
-
+        };
+        if (data.password) {
+          updateData.password = data.password;
+          updateData.currentPassword = data.currentPassword; // Добавляем текущий пароль для проверки
+        }
+        await axios.put(`/api/admin/${id}`, updateData);
         alert("Profile updated successfully");
         setIsEditing(false);
       } catch (error) {
