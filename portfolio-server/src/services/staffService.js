@@ -1,4 +1,6 @@
 const { Staff } = require('../models'); // Assuming your model file is properly exported
+const bcrypt = require('bcrypt');
+const { Op } = require('sequelize');
 
 class StaffService {
   static async createStaff(data) {
@@ -46,9 +48,7 @@ class StaffService {
 
   static async getStaffById(staffId) {
     try {
-      const staff = await Staff.findByPk(staffId, {
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-      });
+      const staff = await Staff.findByPk(staffId);
       if (!staff) {
         throw new Error('Staff not found');
       }
