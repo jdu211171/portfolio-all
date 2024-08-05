@@ -1,8 +1,8 @@
 'use strict';
 const bcrypt = require('bcrypt');
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-module.exports = (sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   class Recruiter extends Model {
     /**
      * Helper method for defining associations.
@@ -81,7 +81,7 @@ module.exports = (sequelize) => {
         }
       },
       beforeUpdate: async (recruiter) => {
-        if (recruiter.password) {
+        if (recruiter.changed('password')) {
           const salt = await bcrypt.genSalt(10);
           recruiter.password = await bcrypt.hash(recruiter.password, salt);
         }
