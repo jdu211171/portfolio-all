@@ -22,7 +22,7 @@ const Setting = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // New state for edit mode
+  const [isEditing, setIsEditing] = useState(false);
 
   const {
     control,
@@ -52,14 +52,21 @@ const Setting = () => {
       try {
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
         let response;
-        if (role === "Admin") {
-          response = await axios.get(`/api/admin/${id}`);
-        } else if (role === "Student") {
-          response = await axios.get(`/api/students/${id}`);
-        } else if (role === "Staff") {
-          response = await axios.get(`/api/staff/${id}`);
-        } else if (role === "Recruiter") {
-          response = await axios.get(`/api/recruiters/${id}`);
+        switch (role) {
+          case "Admin":
+            response = await axios.get(`/api/admin/${id}`);
+            break;
+          case "Student":
+            response = await axios.get(`/api/students/${id}`);
+            break;
+          case "Staff":
+            response = await axios.get(`/api/staff/${id}`);
+            break;
+          case "Recruiter":
+            response = await axios.get(`/api/recruiters/${id}`);
+            break;
+          default:
+            throw new Error("Unknown role");
         }
         setUser(response.data);
         // Update form default values after fetching user data
@@ -81,7 +88,7 @@ const Setting = () => {
     };
 
     fetchUser();
-  }, [reset]);
+  }, [reset, role]);
 
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
@@ -122,19 +129,37 @@ const Setting = () => {
     if (passwordValidation === true) {
       try {
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
-
-        await axios.put(`/api/admin/${id}`, {
+        const updateData = {
           first_name: data.first_name,
           last_name: data.last_name,
           phone: data.phone,
           email: data.email,
-          currentPassword: data.currentPassword,
-          password: data.password,
           contactEmail: data.contactEmail,
           contactPhone: data.contactPhone,
           workingHours: data.workingHours,
           location: data.location,
-        });
+        };
+        if (data.password) {
+          updateData.password = data.password;
+          updateData.currentPassword = data.currentPassword; // Добавляем текущий пароль для проверки
+        }
+
+        switch (role) {
+          case "Admin":
+            await axios.put(`/api/admin/${id}`, updateData);
+            break;
+          case "Student":
+            await axios.put(`/api/students/${id}`, updateData);
+            break;
+          case "Staff":
+            await axios.put(`/api/staff/${id}`, updateData);
+            break;
+          case "Recruiter":
+            await axios.put(`/api/recruiters/${id}`, updateData);
+            break;
+          default:
+            throw new Error("Unknown role");
+        }
 
         alert("Profile updated successfully");
         setIsEditing(false);

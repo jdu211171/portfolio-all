@@ -1,5 +1,4 @@
-const generatePassword = require('generate-password');
-
+const bcrypt = require('bcrypt');
 const StaffService = require('../services/staffService');
 const { EmailToStaff } = require('../utils/emailToStaff');
 class StaffController {
@@ -47,12 +46,7 @@ class StaffController {
 
   static async getAllStaff(req, res) {
     try {
-      let filter
-      if (req.query.filter) {
-        filter = req.query.filter
-      } else {
-        filter = {}
-      }
+      const filter = req.query.filter || {};
       const staffList = await StaffService.getAllStaff(filter);
       res.json(staffList);
     } catch (error) {
@@ -72,9 +66,19 @@ class StaffController {
 
   static async updateStaff(req, res) {
     try {
-      const staffId = req.params.id;
-      const updatedStaff = await StaffService.updateStaff(staffId, req.body);
-      res.json(updatedStaff);
+      const { currentPassword, password, ...updateData } = req.body;
+
+      if (password) {
+        const staff = await StaffService.getStaffById(req.params.id);
+        if (!staff || !(await bcrypt.compare(currentPassword, staff.password))) {
+          return res.status(400).json({ error: 'Текущий пароль неверен' });
+        }
+      }
+      const updatedStaff = await StaffService.updateStaff(req.params.id, {
+        ...updateData,
+        password: password || undefined,
+      });
+      res.status(200).json(updatedStaff);
     } catch (error) {
       res.status(404).json({ error: error.message });
     }

@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const { Admin } = require('../models');
 class AdminService {
   static async createAdmin(data) {
@@ -13,7 +14,20 @@ class AdminService {
     if (!admin) {
       throw new Error('Admin not found');
     }
-    return await admin.update(data);
+    const updatedData = {
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone: data.phone,
+      email: data.email,
+      contactEmail: data.contactEmail,
+      contactPhone: data.contactPhone,
+      workingHours: data.workingHours,
+      location: data.location,
+    };
+    if (data.password) {
+      updatedData.password = data.password;
+    }
+    return await admin.update(updatedData);
   }
 
   static async deleteAdmin(id) {

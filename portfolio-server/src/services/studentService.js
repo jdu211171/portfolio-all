@@ -129,7 +129,7 @@ class StudentService {
   static async getStudentById(studentId) {
     try {
       const student = await Student.findByPk(studentId, {
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        attributes: { include: ['password'] },
       });
       if (!student) {
         throw new Error('Student not found');

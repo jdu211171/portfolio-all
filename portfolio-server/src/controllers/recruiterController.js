@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const RecruiterService = require('../services/recruiterService');
 
@@ -88,12 +89,18 @@ class RecruiterController {
 
   static async update(req, res, next) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+      const { currentPassword, password, ...updateData } = req.body;
+      if (password) {
+        const recruiter = await RecruiterService.getRecruiterByIdWithPassword(req.params.id);
+        if (!recruiter || !currentPassword || !(await bcrypt.compare(currentPassword, recruiter.password))) {
+          return res.status(400).json({ error: 'Текущий пароль неверен' });
+        }
       }
 
-      const updatedRecruiter = await RecruiterService.updateRecruiter(req.params.id, req.body);
+      const updatedRecruiter = await RecruiterService.updateRecruiter(req.params.id, {
+        ...updateData,
+        password: password || undefined,
+      });
       res.status(200).json(updatedRecruiter);
     } catch (error) {
       next(error);

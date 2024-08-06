@@ -1,5 +1,4 @@
-const { Op } = require('sequelize');
-
+const bcrypt = require('bcrypt');
 const { Recruiter } = require('../models');
 
 class RecruiterService {
@@ -62,17 +61,44 @@ class RecruiterService {
     }
   }
 
-  // Service method to update a recruiter
-  static async updateRecruiter(recruiterId, recruiterData) {
+  static async getRecruiterByIdWithPassword(recruiterId) {
     try {
-      const recruiter = await Recruiter.findByPk(recruiterId, {
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
-      });
+      const recruiter = await Recruiter.findByPk(recruiterId);
       if (!recruiter) {
         throw new Error('Recruiter not found');
       }
-      await recruiter.update(recruiterData);
       return recruiter;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async updateRecruiter(id, data) {
+    try {
+      const recruiter = await Recruiter.findByPk(id);
+      if (!recruiter) {
+        throw new Error('Recruiter not found');
+      }
+
+      const updatedData = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone: data.phone,
+        email: data.email,
+        company_name: data.company_name,
+        company_description: data.company_description,
+        company_photo: data.company_photo,
+        photo: data.photo,
+        date_of_birth: data.date_of_birth,
+        active: data.active,
+        kintone_id: data.kintone_id,
+      };
+
+      if (data.password) {
+        updatedData.password = data.password;
+      }
+
+      return await recruiter.update(updatedData);
     } catch (error) {
       throw error;
     }
@@ -82,7 +108,7 @@ class RecruiterService {
     try {
       await Recruiter.destroy({ where: { kintone_id: recruiterId } });
     } catch (error) {
-      console.error('Error deleting recruiter:', error);  // Log any errors
+      console.error('Error deleting recruiter:', error);
       throw error;
     }
   }
