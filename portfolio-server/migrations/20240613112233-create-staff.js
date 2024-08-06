@@ -41,6 +41,10 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      phone: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       photo: {
         type: Sequelize.STRING,
         allowNull: true,
