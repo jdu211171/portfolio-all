@@ -8,42 +8,48 @@ import Filter from "../../components/filter/Filter";
 const Staff = () => {
   const headers = [
     {
-      id: "name",
+      id: "first_name",
       numeric: false,
       disablePadding: true,
       label: "職員",
       type: "avatar",
-    },
-    {
-      id: "department",
-      numeric: true,
-      disablePadding: false,
-      label: "部署",
-      type: "status",
-    },
-    {
-      id: "position",
-      numeric: true,
-      disablePadding: false,
-      label: "役職",
-    },
-    {
-      id: "phone",
-      numeric: true,
-      disablePadding: false,
-      label: "電話番号",
+      minWidth: "220px",
     },
     {
       id: "email",
       numeric: true,
       disablePadding: false,
       label: "メール",
+      type: "email",
+      minWidth: "160px",
+    },
+    {
+      id: "department",
+      numeric: true,
+      disablePadding: false,
+      label: "部署",
+      minWidth: "160px",
+    },
+    {
+      id: "position",
+      numeric: true,
+      disablePadding: false,
+      label: "役職",
+      minWidth: "160px",
+    },
+    {
+      id: "phone",
+      numeric: true,
+      disablePadding: false,
+      label: "電話番号",
+      minWidth: "200px",
     },
     {
       id: "action",
       numeric: true,
       disablePadding: false,
       label: "アクション",
+      minWidth: "160px",
     },
   ];
 

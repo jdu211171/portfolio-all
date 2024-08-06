@@ -33,6 +33,17 @@
   transition: width 2s ease-in-out;
 }
 
+.filterButtonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.filterButton {
+  padding: 0 !important;
+  background-color: #eee !important;
+  border-radius: 50%;
+}
+
 .filterFields {
   display: flex;
   height: 50vh;
@@ -51,4 +62,5 @@
   top: 0;
   right: 0;
   cursor: pointer;
+  user-select: none;
 }

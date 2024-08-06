@@ -157,17 +157,38 @@ const Stats = () => {
 
   const openCreditDetails = (event) => {
     event.preventDefault();
+    // Create an object with student data
+    let tempStudent = {
+      student_id: student.student_id,
+      first_name: student.first_name,
+      last_name: student.last_name,
+      partner_university: student.partner_university,
+    };
+  
+    // Convert the object to a JSON string
+    const studentData = JSON.stringify(tempStudent);
+  
+    // Open a new window with the student data included in the URL as a parameter
     const newWindow = window.open(
-      "/credit-details",
+      `/credit-details?student=${encodeURIComponent(studentData)}`,
       "_blank",
       "width=600,height=400"
     );
-    if (newWindow) {
-      newWindow.onload = () => {
-        newWindow.postMessage({ student: student }, "*");
-      };
-    }
   };
+  
+  
+
+  function base64EncodeUnicode(str) {
+    // Encode to Base64
+    return btoa(
+      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) =>
+        String.fromCharCode("0x" + p1)
+      )
+    )
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
 
   const showAlert = (message, severity) => {
     setAlert({ open: true, message, severity });

@@ -208,19 +208,6 @@ const CompanyProfile = ({ userId = 0 }) => {
                 width: "160px",
               }}
             />
-            <Chip
-              label={`生年月日: ${new Date(
-                company.date_of_birth
-              ).toLocaleDateString()}`}
-              variant="outlined"
-              sx={{
-                fontSize: "12px",
-                padding: "2px 6px",
-                height: "auto",
-                lineHeight: 1,
-                width: "160px",
-              }}
-            />
           </Box>
         </Box>
       </Box>

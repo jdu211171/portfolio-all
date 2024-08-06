@@ -180,16 +180,19 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
       </Grid>
       <Grid item xs={12} style={{ position: "relative" }}>
         <div className={style.clear} onClick={handleClear}>
-          clear
+          取り戻す
         </div>
-        {fields.length > 1 && (
-          <IconButton
-            onClick={handleClick}
-            style={{ width: "100%", height: "5px", padding: "0 10px" }}
-          >
-            {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
-        )}
+        <div className={style.filterButtonContainer}>
+          {fields.length > 1 && (
+            <IconButton onClick={handleClick} className={style.filterButton}>
+              {open ? (
+                <ExpandLessIcon fontSize="large" />
+              ) : (
+                <ExpandMoreIcon fontSize="large" />
+              )}
+            </IconButton>
+          )}
+        </div>
       </Grid>
       <Collapse in={collapse} timeout={300}>
         <Grid my={1} container spacing={1} className={style.filterFields}>

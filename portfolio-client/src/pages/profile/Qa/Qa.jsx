@@ -86,7 +86,7 @@ const QA = () => {
     try {
       let res;
       if (isFirstTime) {
-        res = await axios.post("/api/qa/", { studentId:id, data: editData });
+        res = await axios.post("/api/qa/", { studentId: id, data: editData });
       } else {
         res = await axios.put(`/api/qa/${id}`, { data: editData });
       }
@@ -218,7 +218,11 @@ const QA = () => {
         {!editMode &&
           Object.entries(getCategoryData(subTabIndex)).map(
             ([key, { question, answer }]) => (
-              <QAAccordion key={key} question={question} answer={answer} />
+              <QAAccordion
+                key={key}
+                question={question.split("]")[1]}
+                answer={answer}
+              />
             )
           )}
       </Box>
