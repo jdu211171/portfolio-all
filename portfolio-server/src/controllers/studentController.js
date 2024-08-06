@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const StudentService = require('../services/studentService');
 
 class StudentController {
@@ -48,7 +49,20 @@ class StudentController {
     try {
       const { id } = req.params;
       const studentData = req.body;
-      const updatedStudent = await StudentService.updateStudent(id, studentData);
+
+      const { currentPassword, password, ...updateData } = req.body;
+
+      if (password) {
+        const student = await StudentService.getStudentById(req.params.id);
+        if (!student || !(await bcrypt.compare(currentPassword, student.password))) {
+          return res.status(400).json({ error: 'Текущий пароль неверен' });
+        }
+      }
+      
+      const updatedStudent = await StudentService.updateStudent(id, {
+        ...studentData,
+        password: password || undefined,
+      });
       res.status(200).json(updatedStudent);
     } catch (error) {
       next(error);
