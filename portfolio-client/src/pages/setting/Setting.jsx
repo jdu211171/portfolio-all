@@ -18,11 +18,12 @@ import SettingStyle from "./Setting.module.css";
 const Setting = () => {
   const role = sessionStorage.getItem("role");
   const [user, setUser] = useState({});
-  const [avatarImage, setAvatarImage] = useState(jduLogo);
+  const [avatarImage, setAvatarImage] = useState(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const {
     control,
@@ -69,6 +70,7 @@ const Setting = () => {
             throw new Error("Unknown role");
         }
         setUser(response.data);
+        setAvatarImage(response.data.photo)
         // Update form default values after fetching user data
         reset({
           first_name: response.data.first_name || "",
@@ -93,6 +95,7 @@ const Setting = () => {
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
     if (file) {
+      setSelectedFile(file); // Set the selected file
       const reader = new FileReader();
       reader.onload = (e) => {
         setAvatarImage(e.target.result);
@@ -141,7 +144,20 @@ const Setting = () => {
         };
         if (data.password) {
           updateData.password = data.password;
-          updateData.currentPassword = data.currentPassword; // Добавляем текущий пароль для проверки
+          updateData.currentPassword = data.currentPassword;
+        }
+
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+          const fileResponse = await axios.post("/api/files/upload", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          console.log(fileResponse.data.Location)
+          updateData.photo = fileResponse.data.Location; // Adjust based on your backend response
         }
 
         switch (role) {

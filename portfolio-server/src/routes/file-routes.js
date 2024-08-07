@@ -5,7 +5,7 @@ const generateUniqueFilename = require('../utils/uniqueFilename');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 const fs = require('fs');
 
 // Endpoint to upload a file
@@ -17,13 +17,12 @@ router.post('/upload', upload.single('file'), async (req, res) => {
     }
 
     try {
-        const fileBuffer = fs.readFileSync(file.path);
+        const fileBuffer = file.buffer; // Access the buffer directly
         const uniqueFilename = generateUniqueFilename(file.originalname);
         let uploadedFile = await uploadFile(fileBuffer, "gg/" + uniqueFilename);
-        await fs.unlinkSync(file.path)
         res.status(200).send(uploadedFile);
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send('Error uploading file');
     }
 });
