@@ -93,7 +93,7 @@ class RecruiterController {
       if (password) {
         const recruiter = await RecruiterService.getRecruiterByIdWithPassword(req.params.id);
         if (!recruiter || !currentPassword || !(await bcrypt.compare(currentPassword, recruiter.password))) {
-          return res.status(400).json({ error: 'Текущий пароль неверен' });
+          return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }
       }
 

@@ -55,7 +55,7 @@ class StudentController {
       if (password) {
         const student = await StudentService.getStudentById(req.params.id);
         if (!student || !(await bcrypt.compare(currentPassword, student.password))) {
-          return res.status(400).json({ error: 'Текущий пароль неверен' });
+          return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }
       }
       

@@ -29,6 +29,8 @@ const Setting = () => {
     handleSubmit,
     watch,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
     reset,
   } = useForm({
@@ -119,14 +121,26 @@ const Setting = () => {
 
   const validatePasswords = (data) => {
     if (data.password !== data.confirmPassword) {
-      return "Passwords do not match";
+        setError("confirmPassword", {
+        type: "manual",
+        message: "パスワードが一致しません",
+      });
+      return false;
     }
+    clearErrors("confirmPassword");
+    if (!data.currentPassword) {
+      setError("currentPassword", {
+        type: "manual",
+        message: "現在のパスワードを入力してください",
+      });
+      return false;
+    }
+    clearErrors("currentPassword");
     return true;
   };
 
   const onSubmit = async (data) => {
-    const passwordValidation = validatePasswords(data);
-    if (passwordValidation === true) {
+    if (!validatePasswords(data)) {return;}
       try {
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
         const updateData = {
@@ -165,10 +179,14 @@ const Setting = () => {
         setIsEditing(false);
       } catch (error) {
         console.error("Failed to update profile:", error);
+      if (error.response && error.response.data && error.response.data.error) {
+        setError("currentPassword", {
+          type: "manual",
+          message: error.response.data.error,
+        });
+       } else {
         alert("Failed to update profile. Please try again.");
       }
-    } else {
-      alert(passwordValidation);
     }
   };
 
@@ -361,6 +379,8 @@ const Setting = () => {
                   {...field}
                   disabled={!isEditing}
                   autoComplete="new-password"
+                  error={!!errors.currentPassword}
+                  helperText={errors.currentPassword?.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -395,6 +415,8 @@ const Setting = () => {
                   {...field}
                   disabled={!isEditing}
                   autoComplete="new-password"
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -425,6 +447,8 @@ const Setting = () => {
                   {...field}
                   disabled={!isEditing}
                   autoComplete="new-password"
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword?.message}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">

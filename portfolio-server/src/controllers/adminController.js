@@ -29,7 +29,7 @@ class AdminController {
       if (password) {
         const admin = await AdminService.getAdminById(req.params.id);
         if (!admin || !(await bcrypt.compare(currentPassword, admin.password))) {
-          return res.status(400).json({ error: 'Текущий пароль неверен' });
+          return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }
       }
       const updatedAdmin = await AdminService.updateAdmin(req.params.id, {

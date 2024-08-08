@@ -71,7 +71,7 @@ class StaffController {
       if (password) {
         const staff = await StaffService.getStaffById(req.params.id);
         if (!staff || !(await bcrypt.compare(currentPassword, staff.password))) {
-          return res.status(400).json({ error: 'Текущий пароль неверен' });
+          return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }
       }
       const updatedStaff = await StaffService.updateStaff(req.params.id, {
