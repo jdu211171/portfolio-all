@@ -1,6 +1,6 @@
 // src/routes/fileRoutes.js
 const express = require('express');
-const { uploadFile, getFile } = require('../utils/storageService');
+const { uploadFile, deleteFile, getFile } = require('../utils/storageService');
 const generateUniqueFilename = require('../utils/uniqueFilename');
 const router = express.Router();
 const path = require('path');
@@ -11,15 +11,29 @@ const fs = require('fs');
 // Endpoint to upload a file
 router.post('/upload', upload.single('file'), async (req, res) => {
     const file = req.file;
+    const { role, imageType, id, oldFilePath } = req.body
 
     if (!file) {
         return res.status(400).send('No file uploaded.');
     }
 
     try {
+
+        if (Array.isArray(oldFilePath)) {
+            // Iterate over each item in the array
+            for (const fileUrl of oldFilePath) {
+                await deleteFile(fileUrl);
+            }
+        } else if (typeof oldFilePath === 'string') {
+            // Handle the case where oldFilePath is a single string
+            await deleteFile(oldFilePath);
+        } else {
+            console.error('Invalid input: oldFilePath should be a string or an array of strings');
+        }
+
         const fileBuffer = file.buffer; // Access the buffer directly
         const uniqueFilename = generateUniqueFilename(file.originalname);
-        let uploadedFile = await uploadFile(fileBuffer, "gg/" + uniqueFilename);
+        let uploadedFile = await uploadFile(fileBuffer, `${role}/${imageType}/${id}/` + uniqueFilename);
         res.status(200).send(uploadedFile);
     } catch (error) {
         console.log(error);
