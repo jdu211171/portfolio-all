@@ -20,6 +20,7 @@ import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import Deliverables from "../../../components/Deliverables/Deliverables";
+import { useAlert } from "../../../contexts/AlertContext";
 
 import styles from "./Top.module.css";
 
@@ -35,6 +36,7 @@ const Top = () => {
   } else {
     id = studentId;
   }
+  const showAlert = useAlert();
 
   const [student, setStudent] = useState(null);
   const [editData, setEditData] = useState({});
@@ -97,14 +99,6 @@ const Top = () => {
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
-  };
-
-  const showAlert = (message, severity) => {
-    setAlert({ open: true, message, severity });
-  };
-
-  const handleCloseAlert = () => {
-    setAlert({ open: false, message: "", severity: "" });
   };
 
   const handleGalleryOpen = () => {
@@ -263,20 +257,6 @@ const Top = () => {
           />
         </Box>
       )}
-      <Snackbar
-        open={alert.open}
-        autoHideDuration={6000}
-        onClose={handleCloseAlert}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseAlert}
-          severity={alert.severity}
-          sx={{ width: "100%" }}
-        >
-          {alert.message}
-        </Alert>
-      </Snackbar>
       <Dialog
         open={galleryOpen}
         onClose={handleGalleryClose}
