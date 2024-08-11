@@ -131,7 +131,7 @@ const Setting = () => {
       return false;
     }
     clearErrors("confirmPassword");
-    if (!data.currentPassword) {
+    if (data.password && !data.currentPassword) {
       setError("currentPassword", {
         type: "manual",
         message: "現在のパスワードを入力してください",
