@@ -192,4 +192,8 @@ footer {
     background-color: #00000012;
     z-index: 100;
   }
+
+  .loginUser {
+    display: none;
+  }
 }

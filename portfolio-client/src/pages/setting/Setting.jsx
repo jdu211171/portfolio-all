@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "../../utils/axiosUtils";
 import {
   Container,
@@ -12,11 +12,12 @@ import {
 } from "@mui/material";
 import { PhotoCamera, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
+import { UserContext } from "../../contexts/UserContext";
 import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 
 const Setting = () => {
-  const role = sessionStorage.getItem("role");
+  const { role, activeUser, updateUser } = useContext(UserContext);
   const [user, setUser] = useState({});
   const [avatarImage, setAvatarImage] = useState(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -124,7 +125,7 @@ const Setting = () => {
 
   const validatePasswords = (data) => {
     if (data.password !== data.confirmPassword) {
-        setError("confirmPassword", {
+      setError("confirmPassword", {
         type: "manual",
         message: "パスワードが一致しません",
       });
@@ -143,71 +144,76 @@ const Setting = () => {
   };
 
   const onSubmit = async (data) => {
-    if (!validatePasswords(data)) {return;}
-      try {
-        const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
-        const updateData = {
-          first_name: data.first_name,
-          last_name: data.last_name,
-          phone: data.phone,
-          email: data.email,
-          contactEmail: data.contactEmail,
-          contactPhone: data.contactPhone,
-          workingHours: data.workingHours,
-          location: data.location,
-        };
-        if (data.password) {
-          updateData.password = data.password;
-          updateData.currentPassword = data.currentPassword;
-        }
+    if (!validatePasswords(data)) {
+      return;
+    }
+    try {
+      const id = activeUser.id;
+      const updateData = {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        phone: data.phone,
+        email: data.email,
+        contactEmail: data.contactEmail,
+        contactPhone: data.contactPhone,
+        workingHours: data.workingHours,
+        location: data.location,
+      };
+      if (data.password) {
+        updateData.password = data.password;
+        updateData.currentPassword = data.currentPassword;
+      }
 
-        if (selectedFile) {
-          const formData = new FormData();
-          formData.append("file", selectedFile);
-          formData.append("role", role);
-          formData.append("imageType", "avatar");
-          formData.append("id", id);
-          formData.append("oldFilePath", user.photo);
-          const fileResponse = await axios.post("/api/files/upload", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("role", role);
+        formData.append("imageType", "avatar");
+        formData.append("id", id);
+        formData.append("oldFilePath", user.photo);
+        const fileResponse = await axios.post("/api/files/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
-          console.log(fileResponse.data.Location);
-          updateData.photo = fileResponse.data.Location; // Adjust based on your backend response
-        }
+        updateData.photo = fileResponse.data.Location; // Adjust based on your backend response
+      }
 
-        let updatedData;
+      let updatedData;
 
-        switch (role) {
-          case "Admin":
-            updatedData = await axios.put(`/api/admin/${id}`, updateData);
-            break;
-          case "Student":
-            updatedData = await axios.put(`/api/students/${id}`, updateData);
-            break;
-          case "Staff":
-            updatedData = await axios.put(`/api/staff/${id}`, updateData);
-            break;
-          case "Recruiter":
-            updatedData = await axios.put(`/api/recruiters/${id}`, updateData);
-            break;
-          default:
-            throw new Error("Unknown role");
-        }
-        console.log(user);
-        await setUser(updatedData.data);
-        console.log(user);
-        setIsEditing(false);
-      } catch (error) {
-        console.error("Failed to update profile:", error);
+      switch (role) {
+        case "Admin":
+          updatedData = await axios.put(`/api/admin/${id}`, updateData);
+          break;
+        case "Student":
+          updatedData = await axios.put(`/api/students/${id}`, updateData);
+          break;
+        case "Staff":
+          updatedData = await axios.put(`/api/staff/${id}`, updateData);
+          break;
+        case "Recruiter":
+          updatedData = await axios.put(`/api/recruiters/${id}`, updateData);
+          break;
+        default:
+          throw new Error("Unknown role");
+      }
+      await setUser(updatedData.data);
+      let tempUser = activeUser;
+      tempUser.name =
+        updatedData.data.first_name + " " + updatedData.data.last_name;
+      tempUser.photo = updatedData.data.photo;
+      sessionStorage.setItem("loginUser", JSON.stringify(tempUser));
+      updateUser();
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
       if (error.response && error.response.data && error.response.data.error) {
         setError("currentPassword", {
           type: "manual",
           message: error.response.data.error,
         });
-       } else {
+      } else {
         alert("Failed to update profile. Please try again.");
       }
     }
@@ -249,20 +255,22 @@ const Setting = () => {
               sx={{ width: 100, height: 100 }}
             />
             <label htmlFor="avatar-upload">
-              <IconButton
-                color="primary"
-                aria-label="upload picture"
-                component="span"
-                size="small"
-                sx={{
-                  position: "absolute",
-                  bottom: 4,
-                  right: 4,
-                  backgroundColor: "white",
-                }}
-              >
-                <PhotoCamera />
-              </IconButton>
+              {isEditing && (
+                <IconButton
+                  color="primary"
+                  aria-label="upload picture"
+                  component="span"
+                  size="small"
+                  sx={{
+                    position: "absolute",
+                    bottom: 4,
+                    right: 4,
+                    backgroundColor: "white",
+                  }}
+                >
+                  <PhotoCamera />
+                </IconButton>
+              )}
             </label>
             <input
               accept="image/*"

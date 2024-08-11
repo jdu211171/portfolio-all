@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+ import React, { useState, useEffect, useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
 import UserAvatar from "../table/avatar/UserAvatar";
 
 // icons
@@ -43,8 +44,8 @@ const navItems = [
   },
 ];
 
-
 const Layout = () => {
+  const { activeUser, updateUser } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [smallScreen, setSmallScreen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -77,7 +78,6 @@ const Layout = () => {
 
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
     setUserData(JSON.parse(sessionStorage.getItem("loginUser")));
     // Initial check
     handleResize();
@@ -142,9 +142,9 @@ const Layout = () => {
             </div>
             <div className={style.loginUser}>
               <UserAvatar
-                photo={userData?.photo}
-                name={userData?.name}
-                studentId={userData?.studentId}
+                photo={activeUser?.photo}
+                name={activeUser?.name}
+                studentId={activeUser?.studentId}
               />
             </div>
           </div>
@@ -157,20 +157,20 @@ const Layout = () => {
               <ul key={"ul-" + index}>
                 <span className={style.navGroup}>{section.section}</span>
                 {section.items
-                .filter((item) => checkRole(role, item.roles))
-                .map((item, index) => (
-                  <li key={index}>
-                    <NavLink
-                      to={item.to}
-                      className={({ isActive }) =>
-                        isActive ? style.active : ""
-                      }
-                    >
-                      {item.icon}
-                      <div>{item.label}</div>
-                    </NavLink>
-                  </li>
-                ))}
+                  .filter((item) => checkRole(role, item.roles))
+                  .map((item, index) => (
+                    <li key={index}>
+                      <NavLink
+                        to={item.to}
+                        className={({ isActive }) =>
+                          isActive ? style.active : ""
+                        }
+                      >
+                        {item.icon}
+                        <div>{item.label}</div>
+                      </NavLink>
+                    </li>
+                  ))}
               </ul>
             ))}
 
