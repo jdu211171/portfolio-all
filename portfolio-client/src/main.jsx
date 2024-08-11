@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import AppRoutes from "./routes";
 import { UserProvider } from "./contexts/UserContext";
+import { AlertProvider } from "./contexts/AlertContext";
 
 import theme from "./styles/theme";
 import "./styles/index.css";
@@ -12,9 +13,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline /> {/* Add CssBaseline for consistent styling */}
-      <UserProvider>
-        <AppRoutes />
-      </UserProvider>
+      <AlertProvider>
+        <UserProvider>
+          <AppRoutes />
+        </UserProvider>
+      </AlertProvider>
     </ThemeProvider>
   </React.StrictMode>
 );

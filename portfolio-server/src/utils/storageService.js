@@ -29,6 +29,32 @@ const uploadFile = async (fileBuffer, objectName) => {
     }
 };
 
+// Function to delete a file using the file's URL
+const deleteFile = async (fileUrl) => {
+    try {
+        // Extract the object key from the file URL
+        const url = new URL(fileUrl);
+        let objectName = decodeURIComponent(url.pathname.substring(1)); // Remove the leading '/' and decode any encoded characters
+
+        // Remove the "portfolio/" prefix if it exists
+        const prefix = 'portfolio/';
+        if (objectName.startsWith(prefix)) {
+            objectName = objectName.substring(prefix.length);
+        }
+
+        const deleteParams = {
+            Bucket: bucketName,
+            Key: objectName,
+        };
+
+        await s3Client.deleteObject(deleteParams).promise();
+        console.log(`File ${objectName} deleted successfully.`);
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        throw error;
+    }
+};
+
 // Function to download a file
 const getFile = async (objectName, downloadPath) => {
     try {
@@ -48,5 +74,6 @@ const getFile = async (objectName, downloadPath) => {
 
 module.exports = {
     uploadFile,
+    deleteFile,
     getFile,
 };

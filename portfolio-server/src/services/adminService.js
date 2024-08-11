@@ -19,6 +19,7 @@ class AdminService {
       last_name: data.last_name,
       phone: data.phone,
       email: data.email,
+      photo: data.photo,
       contactEmail: data.contactEmail,
       contactPhone: data.contactPhone,
       workingHours: data.workingHours,

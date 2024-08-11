@@ -9,7 +9,7 @@ const staffRoute = require('./routes/staff-route');
 const studentRoute = require('./routes/students-route');
 const bookmarkRoute = require('./routes/bookmarks-route');
 const qaRoute = require('./routes/qa-route');
-// const fileRoutes = require('./routes/file-routes');
+const fileRoutes = require('./routes/file-routes');
 const kintoneRoutes = require('./routes/kintone-routes');
 const webhookRoutes = require('./routes/webhook-routes');
 
@@ -24,7 +24,7 @@ const configureRoutes = (app) => {
   app.use('/api/students', studentRoute);
   app.use('/api/bookmarks', authMiddleware, bookmarkRoute);
   app.use('/api/qa', authMiddleware, qaRoute);
-  // app.use('/api/files', fileRoutes);
+  app.use('/api/files', fileRoutes);
   app.use('/api/kintone', kintoneRoutes);
   app.use('/api/webhook', webhookRoutes);
 };
