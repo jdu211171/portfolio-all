@@ -3,19 +3,7 @@ import { useLocation, useParams } from "react-router-dom";
 import ReactDOM from "react-dom";
 
 import axios from "../../../utils/axiosUtils";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Button,
-  Snackbar,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Box, Tabs, Tab, Button } from "@mui/material";
 import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
@@ -41,6 +29,8 @@ const Top = () => {
   const [student, setStudent] = useState(null);
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [newImages, setNewImages] = useState([]);
+  const [deletedUrls, setDeletedUrls] = useState();
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -63,6 +53,16 @@ const Top = () => {
     }));
   };
 
+  const handleGalleryUpdate = (files) => {
+    // Convert FileList to an array of files
+    const newFiles = Array.from(files);
+
+    // Update the state with new files
+    setNewImages((prevImages) => {
+      // Create a new array with the existing images and the new files
+      return [...prevImages, ...newFiles];
+    });
+  };
   const handleUpdateEditMode = () => {
     setEditMode(true);
   };
@@ -89,31 +89,10 @@ const Top = () => {
   };
 
   const [subTabIndex, setSubTabIndex] = useState(0);
-  const [alert, setAlert] = useState({
-    open: false,
-    message: "",
-    severity: "",
-  });
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
   };
-
-  const handleGalleryOpen = () => {
-    setGalleryOpen(true);
-  };
-
-  const handleGalleryClose = () => {
-    setGalleryOpen(false);
-  };
-
-  const generateGalleryUrls = (numImages) => {
-    return Array.from(
-      { length: numImages },
-      (_, index) => `https://picsum.photos/300/200?random=${index + 1}`
-    );
-  };
-
 
   if (!student) {
     return <div>Loading...</div>;
@@ -185,7 +164,14 @@ const Top = () => {
             updateEditData={handleUpdateEditData}
             keyName="self_introduction"
           />
-          <Gallery galleryUrls={student.gallery} />
+          <Gallery
+            galleryUrls={student.gallery}
+            newImages={newImages}
+            deletedUrls={deletedUrls}
+            editMode={editMode}
+            updateEditData={handleGalleryUpdate}
+            keyName="gallery"
+          />
           <TextField
             title="趣味"
             data={student.hobbies}

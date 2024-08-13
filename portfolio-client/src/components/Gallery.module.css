@@ -11,6 +11,19 @@
   cursor: pointer;
 }
 
+.editPlaceholder {
+  width: 30%;
+  aspect-ratio: 1 / 1;
+  min-width: 150px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  color: #ccc;
+}
+
 .fullGalleryContainer {
   display: flex;
   flex-wrap: wrap;
@@ -23,4 +36,17 @@
   min-height: 150px;
   aspect-ratio: 1 / 1;
   cursor: pointer;
+}
+
+.fullEditPlaceholder {
+  width: 24%;
+  min-width: 150px;
+  min-height: 150px;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  color: #ccc;
 }

@@ -8,17 +8,7 @@ export const UserProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
   const [activeUser, setActiveUser] = useState(null);
 
-  useEffect(() => {
-    const userRole = sessionStorage.getItem("role");
-    const loginUser = sessionStorage.getItem("loginUser");
-    const userId = loginUser ? JSON.parse(loginUser).id : null;
-    const user = JSON.parse(loginUser);
-    setActiveUser(user);
-    setRole(userRole);
-    setUserId(userId);
-  }, []);
-
-  const updateUser = () => {
+  const fetchAndSetUser = () => {
     const userRole = sessionStorage.getItem("role");
     const loginUser = sessionStorage.getItem("loginUser");
     const userId = loginUser ? JSON.parse(loginUser).id : null;
@@ -27,6 +17,14 @@ export const UserProvider = ({ children }) => {
     setRole(userRole);
     setUserId(userId);
     return user;
+  };
+
+  useEffect(() => {
+    fetchAndSetUser();
+  }, []);
+
+  const updateUser = () => {
+    return fetchAndSetUser();
   };
 
   return (
