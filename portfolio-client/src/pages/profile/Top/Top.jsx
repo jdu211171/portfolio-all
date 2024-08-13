@@ -94,8 +94,6 @@ const Top = () => {
     message: "",
     severity: "",
   });
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [galleryUrls, setGalleryUrls] = useState([]);
 
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
@@ -116,9 +114,6 @@ const Top = () => {
     );
   };
 
-  useEffect(() => {
-    setGalleryUrls(generateGalleryUrls(8));
-  }, []);
 
   if (!student) {
     return <div>Loading...</div>;
@@ -190,10 +185,7 @@ const Top = () => {
             updateEditData={handleUpdateEditData}
             keyName="self_introduction"
           />
-          <Gallery
-            galleryUrls={galleryUrls.slice(0, 2)}
-            onClick={handleGalleryOpen}
-          />
+          <Gallery galleryUrls={student.gallery} />
           <TextField
             title="趣味"
             data={student.hobbies}
@@ -257,40 +249,6 @@ const Top = () => {
           />
         </Box>
       )}
-      <Dialog
-        open={galleryOpen}
-        onClose={handleGalleryClose}
-        maxWidth="lg"
-        fullWidth
-      >
-        <DialogTitle>
-          Gallery
-          <IconButton
-            aria-label="close"
-            onClick={handleGalleryClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Box className={styles.fullGalleryContainer}>
-            {galleryUrls.map((url, index) => (
-              <img
-                key={index}
-                src={url}
-                alt={`Gallery ${index}`}
-                className={styles.fullGalleryImage}
-              />
-            ))}
-          </Box>
-        </DialogContent>
-      </Dialog>
     </Box>
   );
 };

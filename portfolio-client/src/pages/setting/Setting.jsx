@@ -17,7 +17,9 @@ import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 
 const Setting = () => {
-  const { role, activeUser, updateUser } = useContext(UserContext);
+  const { activeUser, updateUser } = useContext(UserContext);
+
+  const [role, setRole] = useState(null);
   const [user, setUser] = useState({});
   const [avatarImage, setAvatarImage] = useState(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -53,10 +55,12 @@ const Setting = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      const userRole = sessionStorage.getItem("role");
+      await setRole(userRole);
       try {
         const id = JSON.parse(sessionStorage.getItem("loginUser")).id;
         let response;
-        switch (role) {
+        switch (userRole) {
           case "Admin":
             response = await axios.get(`/api/admin/${id}`);
             break;
@@ -332,187 +336,15 @@ const Setting = () => {
           </Button>
         )}
       </Box>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="first_name"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="名"
-                variant="outlined"
-                fullWidth
-                {...field}
-                disabled={!isEditing}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="last_name"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="姓"
-                variant="outlined"
-                fullWidth
-                {...field}
-                disabled={!isEditing}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="phone"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="電話番号"
-                variant="outlined"
-                fullWidth
-                {...field}
-                disabled={!isEditing}
-              />
-            )}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                label="メール"
-                variant="outlined"
-                fullWidth
-                {...field}
-                disabled={!isEditing}
-              />
-            )}
-          />
-        </Grid>
-      </Grid>
-      <Box className={SettingStyle["section"]}>
-        <h2 className={SettingStyle["h2"]}>パスワードの変更</h2>
-        <Grid container spacing={2}>
+      <form>
+        <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6}>
             <Controller
-              name="currentPassword"
+              name="first_name"
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="現在のパスワード"
-                  variant="outlined"
-                  type={showCurrentPassword ? "text" : "password"}
-                  fullWidth
-                  {...field}
-                  disabled={!isEditing}
-                  autoComplete="new-password"
-                  error={!!errors.currentPassword}
-                  helperText={errors.currentPassword?.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => togglePasswordVisibility("current")}
-                          edge="end"
-                        >
-                          {showCurrentPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="新しいパスワード"
-                  variant="outlined"
-                  type={showNewPassword ? "text" : "password"}
-                  fullWidth
-                  {...field}
-                  disabled={!isEditing}
-                  autoComplete="new-password"
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => togglePasswordVisibility("new")}
-                          edge="end"
-                        >
-                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="confirmPassword"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="パスワードを認証する"
-                  variant="outlined"
-                  type={showConfirmPassword ? "text" : "password"}
-                  fullWidth
-                  {...field}
-                  disabled={!isEditing}
-                  autoComplete="new-password"
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword?.message}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => togglePasswordVisibility("confirm")}
-                          edge="end"
-                        >
-                          {showConfirmPassword ? (
-                            <VisibilityOff />
-                          ) : (
-                            <Visibility />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              )}
-            />
-          </Grid>
-        </Grid>
-      </Box>
-      <Box className={SettingStyle["section"]}>
-        <h2 className={SettingStyle["h2"]}>コンタクト情報</h2>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="contactEmail"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="メール"
+                  label="名"
                   variant="outlined"
                   fullWidth
                   {...field}
@@ -523,7 +355,22 @@ const Setting = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="contactPhone"
+              name="last_name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  label="姓"
+                  variant="outlined"
+                  fullWidth
+                  {...field}
+                  disabled={!isEditing}
+                />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Controller
+              name="phone"
               control={control}
               render={({ field }) => (
                 <TextField
@@ -538,26 +385,12 @@ const Setting = () => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Controller
-              name="workingHours"
+              name="email"
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="労働時間"
-                  variant="outlined"
-                  fullWidth
-                  {...field}
-                  disabled={!isEditing}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Controller
-              name="location"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  label="位置"
+                  autoComplete="false"
+                  label="メール"
                   variant="outlined"
                   fullWidth
                   {...field}
@@ -567,7 +400,185 @@ const Setting = () => {
             />
           </Grid>
         </Grid>
-      </Box>
+        <Box className={SettingStyle["section"]}>
+          <h2 className={SettingStyle["h2"]}>パスワードの変更</h2>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="currentPassword"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="現在のパスワード"
+                    variant="outlined"
+                    type={showCurrentPassword ? "text" : "password"}
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                    autoComplete="new-password"
+                    error={!!errors.currentPassword}
+                    helperText={errors.currentPassword?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => togglePasswordVisibility("current")}
+                            edge="end"
+                          >
+                            {showCurrentPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="新しいパスワード"
+                    variant="outlined"
+                    type={showNewPassword ? "text" : "password"}
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                    autoComplete="new-password"
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => togglePasswordVisibility("new")}
+                            edge="end"
+                          >
+                            {showNewPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="confirmPassword"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="パスワードを認証する"
+                    variant="outlined"
+                    type={showConfirmPassword ? "text" : "password"}
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                    autoComplete="new-password"
+                    error={!!errors.confirmPassword}
+                    helperText={errors.confirmPassword?.message}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => togglePasswordVisibility("confirm")}
+                            edge="end"
+                          >
+                            {showConfirmPassword ? (
+                              <VisibilityOff />
+                            ) : (
+                              <Visibility />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+        <Box className={SettingStyle["section"]}>
+          <h2 className={SettingStyle["h2"]}>コンタクト情報</h2>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="contactEmail"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="メール"
+                    variant="outlined"
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="contactPhone"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="電話番号"
+                    variant="outlined"
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="workingHours"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="労働時間"
+                    variant="outlined"
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name="location"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    label="位置"
+                    variant="outlined"
+                    fullWidth
+                    {...field}
+                    disabled={!isEditing}
+                  />
+                )}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      </form>
     </Container>
   );
 };

@@ -1,12 +1,26 @@
 .galleryContainer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  
-  .galleryImage {
-    width: 100%;
-    max-width: 300px;
-    cursor: pointer;
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.galleryImage {
+  width: 30%;
+  aspect-ratio: 1 / 1;
+  min-width: 150px;
+  cursor: pointer;
+}
+
+.fullGalleryContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fullGalleryImage {
+  width: 24%;
+  min-width: 150px;
+  min-height: 150px;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+}

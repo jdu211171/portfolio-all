@@ -77,7 +77,7 @@ module.exports = {
         ]
       }
       // Generate an array of image links for the gallery
-      const gallery = Array.from({ length: 5 }, () => faker.image.image());
+      const gallery = Array.from({ length: 5 }, () => `https://picsum.photos/300/200?random=${Math.floor(Math.random() * 101)}`);
 
       studentsData.push({
         email: faker.internet.email(),
