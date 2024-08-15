@@ -8,38 +8,39 @@ const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 const fs = require('fs');
 
-// Endpoint to upload a file
-router.post('/upload', upload.single('file'), async (req, res) => {
-    const file = req.file;
-    const { role, imageType, id, oldFilePath } = req.body
-
-    if (!file) {
-        return res.status(400).send('No file uploaded.');
-    }
+// Endpoint to upload one or more files
+router.post('/upload', upload.any(), async (req, res) => {
+    const files = req.files; // This will be an array of files
+    const { role, imageType, id, oldFilePath } = req.body;
 
     try {
-
-        if (Array.isArray(oldFilePath)) {
-            // Iterate over each item in the array
-            for (const fileUrl of oldFilePath) {
-                await deleteFile(fileUrl);
+        if (oldFilePath && oldFilePath !== "none") {
+            const oldFilePaths = Array.isArray(oldFilePath) ? oldFilePath : [oldFilePath];
+            for (const fileUrl of oldFilePaths) {
+                try {
+                    await deleteFile(fileUrl);
+                } catch (err) {
+                    console.error(`Failed to delete file at ${fileUrl}: ${err}`);
+                }
             }
-        } else if (typeof oldFilePath === 'string') {
-            // Handle the case where oldFilePath is a single string
-            await deleteFile(oldFilePath);
-        } else {
-            console.error('Invalid input: oldFilePath should be a string or an array of strings');
+        }
+        const uploadedFiles = [];
+        if (files && files.length !== 0) {
+            for (const file of files) {
+                const fileBuffer = file.buffer;
+                const uniqueFilename = generateUniqueFilename(file.originalname);
+                const uploadedFile = await uploadFile(fileBuffer, `${role}/${imageType}/${id}/` + uniqueFilename);
+                uploadedFiles.push(uploadedFile);
+            }
         }
 
-        const fileBuffer = file.buffer; // Access the buffer directly
-        const uniqueFilename = generateUniqueFilename(file.originalname);
-        let uploadedFile = await uploadFile(fileBuffer, `${role}/${imageType}/${id}/` + uniqueFilename);
-        res.status(200).send(uploadedFile);
+        res.status(200).send(uploadedFiles.length === 1 ? uploadedFiles[0] : uploadedFiles);
     } catch (error) {
         console.log(error);
-        res.status(500).send('Error uploading file');
+        res.status(500).send('Error uploading file(s)');
     }
 });
+
 
 // Endpoint to download a file
 router.get('/download/:objectName', async (req, res) => {

@@ -30,7 +30,7 @@ const Top = () => {
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [newImages, setNewImages] = useState([]);
-  const [deletedUrls, setDeletedUrls] = useState();
+  const [deletedUrls, setDeletedUrls] = useState([]);
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -53,15 +53,29 @@ const Top = () => {
     }));
   };
 
-  const handleGalleryUpdate = (files) => {
-    // Convert FileList to an array of files
-    const newFiles = Array.from(files);
+  const handleGalleryUpdate = (files, isNewFiles = false, isDelete = false) => {
+    if (isNewFiles && !isDelete) {
+      // Convert FileList to an array of files
+      const newFiles = Array.from(files);
 
-    // Update the state with new files
-    setNewImages((prevImages) => {
-      // Create a new array with the existing images and the new files
-      return [...prevImages, ...newFiles];
-    });
+      // Update the state with new files
+      setNewImages((prevImages) => {
+        // Create a new array with the existing images and the new files
+        return [...prevImages, ...newFiles];
+      });
+    } else if (isDelete) {
+      //if deleting a file, argument [files] is an index of file removing
+      if (isNewFiles) {
+        setNewImages((prevImages) => {
+          return prevImages.filter((_, i) => i !== files);
+        });
+      } else {
+        let oldFiles = editData.gallery;
+        deletedUrls.push(oldFiles[files]);
+        oldFiles.splice(files, 1);
+        handleUpdateEditData("gallery", oldFiles);
+      }
+    }
   };
   const handleUpdateEditMode = () => {
     setEditMode(true);
@@ -73,8 +87,42 @@ const Top = () => {
 
   const handleSave = async () => {
     try {
+      const formData = new FormData();
+
+      // Append each file in the `newImages` array to the form data
+      newImages.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+      });
+
+      // Append other necessary fields
+      formData.append("role", role);
+      formData.append("imageType", "Gallery");
+      formData.append("id", id);
+
+      // Append the array of deleted URLs
+      deletedUrls.forEach((url, index) => {
+        formData.append(`oldFilePath[${index}]`, url);
+      });
+
+      // Send the form data via POST request
+      const fileResponse = await axios.post("/api/files/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      let oldFiles = editData.gallery;
+
+      fileResponse.data.forEach((file) => {
+        oldFiles.push(file.Location);
+      });
+
+      await handleUpdateEditData("gallery", oldFiles);
+
       await axios.put(`/api/students/${id}`, editData);
       setStudent(editData);
+      setNewImages([]);
+      setDeletedUrls([]);
       setEditMode(false);
       showAlert("Changes saved successfully!", "success");
     } catch (error) {
@@ -165,7 +213,7 @@ const Top = () => {
             keyName="self_introduction"
           />
           <Gallery
-            galleryUrls={student.gallery}
+            galleryUrls={editData}
             newImages={newImages}
             deletedUrls={deletedUrls}
             editMode={editMode}

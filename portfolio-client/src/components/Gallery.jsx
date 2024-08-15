@@ -4,16 +4,26 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
   IconButton,
   Input,
   Typography,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./Gallery.module.css";
 
-const Gallery = ({ galleryUrls, newImages, deletedUrls, editMode, updateEditData }) => {
+const Gallery = ({
+  galleryUrls,
+  newImages,
+  deletedUrls, // 参照用
+  editMode,
+  updateEditData,
+  keyName,
+}) => {
   const [open, setOpen] = useState(false);
-  const [imageUrls, setImageUrls] = useState([]);
+  const [newImageUrls, setNewImageUrls] = useState([]);
   const fileInputRef = useRef(null);
 
   const handleClickOpen = () => {
@@ -26,15 +36,19 @@ const Gallery = ({ galleryUrls, newImages, deletedUrls, editMode, updateEditData
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    updateEditData(files);
+    updateEditData(files, true);
+  };
+
+  const handleFileDelete = (index, isNewFiles = false) => {
+    updateEditData(index, isNewFiles, true);
   };
 
   useEffect(() => {
-    // Create object URLs for new images
+    // 新しい画像のオブジェクトURLを作成
     const urls = newImages.map((file) => URL.createObjectURL(file));
-    setImageUrls(urls);
+    setNewImageUrls(urls);
 
-    // Cleanup function to revoke object URLs when component unmounts or new images change
+    // クリーンアップ関数：コンポーネントのアンマウント時や新しい画像が変更されたときにオブジェクトURLを解放
     return () => {
       urls.forEach((url) => URL.revokeObjectURL(url));
     };
@@ -49,11 +63,11 @@ const Gallery = ({ galleryUrls, newImages, deletedUrls, editMode, updateEditData
   return (
     <Box>
       <Box className={styles.galleryContainer} onClick={handleClickOpen}>
-        {galleryUrls.slice(0, 2).map((url, index) => (
+        {galleryUrls[keyName].slice(0, 2).map((url, index) => (
           <img
             key={`gallery-${index}`}
             src={url}
-            alt={`Gallery ${index}`}
+            alt={`ギャラリー ${index}`}
             className={styles.galleryImage}
           />
         ))}
@@ -63,15 +77,15 @@ const Gallery = ({ galleryUrls, newImages, deletedUrls, editMode, updateEditData
             className={styles.editPlaceholder}
             onClick={handleAddImageClick}
           >
-            <Typography variant="h6">Add Image</Typography>
+            <Typography variant="h6">画像を追加</Typography>
           </label>
         )}
       </Box>
       <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
         <DialogTitle>
-          Gallery
+          ギャラリー
           <IconButton
-            aria-label="close"
+            aria-label="閉じる"
             onClick={handleClose}
             sx={{
               position: "absolute",
@@ -85,21 +99,57 @@ const Gallery = ({ galleryUrls, newImages, deletedUrls, editMode, updateEditData
         </DialogTitle>
         <DialogContent dividers>
           <Box className={styles.fullGalleryContainer}>
-            {galleryUrls.map((url, index) => (
-              <img
+            {galleryUrls[keyName].map((url, index) => (
+              <div
+                className={styles.fullGalleryImageContainer}
                 key={`gallery-full-${index}`}
-                src={url}
-                alt={`Gallery ${index}`}
-                className={styles.fullGalleryImage}
-              />
+              >
+                <img
+                  src={url}
+                  alt={`ギャラリー ${index}`}
+                  className={styles.fullGalleryImage}
+                />
+                {editMode && (
+                  <IconButton
+                    aria-label="削除"
+                    onClick={() => handleFileDelete(index)}
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      color: "red",
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </div>
             ))}
-            {imageUrls.map((url, index) => (
-              <img
+            {newImageUrls.map((url, index) => (
+              <div
+                className={styles.fullGalleryImageContainer}
                 key={`new-${index}`}
-                src={url}
-                alt={`New Gallery ${index}`}
-                className={styles.fullGalleryImage}
-              />
+              >
+                <img
+                  src={url}
+                  alt={`新しいギャラリー ${index}`}
+                  className={styles.fullGalleryImage}
+                />
+                {editMode && (
+                  <IconButton
+                    aria-label="削除"
+                    onClick={() => handleFileDelete(index, true)}
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      color: "red",
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </div>
             ))}
             {editMode && (
               <label
@@ -107,17 +157,22 @@ const Gallery = ({ galleryUrls, newImages, deletedUrls, editMode, updateEditData
                 className={styles.editPlaceholder}
                 onClick={handleAddImageClick}
               >
-                <Typography variant="h6">Add Image</Typography>
+                <Typography variant="h6">画像を追加</Typography>
               </label>
             )}
           </Box>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            OK
+          </Button>
+        </DialogActions>
       </Dialog>
       <Input
         id="file-upload"
         type="file"
         inputProps={{ multiple: true, accept: "image/*" }}
-        style={{ display: "none" }} // Hide the file input
+        style={{ display: "none" }} // ファイル入力を非表示
         ref={fileInputRef}
         onChange={handleFileChange}
       />
