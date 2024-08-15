@@ -19,7 +19,7 @@ const Top = () => {
   const location = useLocation();
   const { userId } = location.state || {};
 
-  if (userId != 0 && userId) {
+  if (userId !== 0 && userId) {
     id = userId;
   } else {
     id = studentId;
@@ -31,6 +31,7 @@ const Top = () => {
   const [editMode, setEditMode] = useState(false);
   const [newImages, setNewImages] = useState([]);
   const [deletedUrls, setDeletedUrls] = useState([]);
+  const [deliverableImages, setDeliverableImages] = useState({});
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -64,7 +65,6 @@ const Top = () => {
         return [...prevImages, ...newFiles];
       });
     } else if (isDelete) {
-      //if deleting a file, argument [files] is an index of file removing
       if (isNewFiles) {
         setNewImages((prevImages) => {
           return prevImages.filter((_, i) => i !== files);
@@ -77,6 +77,14 @@ const Top = () => {
       }
     }
   };
+
+  const handleImageUpload = (activeDeliverable, file) => {
+    setDeliverableImages((prevImages) => ({
+      ...prevImages,
+      [activeDeliverable]: file,
+    }));
+  };
+
   const handleUpdateEditMode = () => {
     setEditMode(true);
   };
@@ -110,7 +118,6 @@ const Top = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-
       let oldFiles = editData.gallery;
 
       fileResponse.data.forEach((file) => {
@@ -118,6 +125,34 @@ const Top = () => {
       });
 
       await handleUpdateEditData("gallery", oldFiles);
+
+      // Check if there are deliverable images to process
+      for (const [index, file] of Object.entries(deliverableImages)) {
+        if (file) {
+          const deliverableFormData = new FormData();
+          deliverableFormData.append("file", file);
+          deliverableFormData.append("imageType", "Deliverable");
+          deliverableFormData.append("id", id);
+          deliverableFormData.append(
+            "oldFilePath",
+            editData.deliverables[index]?.imageLink || ""
+          ); // Append old file path if exists
+
+          const deliverableFileResponse = await axios.post(
+            "/api/files/upload",
+            deliverableFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          const newImageLink = deliverableFileResponse.data.Location;
+          // Update the deliverable's imageLink with the new file location
+          editData.deliverables[index].imageLink = newImageLink;
+        }
+      }
 
       await axios.put(`/api/students/${id}`, editData);
       setStudent(editData);
@@ -148,7 +183,7 @@ const Top = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {role == "Student" && (
+      {role === "Student" && (
         <>
           {editMode ? (
             <>
@@ -268,7 +303,6 @@ const Top = () => {
           />
         </Box>
       )}
-      {/* 成果物 starts from here */}
       {subTabIndex === 1 && (
         <Box my={2}>
           <Deliverables
@@ -280,6 +314,7 @@ const Top = () => {
             showHeaders={false}
             keyName="deliverables"
             updateEditMode={handleUpdateEditMode}
+            onImageUpload={handleImageUpload} // Pass image upload handler
           />
         </Box>
       )}

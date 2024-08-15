@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { TextField as MuiTextField, Box, IconButton } from "@mui/material";
-import { Add, DeleteOutline } from "@mui/icons-material";
-
-import styles from "./Deliverables.module.css"; // Assuming you have some CSS for styling
+import { Add, DeleteOutline, Upload } from "@mui/icons-material";
+import styles from "./Deliverables.module.css";
 import TextField from "../TextField/TextField";
 import RoleField from "../RoleField/RoleField";
 import {
@@ -18,8 +17,10 @@ const Deliverables = ({
   updateEditData,
   keyName,
   updateEditMode,
+  onImageUpload,
 }) => {
   const textFieldRef = useRef(null);
+  const fileInputRef = useRef(null); // Ref for file input
   const [newData, setNewData] = useState(editData);
   const [activeDeliverable, setActiveDeliverable] = useState(0);
 
@@ -58,7 +59,7 @@ const Deliverables = ({
   };
 
   useEffect(() => {
-    if (editData.length == 0) {
+    if (editData.length === 0) {
       addNewDeliverable();
     }
   }, []);
@@ -102,6 +103,25 @@ const Deliverables = ({
         </button>
       </div>
     );
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      onImageUpload(activeDeliverable, file); // Pass the files to the parent component
+      // Preview the image immediately
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const updatedData = [...newData];
+        updatedData[activeDeliverable].imageLink = reader.result;
+        setNewData(updatedData);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current.click(); // Trigger file input click
   };
 
   return (
@@ -175,17 +195,35 @@ const Deliverables = ({
         </tbody>
       </table>
       <Box className={styles.imageBox}>
+        {editMode && (
+          <div className={styles.uploadButton}>
+            <IconButton color="primary" onClick={handleUploadClick}>
+              <Upload />
+            </IconButton>
+          </div>
+        )}
+
         <TransformWrapper>
-          
           <TransformComponent>
             <img
-              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-              alt="test"
+              src={newData[activeDeliverable]?.imageLink || ""}
+              alt={newData[activeDeliverable]?.title || "Deliverable Image"}
               width="100%"
             />
           </TransformComponent>
           <Controls />
         </TransformWrapper>
+        {editMode && (
+          <>
+            <input
+              ref={fileInputRef} // Attach ref
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              style={{ display: "none" }} // Hide input
+            />
+          </>
+        )}
       </Box>
       <Box>
         <TextField
@@ -216,10 +254,8 @@ const Deliverables = ({
                 }}
                 className={styles.image}
               >
-                <img
-                  src={`https://picsum.photos/300/200?random=${index}`}
-                  alt={pr.imageLink}
-                />
+                {pr.title}
+                <img src={pr.imageLink} alt={pr.title || `Image ${index}`} />
                 {editMode && (
                   <IconButton
                     onClick={(e) => {
