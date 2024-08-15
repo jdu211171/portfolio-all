@@ -23,6 +23,7 @@ const Deliverables = ({
   const fileInputRef = useRef(null); // Ref for file input
   const [newData, setNewData] = useState(editData);
   const [activeDeliverable, setActiveDeliverable] = useState(0);
+  const [imagePreview, setImagePreview] = useState({});
 
   useEffect(() => {
     setNewData(editData);
@@ -107,17 +108,19 @@ const Deliverables = ({
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      onImageUpload(activeDeliverable, file); // Pass the files to the parent component
-      // Preview the image immediately
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const updatedData = [...newData];
-        updatedData[activeDeliverable].imageLink = reader.result;
-        setNewData(updatedData);
-      };
-      reader.readAsDataURL(file);
-    }
+
+    // Preview the image immediately
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview((prevPreview) => ({
+        ...prevPreview,
+        [activeDeliverable]: reader.result,
+      }));
+    };
+    reader.readAsDataURL(file);
+
+    // Pass the file to the parent component
+    onImageUpload(activeDeliverable, file);
   };
 
   const handleUploadClick = () => {
@@ -200,21 +203,6 @@ const Deliverables = ({
             <IconButton color="primary" onClick={handleUploadClick}>
               <Upload />
             </IconButton>
-          </div>
-        )}
-
-        <TransformWrapper>
-          <TransformComponent>
-            <img
-              src={newData[activeDeliverable]?.imageLink || ""}
-              alt={newData[activeDeliverable]?.title || "Deliverable Image"}
-              width="100%"
-            />
-          </TransformComponent>
-          <Controls />
-        </TransformWrapper>
-        {editMode && (
-          <>
             <input
               ref={fileInputRef} // Attach ref
               type="file"
@@ -222,8 +210,21 @@ const Deliverables = ({
               onChange={handleFileChange}
               style={{ display: "none" }} // Hide input
             />
-          </>
+          </div>
         )}
+        <TransformWrapper>
+          <TransformComponent>
+            <img
+              src={
+                imagePreview[activeDeliverable] ||
+                newData[activeDeliverable]?.imageLink
+              }
+              alt={newData[activeDeliverable]?.title || "Deliverable Image"}
+              width="100%"
+            />
+          </TransformComponent>
+          <Controls />
+        </TransformWrapper>
       </Box>
       <Box>
         <TextField
@@ -255,7 +256,10 @@ const Deliverables = ({
                 className={styles.image}
               >
                 {pr.title}
-                <img src={pr.imageLink} alt={pr.title || `Image ${index}`} />
+                <img
+                  src={imagePreview[index] || pr.imageLink}
+                  alt={pr.title || `Image ${index}`}
+                />
                 {editMode && (
                   <IconButton
                     onClick={(e) => {

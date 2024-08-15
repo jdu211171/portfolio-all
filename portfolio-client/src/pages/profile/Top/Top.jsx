@@ -130,6 +130,7 @@ const Top = () => {
       for (const [index, file] of Object.entries(deliverableImages)) {
         if (file) {
           const deliverableFormData = new FormData();
+          deliverableFormData.append("role", role);
           deliverableFormData.append("file", file);
           deliverableFormData.append("imageType", "Deliverable");
           deliverableFormData.append("id", id);
@@ -148,9 +149,9 @@ const Top = () => {
             }
           );
 
-          const newImageLink = deliverableFileResponse.data.Location;
+          const deliverableImageLink = deliverableFileResponse.data.Location;
           // Update the deliverable's imageLink with the new file location
-          editData.deliverables[index].imageLink = newImageLink;
+          editData.deliverables[index].imageLink = deliverableImageLink;
         }
       }
 

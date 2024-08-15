@@ -132,6 +132,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
+  z-index: 100;
 }
 
 @media (max-width: 768px) {
