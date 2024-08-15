@@ -39,8 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    company_photo: {
-      type: DataTypes.STRING,
+    gallery: {
+      type: DataTypes.JSONB,
       allowNull: true,
     },
     photo: {

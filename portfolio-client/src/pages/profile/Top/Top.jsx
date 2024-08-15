@@ -120,9 +120,13 @@ const Top = () => {
       });
       let oldFiles = editData.gallery;
 
-      fileResponse.data.forEach((file) => {
-        oldFiles.push(file.Location);
-      });
+      if (Array.isArray(fileResponse.data)) {
+        fileResponse.data.forEach((file) => {
+          oldFiles.push(file.Location);
+        });
+      } else if (fileResponse.data.Location) {
+        oldFiles.push(fileResponse.data.Location);
+      }
 
       await handleUpdateEditData("gallery", oldFiles);
 

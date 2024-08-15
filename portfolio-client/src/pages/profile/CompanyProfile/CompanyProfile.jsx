@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import {
-  useParams,
-  useNavigate,
-  useLocation,
-  Outlet,
-  NavLink,
-} from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "../../../utils/axiosUtils";
 import {
   Box,
@@ -41,6 +35,8 @@ const CompanyProfile = ({ userId = 0 }) => {
   const [company, setCompany] = useState(null);
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [newImages, setNewImages] = useState([]);
+  const [deletedUrls, setDeletedUrls] = useState([]);
 
   useEffect(() => {
     const fetchCompany = async () => {
@@ -66,11 +62,75 @@ const CompanyProfile = ({ userId = 0 }) => {
 
   const handleSave = async () => {
     try {
+      const formData = new FormData();
+
+      // Append new images to form data
+      newImages.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+      });
+
+      // Append other necessary fields
+      formData.append("role", role);
+      formData.append("imageType", "CompanyGallery");
+      formData.append("id", id);
+
+      // Append the array of deleted URLs
+      deletedUrls.forEach((url, index) => {
+        formData.append(`oldFilePath[${index}]`, url);
+      });
+
+      // Send the form data via POST requesïït for new images
+      const fileResponse = await axios.post("/api/files/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Update gallery URLs with new file locations
+      let oldFiles = editData.gallery;
+      if (Array.isArray(fileResponse.data)) {
+        fileResponse.data.forEach((file) => {
+          oldFiles.push(file.Location);
+        });
+      } else if (fileResponse.data.Location) {
+        oldFiles.push(fileResponse.data.Location);
+      }
+
+      console.log(oldFiles);
+      await handleUpdateEditData("gallery", oldFiles);
+
+      console.log(editData);
+      // Handle deleted URLs
+
+      // Save updated company data
       await axios.put(`/api/recruiters/${id}`, editData);
       setCompany(editData);
       setEditMode(false);
+      setNewImages([]);
+      setDeletedUrls([]);
     } catch (error) {
-      console.error("Error saving student data:", error);
+      console.error("Error saving company data:", error);
+    }
+  };
+
+  const handleGalleryUpdate = (files, isNewFiles = false, isDelete = false) => {
+    if (isNewFiles && !isDelete) {
+      // Convert FileList to an array of files
+      const newFiles = Array.from(files);
+
+      // Update the state with new files
+      setNewImages((prevImages) => [...prevImages, ...newFiles]);
+    } else if (isDelete) {
+      if (isNewFiles) {
+        // Remove new files (filtered by index)
+        setNewImages((prevImages) => prevImages.filter((_, i) => i !== files));
+      } else {
+        // Remove old files (by index)
+        let oldFiles = editData.gallery;
+        deletedUrls.push(oldFiles[files]);
+        oldFiles.splice(files, 1);
+        handleUpdateEditData("gallery", oldFiles);
+      }
     }
   };
 
@@ -86,23 +146,7 @@ const CompanyProfile = ({ userId = 0 }) => {
     }));
   };
 
-  const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryUrls, setGalleryUrls] = useState([]);
-
-  const handleGalleryOpen = () => {
-    setGalleryOpen(true);
-  };
-
-  const generateGalleryUrls = (numImages) => {
-    return Array.from(
-      { length: numImages },
-      (_, index) => `https://picsum.photos/300/200?random=${index + 1}`
-    );
-  };
-
-  useEffect(() => {
-    setGalleryUrls(generateGalleryUrls(8));
-  }, []);
 
   if (!company) {
     return <div>Loading...</div>;
@@ -221,8 +265,12 @@ const CompanyProfile = ({ userId = 0 }) => {
           keyName="company_description"
         />
         <Gallery
-          galleryUrls={galleryUrls.slice(0, 2)}
-          onClick={handleGalleryOpen}
+          galleryUrls={editData}
+          newImages={newImages}
+          deletedUrls={deletedUrls}
+          editMode={editMode}
+          updateEditData={handleGalleryUpdate}
+          keyName="gallery"
         />
       </Box>
     </Box>

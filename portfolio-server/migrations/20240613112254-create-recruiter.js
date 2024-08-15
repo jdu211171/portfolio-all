@@ -33,9 +33,10 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      company_photo: {
-        type: Sequelize.STRING,
+      gallery: {
+        type: Sequelize.JSONB,
         allowNull: true,
+        defaultValue: {}
       },
       photo: {
         type: Sequelize.STRING,

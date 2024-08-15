@@ -9,7 +9,7 @@ class RecruiterService {
       return newRecruiter;
     } catch (error) {
       throw error; // Throw the error for the controller to handle
-    }å
+    } å
   }
 
   // Service method to retrieve all recruiters
@@ -87,7 +87,7 @@ class RecruiterService {
         email: data.email,
         company_name: data.company_name,
         company_description: data.company_description,
-        company_photo: data.company_photo,
+        gallery: data.gallery,
         photo: data.photo,
         date_of_birth: data.date_of_birth,
         active: data.active,
