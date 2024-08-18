@@ -34,31 +34,31 @@ const QA = () => {
   const [editMode, setEditMode] = useState(false);
   const [isFirstTime, setIsFirstTime] = useState(false);
 
-  useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get(`/api/qa/student/${id}`);
-        setStudentQA(response.data);
+  const fetchStudent = async () => {
+    try {
+      const response = await axios.get(`/api/qa/student/${id}`);
+      setStudentQA(response.data);
 
-        if (Object.keys(response.data.idList).length === 0) {
-          // Initialize editData based on qaList if response.data is empty
-          let tempData = {};
-          Object.entries(qaList.QAPage).forEach(([category, questions]) => {
-            tempData[category] = {};
-            Object.entries(questions).forEach(([key, question]) => {
-              tempData[category][key] = { question: question, answer: "" };
-            });
+      if (Object.keys(response.data.idList).length === 0) {
+        // Initialize editData based on qaList if response.data is empty
+        let tempData = {};
+        Object.entries(qaList.QAPage).forEach(([category, questions]) => {
+          tempData[category] = {};
+          Object.entries(questions).forEach(([key, question]) => {
+            tempData[category][key] = { question: question, answer: "" };
           });
-          setEditData(tempData);
-          setIsFirstTime(true);
-        } else {
-          setEditData(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching student data:", error);
+        });
+        setEditData(tempData);
+        setIsFirstTime(true);
+      } else {
+        setEditData(response.data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchStudent();
   }, [id]);
 
@@ -100,7 +100,7 @@ const QA = () => {
   };
 
   const handleCancel = () => {
-    setEditData(studentQA);
+    fetchStudent();
     setEditMode(false);
   };
 
@@ -217,13 +217,16 @@ const QA = () => {
       <Box my={2}>
         {!editMode &&
           Object.entries(getCategoryData(subTabIndex)).map(
-            ([key, { question, answer }]) => (
-              <QAAccordion
-                key={key}
-                question={question.split("]")[1]}
-                answer={answer}
-              />
-            )
+            ([key, { question, answer }]) =>
+              !(question.split("]")[0] == "[任意" && !answer) && (
+                <>
+                  <QAAccordion
+                    key={key}
+                    question={question.split("]")[1]}
+                    answer={answer ? answer : "回答なし"}
+                  />
+                </>
+              )
           )}
       </Box>
 
