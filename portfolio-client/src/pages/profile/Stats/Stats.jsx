@@ -164,10 +164,10 @@ const Stats = () => {
       last_name: student.last_name,
       partner_university: student.partner_university,
     };
-  
+
     // Convert the object to a JSON string
     const studentData = JSON.stringify(tempStudent);
-  
+
     // Open a new window with the student data included in the URL as a parameter
     const newWindow = window.open(
       `/credit-details?student=${encodeURIComponent(studentData)}`,
@@ -175,8 +175,6 @@ const Stats = () => {
       "width=600,height=400"
     );
   };
-  
-  
 
   function base64EncodeUnicode(str) {
     // Encode to Base64
@@ -212,10 +210,10 @@ const Stats = () => {
 
   const breakpoints2 = [
     { label: "入学", point: 0 },
-    { label: "1年", point: 31 },
-    { label: "2年", point: 62 },
-    { label: "3年", point: 93 },
-    { label: "4年", point: 124 },
+    { label: "", point: 31 },
+    { label: "", point: 62 },
+    { label: "", point: 93 },
+    { label: "卒業", point: 124 },
   ];
 
   return (
