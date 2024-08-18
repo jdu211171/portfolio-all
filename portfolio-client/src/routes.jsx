@@ -76,6 +76,13 @@ const AppRoutes = () => {
 
             <Route path="/bookmarked" element={<ProtectedLayout allowedRoles={["Recruiter"]} />}>
               <Route index element={<Student key="bookmarked" OnlyBookmarked={true} />} />
+              <Route path="profile/:studentId/*" element={<StudentProfile />}>
+                <Route index element={<Navigate to="top" />} />{" "}
+                {/* Redirect index to top */}
+                <Route path="top" element={<Top />} />
+                <Route path="qa" element={<Qa />} />
+                <Route path="stats" element={<Stats />} />
+              </Route>
             </Route>
 
             <Route path="/settings" element={<Setting />} />
