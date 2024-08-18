@@ -63,6 +63,7 @@ module.exports = (sequelize, DataTypes) => {
     gallery: {
       type: DataTypes.JSONB,
       allowNull: true,
+      defaultValue: []
     },
     skills: {
       type: DataTypes.JSONB,

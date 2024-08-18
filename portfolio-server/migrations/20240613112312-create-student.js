@@ -57,7 +57,7 @@ module.exports = {
       gallery: {
         type: Sequelize.JSONB,
         allowNull: true,
-        defaultValue: {}
+        defaultValue: []
       },
       skills: {
         type: Sequelize.JSONB,

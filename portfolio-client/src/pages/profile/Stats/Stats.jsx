@@ -118,11 +118,11 @@ const Stats = () => {
     if (key == "main") {
       data.forEach((x) => {
         let obj = {
-          name: type == "IELTS" ? x.awards.value : x.jlptLevel.value,
+          name: type == "IELTS" ? x.score.value : x.level.value,
           date: x.date.value.slice(0, 7),
           color:
             certificateColors[type][
-              type == "IELTS" ? x.awards.value : x.jlptLevel.value
+              type == "IELTS" ? x.score.value : x.level.value
             ],
         };
         temp.push(obj);
@@ -130,11 +130,11 @@ const Stats = () => {
     } else {
       data.forEach((x) => {
         let obj = {
-          name: type == "ITコンテスト学内" ? x["学内賞"].value : x.level.value,
+          name: type == "ITコンテスト学内" ? x.award.value : x.rank.value,
           date: x.date.value.slice(0, 7),
           color:
             certificateColors[key][
-              type == "ITコンテスト学内" ? x["学内賞"].value : x.level.value
+              type == "ITコンテスト学内" ? x.award.value : x.rank.value
             ],
         };
         temp.push(obj);

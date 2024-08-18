@@ -140,20 +140,20 @@ class KintoneService {
       let certificate_benron = (await this.getAllRecords("certificate_benron")).records
       let certificate_it_contest = (await this.getAllRecords("certificate_it_contest")).records
 
-      let jlptData = this.formatCertificateData(certificate_jlpt, "jlptLevel", true);
-      let jduJlptData = this.formatCertificateData(certificate_jdu_jlpt, "jlptLevel", true);
-      let ieltsData = this.formatCertificateData(certificate_ielts, "awards");
-      let benronData = this.formatCertificateData(certificate_benron, "level", true);
-      let itContestData = this.formatCertificateData(certificate_it_contest, "学内賞", true);
+      let jlptData = this.formatCertificateData(certificate_jlpt, "level", true);
+      let jduJlptData = this.formatCertificateData(certificate_jdu_jlpt, "level", true);
+      let ieltsData = this.formatCertificateData(certificate_ielts, "score");
+      let benronData = this.formatCertificateData(certificate_benron, "rank", true);
+      let itContestData = this.formatCertificateData(certificate_it_contest, "award", true);
 
       const formattedStudentData = students.map(record => ({
         studentId: record.studentId.value,
         studentName: record.studentName.value,
-        mail: record.mail.value,
-        jduDate: record.jduDate.value,
-        birthday: record.birthday.value,
+        mail: record.studentEmail.value,
+        jduDate: record.jduEnrollmentDate.value,
+        birthday: record.birthDate.value,
         semester: record.semester.value,
-        univer: record.univer.value,
+        univer: record.partnerUniversity.value,
         レコード番号: record['レコード番号'],
         jlpt: JSON.stringify(jlptData[record.studentId.value] ? jlptData[record.studentId.value] : ""),
         jdu_japanese_certification: JSON.stringify(jduJlptData[record.studentId.value] ? jduJlptData[record.studentId.value] : ""),
@@ -171,7 +171,7 @@ class KintoneService {
 
   static formatCertificateData(certificateJlpt, level, isReverse) {
     const data = {};
-
+    // console.log(certificateJlpt, level, isReverse)
     certificateJlpt.forEach(record => {
       const studentId = record.studentId.value;
       const nLevel = record[level].value;
