@@ -96,10 +96,8 @@ const CompanyProfile = ({ userId = 0 }) => {
         oldFiles.push(fileResponse.data.Location);
       }
 
-      console.log(oldFiles);
       await handleUpdateEditData("gallery", oldFiles);
 
-      console.log(editData);
       // Handle deleted URLs
 
       // Save updated company data

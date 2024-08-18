@@ -60,9 +60,6 @@ const CreditDetails = () => {
         val: studentId,
       });
 
-      setTimeout(() => {
-        console.log(response.data.records);
-      }, 5000);
       setCreditData(response.data.records);
     };
 
