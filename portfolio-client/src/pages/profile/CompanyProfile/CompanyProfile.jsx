@@ -49,7 +49,9 @@ const CompanyProfile = ({ userId = 0 }) => {
       }
     };
 
-    fetchCompany();
+    if (id) {
+      fetchCompany();
+    }
   }, [id]);
 
   const handleBackClick = () => {

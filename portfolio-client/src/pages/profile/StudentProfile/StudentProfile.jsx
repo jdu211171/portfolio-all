@@ -36,7 +36,9 @@ const StudentProfile = ({ userId = 0 }) => {
       }
     };
 
-    fetchStudent();
+    if (id) {
+      fetchStudent();
+    }
   }, [id]);
 
   const handleBackClick = () => {
