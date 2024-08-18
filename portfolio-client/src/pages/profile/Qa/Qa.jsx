@@ -219,13 +219,11 @@ const QA = () => {
           Object.entries(getCategoryData(subTabIndex)).map(
             ([key, { question, answer }]) =>
               !(question.split("]")[0] == "[任意" && !answer) && (
-                <>
-                  <QAAccordion
-                    key={key}
-                    question={question.split("]")[1]}
-                    answer={answer ? answer : "回答なし"}
-                  />
-                </>
+                <QAAccordion
+                  key={key}
+                  question={question.split("]")[1]}
+                  answer={answer ? answer : "回答なし"}
+                />
               )
           )}
       </Box>
