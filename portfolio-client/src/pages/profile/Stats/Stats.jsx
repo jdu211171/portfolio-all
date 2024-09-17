@@ -8,7 +8,6 @@ import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import styles from "./Stats.module.css";
 
 const Stats = () => {
-  const navigate = useNavigate();
   let id;
   const { studentId } = useParams();
   const location = useLocation();
@@ -48,54 +47,22 @@ const Stats = () => {
         }
 
         const fetchCertificates = async () => {
-          const requests = [
-            axios.post(`/api/kintone/getby`, {
-              table: "certificate_ielts",
-              col: "studentId",
-              val: studentData.student_id,
-            }),
-            axios.post(`/api/kintone/getby`, {
-              table: "certificate_jlpt",
-              col: "studentId",
-              val: studentData.student_id,
-            }),
-            axios.post(`/api/kintone/getby`, {
-              table: "certificate_jdu_jlpt",
-              col: "studentId",
-              val: studentData.student_id,
-            }),
-            axios.post(`/api/kintone/getby`, {
-              table: "certificate_benron",
-              col: "studentId",
-              val: studentData.student_id,
-            }),
-            axios.post(`/api/kintone/getby`, {
-              table: "certificate_it_contest",
-              col: "studentId",
-              val: studentData.student_id,
-            }),
-          ];
-
-          const [
-            ieltsResponse,
-            jlptResponse,
-            jduJlptResponse,
-            benronResponse,
-            itContestResponse,
-          ] = await Promise.all(requests);
-
-          setCertificateData("main", "JLPT", jlptResponse.data.records);
-          setCertificateData("main", "JDU_JLPT", jduJlptResponse.data.records);
-          setCertificateData("main", "IELTS", ieltsResponse.data.records);
+          setCertificateData("main", "JLPT", JSON.parse(studentData.jlpt));
+          setCertificateData(
+            "main",
+            "JDU_JLPT",
+            JSON.parse(studentData.jdu_japanese_certification)
+          );
+          setCertificateData("main", "IELTS", JSON.parse(studentData.ielts));
           setCertificateData(
             "other",
             "日本語弁論大会学内",
-            benronResponse.data.records
+            JSON.parse(studentData.japanese_speech_contest)
           );
           setCertificateData(
             "other",
             "ITコンテスト学内",
-            itContestResponse.data.records
+            JSON.parse(studentData.it_contest)
           );
 
           setStudent(studentData);
@@ -113,34 +80,26 @@ const Stats = () => {
   const setCertificateData = (key, type, data) => {
     // Create a temporary array to hold the processed data
     let temp = [];
-
     // Process each item in the data array
     if (key == "main") {
-      data.forEach((x) => {
+      data.list?.forEach((x) => {
         let obj = {
-          name: type == "IELTS" ? x.score.value : x.level.value,
-          date: x.date.value.slice(0, 7),
-          color:
-            certificateColors[type][
-              type == "IELTS" ? x.score.value : x.level.value
-            ],
+          name: x.level,
+          date: x.date.slice(0, 7),
+          color: certificateColors[type][x.level],
         };
         temp.push(obj);
       });
     } else {
-      data.forEach((x) => {
+      data.list?.forEach((x) => {
         let obj = {
-          name: type == "ITコンテスト学内" ? x.award.value : x.rank.value,
-          date: x.date.value.slice(0, 7),
-          color:
-            certificateColors[key][
-              type == "ITコンテスト学内" ? x.award.value : x.rank.value
-            ],
+          name: x.level,
+          date: x.date.slice(0, 7),
+          color: certificateColors[key][x.level],
         };
         temp.push(obj);
       });
     }
-
     // Update the certificates state immutably
     setCertificates((prevCertificates) => ({
       ...prevCertificates,
