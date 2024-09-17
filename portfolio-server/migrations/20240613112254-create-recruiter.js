@@ -36,7 +36,7 @@ module.exports = {
       gallery: {
         type: Sequelize.JSONB,
         allowNull: true,
-        defaultValue: {}
+        defaultValue: []
       },
       photo: {
         type: Sequelize.STRING,

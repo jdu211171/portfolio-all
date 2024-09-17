@@ -10,11 +10,11 @@ class EmailService {
 
     const html = `
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="ja">
       <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Account Details</title>
+          <title>アカウント情報</title>
           <style>
               body {
                   font-family: Arial, sans-serif;
@@ -63,23 +63,23 @@ class EmailService {
       <body>
           <div class="email-container">
               <div class="header">
-                  <h1>Welcome to JDU</h1>
+                  <h1>JDUへようこそ</h1>
               </div>
               <div class="content">
-                  <p>Dear ${firstName} ${lastName},</p>
-                  <p>We are excited to have you join our team! Below are your account details:</p>
-                  <p><strong>Email:</strong> ${email}</p>
-                  <p><strong>Password:</strong> ${password}</p>
-                  <p>Please keep this information secure and do not share it with anyone.</p>
-                  <p>You can log in to your account by clicking the link below:</p>
-                  <p><a href="https://your-login-url.com">Login to Your Account</a></p>
-                  <p>If you have any questions or need further assistance, please feel free to contact our support team.</p>
-                  <p>Best regards,</p>
-                  <p>JDU Team</p>
+                  <p>${firstName} ${lastName} 様,</p>
+                  <p>私たちのチームに加わっていただき、ありがとうございます！以下があなたのアカウント情報です。</p>
+                  <p><strong>メールアドレス:</strong> ${email}</p>
+                  <p><strong>パスワード:</strong> ${password}</p>
+                  <p>この情報は安全に保管し、他の人と共有しないでください。</p>
+                  <p>下記のリンクをクリックしてアカウントにログインできます：</p>
+                  <p><a href="https://portfoliojdu.uz/login">アカウントにログインする</a></p>
+                  <p>ご質問がある場合やサポートが必要な場合は、いつでもサポートチームまでご連絡ください。</p>
+                  <p>よろしくお願いいたします。</p>
+                  <p>JDUチーム</p>
               </div>
               <div class="footer">
                   <p>&copy; ${new Date().getFullYear()} JDU. All rights reserved.</p>
-                  <p>JDU Address</p>
+                  <p>JDU住所</p>
               </div>
           </div>
       </body>

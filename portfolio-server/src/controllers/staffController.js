@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const StaffService = require('../services/staffService');
 const { EmailToStaff } = require('../utils/emailToStaff');
+
+const generatePassword = require('generate-password');
+
 class StaffController {
   static async webhookHandler(req, res) {
     try {
@@ -15,12 +18,12 @@ class StaffController {
         });
 
         const data = {
-          email: record.mail.value,
+          email: record.staffEmail.value,
           password: password, // This will be hashed by the beforeCreate hook
-          first_name: record.staffName.value,
+          first_name: record.staffFirstName.value,
           last_name: record.staffLastName.value,
-          department: record.department.value,
-          position: record.status.value,
+          department: record.staffDepartment.value,
+          position: record.staffPosition.value,
           photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           kintone_id: record['$id'].value
         };

@@ -1,9 +1,12 @@
 // src/utils/storageService.js
 const AWS = require('aws-sdk');
+const https = require('https');
 
 // Configure the AWS SDK to connect to MinIO
+AWS.NodeHttpClient.sslAgent = new https.Agent({ rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0' });
+
 const s3Client = new AWS.S3({
-    endpoint: new AWS.Endpoint(`http://${process.env.AWS_S3_ENDPOINT}:${process.env.AWS_S3_PORT}`),
+    endpoint: new AWS.Endpoint(`${process.env.AWS_S3_ENDPOINT}:${process.env.AWS_S3_PORT}`),
     accessKeyId: process.env.AWS_S3_ACCESS_KEY,
     secretAccessKey: process.env.AWS_S3_SECRET_KEY,
     s3ForcePathStyle: true, // needed with MinIO

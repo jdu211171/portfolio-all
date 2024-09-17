@@ -19,12 +19,12 @@ class RecruiterController {
         });
 
         const data = {
-          email: record.mail.value,
+          email: record.recruiterEmail.value,
           password: password, // This will be hashed by the beforeCreate hook
-          first_name: record.recruiterName.value,
+          first_name: record.recruiterFirstName.value,
           last_name: record.recruiterLastName.value,
-          company_name: record.companyName.value,
-          phone: record.phoneNumber.value,
+          company_name: record.recruiterCompany.value,
+          phone: record.recruiterPhone.value,
           photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           active: false,
           kintone_id: record['$id'].value
