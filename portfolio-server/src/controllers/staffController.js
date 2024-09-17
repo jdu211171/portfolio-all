@@ -12,7 +12,7 @@ class StaffController {
         const password = generatePassword.generate({
           length: 12,
           numbers: true,
-          symbols: true,
+          symbols: false,
           uppercase: true,
           excludeSimilarCharacters: true
         });

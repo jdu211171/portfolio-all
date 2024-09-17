@@ -32,6 +32,10 @@ class StudentService {
       }
 
       let query = {}; // Initialize an empty query object
+      let querySearch = {};
+      let queryOther = {};
+      queryOther[Op.and] = [];
+
       const searchableColumns = ['email', 'first_name', 'last_name', 'self_introduction', 'hobbies', 'skills', 'it_skills', 'jlpt']; // Example list of searchable columns
 
       // Iterate through filter keys
@@ -40,7 +44,7 @@ class StudentService {
           // Handle different types of filter values
           if (key === 'search') {
             // Search across all searchable columns
-            query[Op.or] = searchableColumns.map(column => {
+            querySearch[Op.or] = searchableColumns.map(column => {
               if (['skills', 'it_skills'].includes(column)) {
                 // Handle JSONB fields specifically
                 return {
@@ -57,42 +61,47 @@ class StudentService {
             });
           } else if (key === 'skills' || key === "it_skills") {
             // Search across all searchable columns
-            query[Op.or] = {
+            queryOther[Op.and].push({
               [Op.or]: [
                 { [key]: { '上級::text': { [Op.iLike]: `%${filter[key]}%` } } },
                 { [key]: { '中級::text': { [Op.iLike]: `%${filter[key]}%` } } },
                 { [key]: { '初級::text': { [Op.iLike]: `%${filter[key]}%` } } }
               ]
-            }
+            })
           } else if (key === 'partner_university_credits') {
-            query[key] = { [Op.lt]: Number(filter[key]) };
+            queryOther[key] = { [Op.lt]: Number(filter[key]) };
           } else if (key === 'other_information') {
             if (filter[key] === '有り') {
-              query['other_information'] = { [Op.ne]: null };
+              queryOther['other_information'] = { [Op.ne]: null };
             } else if (filter[key] === '無し') {
-              query['other_information'] = { [Op.is]: null };
+              queryOther['other_information'] = { [Op.is]: null };
             }
           } else if (key === 'jlpt' || key === 'ielts' || key === 'jdu_japanese_certification') {
             // Handle jlpt specifically for stringified JSON field
-            query[Op.or] = filter[key].map(level => {
-              return { [key]: { [Op.iLike]: `%${level}%` } };
+            queryOther[Op.and].push({
+              [Op.or]: filter[key].map(level => {
+                return { [key]: { [Op.iLike]: `%${level}"%` } };
+              })
             });
           } else if (Array.isArray(filter[key])) {
             // If filter value is an array, use $in operator
-            query[key] = { [Op.in]: filter[key] };
+            queryOther[key] = { [Op.in]: filter[key] };
           } else if (typeof filter[key] === 'string') {
-            query[key] = { [Op.like]: `%${filter[key]}%` };
+            queryOther[key] = { [Op.like]: `%${filter[key]}%` };
           } else {
             // Handle other types of filter values as needed
-            query[key] = filter[key];
+            queryOther[key] = filter[key];
           }
         }
       });
 
+      if (!query[Op.and]) {
+        query[Op.and] = [];
+      }
+
+      query[Op.and].push(querySearch, queryOther)
       if (onlyBookmarked == "true") {
-        if (!query[Op.and]) {
-          query[Op.and] = [];
-        }
+
         query[Op.and].push(
           sequelize.literal(`EXISTS (
             SELECT 1

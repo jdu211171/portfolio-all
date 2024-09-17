@@ -13,7 +13,7 @@ class RecruiterController {
         const password = generatePassword.generate({
           length: 12,
           numbers: true,
-          symbols: true,
+          symbols: false,
           uppercase: true,
           excludeSimilarCharacters: true
         });
@@ -25,7 +25,6 @@ class RecruiterController {
           last_name: record.recruiterLastName.value,
           company_name: record.recruiterCompany.value,
           phone: record.recruiterPhone.value,
-          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           active: false,
           kintone_id: record['$id'].value
         };

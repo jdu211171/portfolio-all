@@ -40,7 +40,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       key: "ielts",
       label: "IELTS (英語力)",
       type: "checkbox",
-      options: ["6", "6.5", "7", "7.5", "8"],
+      options: ["6.0", "6.5", "7.0", "7.5", "8.0"],
       minWidth: "160px",
     },
     {
