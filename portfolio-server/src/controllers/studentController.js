@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const StudentService = require('../services/studentService');
 const generatePassword = require('generate-password');
+const { EmailToStudent } = require('../utils/emailToStudent');
 
 class StudentController {
 
@@ -34,7 +35,7 @@ class StudentController {
 
         const newStudent = await StudentService.createStudent(studentData);
         if (newStudent) {
-          await StudentService.EmailToStudent(newStudent.email, password, newStudent.first_name, newStudent.last_name);
+           await EmailToStudent(newStudent.email, password, newStudent.first_name, newStudent.last_name);
         }
 
         res.status(201).json({ message: 'Student added successfully' });

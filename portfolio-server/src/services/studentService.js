@@ -1,8 +1,9 @@
 // services/studentService.js
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
+const generatePassword = require('generate-password');
 const { Student, Bookmark, sequelize } = require('../models');
-const { sendEmail } = require('../utils/emailService');
+const { EmailToStudent } = require('../utils/emailToStudent');
 
 class StudentService {
   // Service method to create a new student
@@ -260,10 +261,31 @@ class StudentService {
 
         if (!existingStudent) {
           // If the student does not exist, set a default password
+          const password = generatePassword.generate({
+            length: 12,
+            numbers: true,
+            symbols: false,
+            uppercase: true,
+            excludeSimilarCharacters: true
+          });
           const salt = await bcrypt.genSalt(10);
-          formattedData.password = await bcrypt.hash('password123', salt);
+          formattedData.password = await bcrypt.hash(password, salt);
         } else {
-          formattedData.password = existingStudent.password;
+          const password = generatePassword.generate({
+            length: 12,
+            numbers: true,
+            symbols: false,
+            uppercase: true,
+            excludeSimilarCharacters: true
+          });
+          if (formattedData.semester >= 7 && !existingStudent.active) {
+            await EmailToStudent(formattedData.email, password, formattedData.first_name, formattedData.last_name);
+            const salt = await bcrypt.genSalt(10);
+            formattedData.password = await bcrypt.hash(password, salt);;
+            formattedData.active = true;
+          } else {
+            formattedData.password = existingStudent.password;
+          }
         }
 
         // Perform upsert

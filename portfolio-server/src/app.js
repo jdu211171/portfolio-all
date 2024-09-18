@@ -3,7 +3,12 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const cors = require('cors');
+
+const cron = require('node-cron');
+
 const configureRoutes = require('./routes');
+const KintoneService = require('./services/kintoneService');
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -27,6 +32,11 @@ app.use(cors({ origin: '*' }));
 
 // Configure routes
 configureRoutes(app);
+
+cron.schedule('0 2 * * *', async () => {
+  console.log('syncing with kintone');
+  // await KintoneService.syncData();
+});
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, "../../portfolio-client/dist/index.html"));
