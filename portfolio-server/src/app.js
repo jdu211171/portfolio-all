@@ -33,9 +33,9 @@ app.use(cors({ origin: '*' }));
 // Configure routes
 configureRoutes(app);
 
-cron.schedule('0 2 * * *', async () => {
+cron.schedule('0 4 * * *', async () => {
   console.log('syncing with kintone');
-  // await KintoneService.syncData();
+  await KintoneService.syncData();
 });
 
 app.get('*', (req, res) => {
