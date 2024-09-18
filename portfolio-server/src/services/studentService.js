@@ -165,15 +165,70 @@ class StudentService {
     }
   }
 
-  // Service method to delete a student
-  static async deleteStudent(studentId) {
+  // Service method to update a student by kintone_id
+  static async updateStudentWithKintoneID(kintoneId, studentData) {
     try {
-      const student = await Student.findByPk(studentId);
+      // Find student by kintone_id and exclude certain fields from the response
+      const student = await Student.findOne({
+        where: { kintone_id: kintoneId },
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
+
+      // If student not found, throw an error
       if (!student) {
         throw new Error('Student not found');
       }
+
+      // Update the student with the provided data
+      await student.update(studentData);
+
+      return student;
+    } catch (error) {
+      console.error('Error updating student:', error);
+      throw error;
+    }
+  }
+
+  // Service method to update a student by kintone_id
+  static async updateStudentWithStudentID(studentId, studentData) {
+    try {
+      // Find student by kintone_id and exclude certain fields from the response
+      const student = await Student.findOne({
+        where: { student_id: studentId },
+        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      });
+
+      // If student not found, throw an error
+      if (!student) {
+        throw new Error('Student not found');
+      }
+
+      // Update the student with the provided data
+      await student.update(studentData);
+
+      return student;
+    } catch (error) {
+      console.error('Error updating student:', error);
+      throw error;
+    }
+  }
+
+
+  // Service method to delete a student by kintone_id
+  static async deleteStudent(kintoneId) {
+    try {
+      // Find student by kintone_id
+      const student = await Student.findOne({ where: { kintone_id: kintoneId } });
+
+      // If student not found, throw an error
+      if (!student) {
+        throw new Error('Student not found');
+      }
+
+      // Delete the student
       await student.destroy();
     } catch (error) {
+      console.error('Error deleting student:', error);
       throw error;
     }
   }
@@ -192,7 +247,6 @@ class StudentService {
           first_name: data.studentName.split(' ')[0], // Asseuming first name is the first part
           last_name: data.studentName.split(' ')[1], // Assuming last name is the second part
           date_of_birth: data.birthday,
-          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
           // Include other fields as needed
           semester: data.semester,
           partner_university: data.univer,

@@ -82,7 +82,7 @@ const Stats = () => {
     let temp = [];
     // Process each item in the data array
     if (key == "main") {
-      data.list?.forEach((x) => {
+      data?.list?.forEach((x) => {
         let obj = {
           name: x.level,
           date: x.date.slice(0, 7),
@@ -91,7 +91,7 @@ const Stats = () => {
         temp.push(obj);
       });
     } else {
-      data.list?.forEach((x) => {
+      data?.list?.forEach((x) => {
         let obj = {
           name: x.level,
           date: x.date.slice(0, 7),

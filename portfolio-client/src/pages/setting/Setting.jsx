@@ -15,8 +15,11 @@ import { useForm, Controller } from "react-hook-form";
 import { UserContext } from "../../contexts/UserContext";
 import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
+import { useAlert } from "../../contexts/AlertContext";
 
 const Setting = () => {
+  const showAlert = useAlert();
+
   const { activeUser, updateUser } = useContext(UserContext);
 
   const [role, setRole] = useState(null);
@@ -226,10 +229,10 @@ const Setting = () => {
   const handleSync = async () => {
     try {
       await axios.post("api/kintone/sync");
-      alert("Sync successful");
+      showAlert("システムがキントーン同期しました", "success");
     } catch (error) {
       console.error("Sync failed:", error);
-      alert("Sync failed. Please try again.");
+      alert("システムがキントーン同期できませんでした", "error");
     }
   };
 

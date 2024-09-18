@@ -52,7 +52,6 @@ class KintoneController {
     }
   }
 
-  // Controller method to delete a student
   static async sync(req, res) {
     try {
       await KintoneService.syncData();
