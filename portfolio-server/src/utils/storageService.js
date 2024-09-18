@@ -1,15 +1,17 @@
-// src/utils/storageService.js
-const AWS = require('aws-sdk');
+const { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const https = require('https');
+const fs = require('fs');
 
-// Configure the AWS SDK to connect to MinIO
-AWS.NodeHttpClient.sslAgent = new https.Agent({ rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0' });
 
-const s3Client = new AWS.S3({
-    endpoint: new AWS.Endpoint(`${process.env.AWS_S3_ENDPOINT}:${process.env.AWS_S3_PORT}`),
-    accessKeyId: process.env.AWS_S3_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_S3_SECRET_KEY,
-    s3ForcePathStyle: true, // needed with MinIO
+const s3Client = new S3Client({
+    endpoint: `${process.env.AWS_S3_ENDPOINT}:${process.env.AWS_S3_PORT}`,
+    region: 'us-east-1', // MinIO expects a region, even if it's not used
+    credentials: {
+        accessKeyId: process.env.AWS_S3_ACCESS_KEY,
+        secretAccessKey: process.env.AWS_S3_SECRET_KEY,
+    },
+    forcePathStyle: true, // needed with MinIO
+    requestHandler: new https.Agent({ rejectUnauthorized: process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0' }),
     signatureVersion: 'v4',
 });
 
@@ -23,9 +25,15 @@ const uploadFile = async (fileBuffer, objectName) => {
             Key: objectName,
             Body: fileBuffer,
         };
+        const command = new PutObjectCommand(uploadParams);
+        const data = await s3Client.send(command);
 
-        const data = await s3Client.upload(uploadParams).promise();
-        return data
+        const Location = `${process.env.AWS_S3_ENDPOINT}:${process.env.AWS_S3_PORT}/${bucketName}/${objectName}`;
+
+        return {
+            ...data,
+            Location, // Include the constructed URL in the response
+        };
     } catch (error) {
         console.log('Error uploading file:', error);
         throw error;
@@ -50,7 +58,8 @@ const deleteFile = async (fileUrl) => {
             Key: objectName,
         };
 
-        await s3Client.deleteObject(deleteParams).promise();
+        const command = new DeleteObjectCommand(deleteParams);
+        await s3Client.send(command);
         console.log(`File ${objectName} deleted successfully.`);
     } catch (error) {
         console.error('Error deleting file:', error);
@@ -66,13 +75,26 @@ const getFile = async (objectName, downloadPath) => {
             Key: objectName,
         };
 
-        const data = await s3Client.getObject(downloadParams).promise();
-        fs.writeFileSync(downloadPath, data.Body);
+        const command = new GetObjectCommand(downloadParams);
+        const data = await s3Client.send(command);
+
+        // Write the file to disk
+        const body = await streamToBuffer(data.Body);
+        fs.writeFileSync(downloadPath, body);
         console.log(`File ${objectName} downloaded to ${downloadPath}`);
     } catch (error) {
         console.error('Error downloading file:', error);
         throw error;
     }
+};
+
+// Helper function to convert stream to buffer
+const streamToBuffer = async (stream) => {
+    const chunks = [];
+    for await (const chunk of stream) {
+        chunks.push(chunk);
+    }
+    return Buffer.concat(chunks);
 };
 
 module.exports = {
