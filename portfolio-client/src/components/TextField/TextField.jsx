@@ -21,7 +21,7 @@ const TextField = ({ title, data, editData, editMode, updateEditData, keyName })
             multiline
           />
         ) : (
-          <div>{data}</div>
+          <div>{data ? data : "未入力"}</div>
         )}
       </div>
     </div>

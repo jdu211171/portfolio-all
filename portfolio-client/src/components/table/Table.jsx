@@ -112,7 +112,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                       sx={{ borderBottom: "1px solid #aaa" }}
                       key={"header" + header.id}
                       align={header.numeric ? "right" : "left"}
-                      padding={header.disablePadding ? "5px" : "normal"}
+                      padding={"normal"}
                       sortDirection={orderBy === header.id ? order : false}
                     >
                       <TableSortLabel
