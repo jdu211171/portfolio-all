@@ -43,14 +43,7 @@ const Staff = () => {
       disablePadding: false,
       label: "電話番号",
       minWidth: "200px",
-    },
-    {
-      id: "action",
-      numeric: true,
-      disablePadding: false,
-      label: "アクション",
-      minWidth: "160px",
-    },
+    }
   ];
 
   const [filterState, setFilterState] = useState({});

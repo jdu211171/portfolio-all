@@ -27,7 +27,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
   const [orderBy, setOrderBy] = useState("");
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false); // Initialize loading state
 
@@ -100,7 +100,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
   );
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", border: "1px solid #eee", borderRadius: "10px" }}>
       <TableContainer>
         <Table sx={{ minWidth: 750 }} size="medium">
           <TableHead>
@@ -109,9 +109,10 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                 (header) =>
                   (header.role == undefined || header.role == role) && (
                     <TableCell
+                      sx={{ borderBottom: "1px solid #aaa" }}
                       key={"header" + header.id}
                       align={header.numeric ? "right" : "left"}
-                      padding={header.disablePadding ? "none" : "normal"}
+                      padding={header.disablePadding ? "5px" : "normal"}
                       sortDirection={orderBy === header.id ? order : false}
                     >
                       <TableSortLabel
@@ -225,8 +226,10 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               ) : (
                                 "無し"
                               )
+                            ) : row[header.id] ? (
+                              row[header.id]
                             ) : (
-                              row[header.id] ? row[header.id] : "無し"
+                              "無し"
                             )}
                           </TableCell>
                         )
@@ -251,6 +254,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="表示件数:"
       />
     </Box>
   );

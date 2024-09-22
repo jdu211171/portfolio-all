@@ -72,7 +72,7 @@ class StaffController {
       const { currentPassword, password, ...updateData } = req.body;
 
       if (password) {
-        const staff = await StaffService.getStaffById(req.params.id);
+        const staff = await StaffService.getStaffById(req.params.id, true);
         if (!staff || !(await bcrypt.compare(currentPassword, staff.password))) {
           return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }

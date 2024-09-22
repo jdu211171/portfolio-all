@@ -260,7 +260,9 @@ const Setting = () => {
               alt="User Avatar"
               src={avatarImage}
               sx={{ width: 100, height: 100 }}
-            />
+            >
+              {role === "Recruiter" && "会社ロゴ"}
+            </Avatar>
             <label htmlFor="avatar-upload">
               {isEditing && (
                 <IconButton
@@ -397,7 +399,7 @@ const Setting = () => {
                   variant="outlined"
                   fullWidth
                   {...field}
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               )}
             />
@@ -516,71 +518,73 @@ const Setting = () => {
             </Grid>
           </Grid>
         </Box>
-        <Box className={SettingStyle["section"]}>
-          <h2 className={SettingStyle["h2"]}>コンタクト情報</h2>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name="contactEmail"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="メール"
-                    variant="outlined"
-                    fullWidth
-                    {...field}
-                    disabled={!isEditing}
-                  />
-                )}
-              />
+        {role === "Admin" && (
+          <Box className={SettingStyle["section"]}>
+            <h2 className={SettingStyle["h2"]}>コンタクト情報</h2>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="contactEmail"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="メール"
+                      variant="outlined"
+                      fullWidth
+                      {...field}
+                      disabled={!isEditing}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="contactPhone"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="電話番号"
+                      variant="outlined"
+                      fullWidth
+                      {...field}
+                      disabled={!isEditing}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="workingHours"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="労働時間"
+                      variant="outlined"
+                      fullWidth
+                      {...field}
+                      disabled={!isEditing}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="location"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      label="位置"
+                      variant="outlined"
+                      fullWidth
+                      {...field}
+                      disabled={!isEditing}
+                    />
+                  )}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name="contactPhone"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="電話番号"
-                    variant="outlined"
-                    fullWidth
-                    {...field}
-                    disabled={!isEditing}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name="workingHours"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="労働時間"
-                    variant="outlined"
-                    fullWidth
-                    {...field}
-                    disabled={!isEditing}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name="location"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="位置"
-                    variant="outlined"
-                    fullWidth
-                    {...field}
-                    disabled={!isEditing}
-                  />
-                )}
-              />
-            </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        )}
       </form>
     </Container>
   );

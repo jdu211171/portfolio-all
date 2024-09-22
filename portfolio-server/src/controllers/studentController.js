@@ -35,7 +35,7 @@ class StudentController {
 
         const newStudent = await StudentService.createStudent(studentData);
         if (newStudent) {
-           await EmailToStudent(newStudent.email, password, newStudent.first_name, newStudent.last_name);
+          await EmailToStudent(newStudent.email, password, newStudent.first_name, newStudent.last_name);
         }
 
         res.status(201).json({ message: 'Student added successfully' });
@@ -150,9 +150,9 @@ class StudentController {
       const studentData = req.body;
 
       const { currentPassword, password, ...updateData } = req.body;
-
       if (password) {
-        const student = await StudentService.getStudentById(req.params.id);
+        const student = await StudentService.getStudentById(req.params.id, true);
+        
         if (!student || !(await bcrypt.compare(currentPassword, student.password))) {
           return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }

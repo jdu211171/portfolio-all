@@ -248,8 +248,6 @@ const CompanyProfile = ({ userId = 0 }) => {
                 fontSize: "16px",
                 padding: "2px 6px",
                 height: "auto",
-                lineHeight: 1,
-                width: "160px",
               }}
             />
           </Box>

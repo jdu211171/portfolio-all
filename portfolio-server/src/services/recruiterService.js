@@ -47,10 +47,14 @@ class RecruiterService {
   }
 
   // Service method to retrieve a recruiter by ID
-  static async getRecruiterById(recruiterId) {
+  static async getRecruiterById(recruiterId, password = false) {
     try {
+      let excluded = ['createdAt', 'updatedAt']
+      if (!password) {
+        excluded.push('password')
+      }
       const recruiter = await Recruiter.findByPk(recruiterId, {
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        attributes: { exclude: excluded },
       });
       if (!recruiter) {
         throw new Error('Recruiter not found');

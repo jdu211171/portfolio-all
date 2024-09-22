@@ -21,32 +21,31 @@ const Recruiter = () => {
       disablePadding: true,
       label: "リクルーター",
       type: "avatar",
+      minWidth: "160px",
       onClickAction: navigateToCompanyProfile,
     },
     {
       id: "company_name",
-      numeric: true,
+      numeric: false,
       disablePadding: false,
       label: "会社名",
+      minWidth: "220px",
     },
     {
       id: "phone",
       numeric: true,
       disablePadding: false,
       label: "電話番号",
+      minWidth: "160px",
     },
     {
       id: "email",
-      numeric: true,
+      numeric: false,
       disablePadding: false,
       label: "メール",
-    },
-    {
-      id: "action",
-      numeric: true,
-      disablePadding: false,
-      label: "アクション",
-    },
+      type: "email",
+      minWidth: "220px",
+    }
   ];
 
   const [filterState, setFilterState] = useState({});

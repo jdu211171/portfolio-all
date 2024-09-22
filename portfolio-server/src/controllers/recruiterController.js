@@ -93,7 +93,7 @@ class RecruiterController {
       const { currentPassword, password, ...updateData } = req.body;
 
       if (password) {
-        const recruiter = await RecruiterService.getRecruiterById(id);
+        const recruiter = await RecruiterService.getRecruiterById(id, true);
         if (!recruiter || !(await bcrypt.compare(currentPassword, recruiter.password))) {
           return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }

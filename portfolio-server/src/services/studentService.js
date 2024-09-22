@@ -136,10 +136,14 @@ class StudentService {
   }
 
   // Service method to retrieve a student by ID
-  static async getStudentById(studentId) {
+  static async getStudentById(studentId, password = false) {
     try {
+      let excluded = ['createdAt', 'updatedAt']
+      if (!password) {
+        excluded.push('password')
+      }
       const student = await Student.findByPk(studentId, {
-        attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+        attributes: { exclude: excluded },
       });
       if (!student) {
         throw new Error('Student not found');

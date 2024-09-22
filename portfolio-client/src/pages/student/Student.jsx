@@ -146,14 +146,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       disablePadding: false,
       label: "IELTS",
       isJSON: true,
-    },
-    {
-      id: "action",
-      numeric: true,
-      disablePadding: false,
-      label: "アクション",
-      minWidth: "160px",
-    },
+    }
   ];
 
   const tableProps = {
