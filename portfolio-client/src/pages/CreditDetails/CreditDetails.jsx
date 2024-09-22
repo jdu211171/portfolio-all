@@ -111,10 +111,10 @@ const CreditDetails = () => {
             <TableBody>
               {creditData.map(
                 (record) =>
-                  record.gradeUniverGroup.value !== "大学資格" && (
+                  record.gradeUniversityGroup.value !== "大学資格" && (
                     <TableRow key={record.$id.value}>
                       <TableCell>{record.subject.value}</TableCell>
-                      <TableCell>{record.hyouka.value}</TableCell>
+                      <TableCell>{record.grade.value}</TableCell>
                       <TableCell>{record.manualCredit.value}</TableCell>
                       <TableCell>{record.date.value}</TableCell>
                     </TableRow>
@@ -142,10 +142,10 @@ const CreditDetails = () => {
             <TableBody>
               {creditData.map(
                 (record) =>
-                  record.gradeUniverGroup.value == "大学資格" && (
+                  record.gradeUniversityGroup.value == "大学資格" && (
                     <TableRow key={record.$id.value}>
                       <TableCell>{record.subject.value}</TableCell>
-                      <TableCell>{record.hyouka.value}</TableCell>
+                      <TableCell>{record.grade.value}</TableCell>
                       <TableCell>{record.manualCredit.value}</TableCell>
                       <TableCell>{record.date.value}</TableCell>
                     </TableRow>
