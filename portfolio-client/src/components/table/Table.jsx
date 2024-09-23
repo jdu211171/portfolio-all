@@ -168,7 +168,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 ? style.hoverEffect
                                 : style.default
                             }
-                            style={{ minWidth: header.minWidth }}
+                            style={ header.type === "avatar" ? { minWidth: header.minWidth, padding: "4px" } : {minWidth: header.minWidth}}
                           >
                             {header.type === "bookmark" ? (
                               <>

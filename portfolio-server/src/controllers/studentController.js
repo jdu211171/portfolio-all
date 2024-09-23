@@ -25,7 +25,7 @@ class StudentController {
           student_id: record.studentId.value,
           phone: record.phoneNumber.value,
           date_of_birth: record.birthDate.value,
-          active: true,
+          active: record.semester.value >= 7 ? true : false,
           kintone_id: record['$id'].value,
           partner_university: record.partnerUniversity.value,
           enrollment_date: record.jduEnrollmentDate.value,
@@ -34,7 +34,7 @@ class StudentController {
         };
 
         const newStudent = await StudentService.createStudent(studentData);
-        if (newStudent) {
+        if (newStudent?.active) {
           await EmailToStudent(newStudent.email, password, newStudent.first_name, newStudent.last_name);
         }
 
@@ -152,7 +152,7 @@ class StudentController {
       const { currentPassword, password, ...updateData } = req.body;
       if (password) {
         const student = await StudentService.getStudentById(req.params.id, true);
-        
+
         if (!student || !(await bcrypt.compare(currentPassword, student.password))) {
           return res.status(400).json({ error: '現在のパスワードを入力してください' });
         }

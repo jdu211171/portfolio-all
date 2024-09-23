@@ -10,14 +10,14 @@ const Staff = () => {
     {
       id: "first_name",
       numeric: false,
-      disablePadding: true,
+      disablePadding: false,
       label: "職員",
       type: "avatar",
       minWidth: "220px",
     },
     {
       id: "email",
-      numeric: true,
+      numeric: false,
       disablePadding: false,
       label: "メール",
       type: "email",
@@ -25,14 +25,14 @@ const Staff = () => {
     },
     {
       id: "department",
-      numeric: true,
+      numeric: false,
       disablePadding: false,
       label: "部署",
       minWidth: "160px",
     },
     {
       id: "position",
-      numeric: true,
+      numeric: false,
       disablePadding: false,
       label: "役職",
       minWidth: "160px",

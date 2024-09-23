@@ -100,7 +100,7 @@ class StudentService {
         query[Op.and] = [];
       }
 
-      query[Op.and].push(querySearch, queryOther)
+      query[Op.and].push(querySearch, queryOther, { active: true })
       if (onlyBookmarked == "true") {
 
         query[Op.and].push(
