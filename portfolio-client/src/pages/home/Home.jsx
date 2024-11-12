@@ -14,8 +14,10 @@ const Home = () => {
   return (
     <div>
       <div className={styles.header}>
-        <h3>Japan Digital University</h3>
-      </div>
+      <h3>
+        <a href="https://www.jdu.uz/">Japan Digital University</a>
+      </h3>
+    </div>
       <div className={styles.container}>
         <div className={styles.textSection}>
           <div className={styles.titleContainer}>
