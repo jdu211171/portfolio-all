@@ -24,6 +24,7 @@ const uploadFile = async (fileBuffer, objectName) => {
             Bucket: bucketName,
             Key: objectName,
             Body: fileBuffer,
+            ACL: 'public-read'
         };
         const command = new PutObjectCommand(uploadParams);
         const data = await s3Client.send(command);
