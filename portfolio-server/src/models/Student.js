@@ -78,8 +78,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     semester: {
-      type: DataTypes.ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9'),
-      allowNull: false,
+      type: DataTypes.ENUM('1', '2', '3', '4', '5', '6', '7', '8', '9', "卒業"),
       defaultValue: '1',
     },
     partner_university: {
