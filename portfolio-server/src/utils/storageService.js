@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const s3Client = new S3Client({
     endpoint: `${process.env.AWS_S3_ENDPOINT}:${process.env.AWS_S3_PORT}`,
-    region: 'us-east-1', // MinIO expects a region, even if it's not used
+    region: process.env.AWS_S3_REGION, 
     credentials: {
         accessKeyId: process.env.AWS_S3_ACCESS_KEY,
         secretAccessKey: process.env.AWS_S3_SECRET_KEY,
