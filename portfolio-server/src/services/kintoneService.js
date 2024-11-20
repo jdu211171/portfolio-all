@@ -17,22 +17,41 @@ class KintoneService {
   static async getAllRecords(appName) {
     try {
       const { appId, token } = this.getAppConfig(appName);
-      const response = await axios.get(`${this.baseUrl}/k/v1/records.json`, {
-        headers: {
-          'X-Cybozu-API-Token': token,
-        },
-        params: {
-          app: appId,
-        },
-      });
+      let allRecords = [];
+      let offset = 0;
+      let hasMoreRecords = true;
 
-      return response.data;
+      while (hasMoreRecords) {
+        const response = await axios.get(`${this.baseUrl}/k/v1/records.json`, {
+          headers: {
+            'X-Cybozu-API-Token': token,
+          },
+          params: {
+            app: appId,
+            query: `limit 100 offset ${offset}`   // Limit per request (maximum is 100)
+          },
+        });
+
+        // Add the current batch of records to the allRecords array
+        allRecords = allRecords.concat(response.data.records);
+        // Check if more records are available (if the response contains 100 records)
+        hasMoreRecords = response.data.records.length === 100;
+
+        // Increment offset for next batch
+        offset += 100;
+      }
+
+      let data = {
+        records: allRecords
+      }
+      return data;
     } catch (error) {
       console.error('Error fetching records from Kintone:', error.message);
       console.error('Error details:', error.response ? error.response.data : error);
       throw error;
     }
   }
+
 
   // Service method to retrieve records by column name and value
   static async getRecordBy(appName, colName, colValue) {
@@ -133,7 +152,7 @@ class KintoneService {
   static async syncData() {
     try {
       let students = (await this.getAllRecords("students")).records
-
+      console.log(students.length)
       let certificate_jlpt = (await this.getAllRecords("certificate_jlpt")).records
       let certificate_jdu_jlpt = (await this.getAllRecords("certificate_jdu_jlpt")).records
       let certificate_ielts = (await this.getAllRecords("certificate_ielts")).records
