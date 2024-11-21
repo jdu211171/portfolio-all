@@ -29,7 +29,7 @@ const apps = {
   },
   credit_details: {
     appId: "160",
-    token: "vWvQrg6JprrOq2oQIGvIhj1E3q4WtViLpQMyHDD8"
+    token: "7xOoiYhgxne97O0TLnKVR1mLUwV5lpKfUuTRxOER"
   }
 };
 

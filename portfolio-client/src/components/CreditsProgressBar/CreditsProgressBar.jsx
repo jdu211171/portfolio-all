@@ -2,11 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import styles from "./CreditsProgressBar.module.css"
 
 const CreditsProgressBar = ({ breakpoints, unit, credits, semester}) => {
-    const [color, setColor] = useState("red");
-    if (124/9 * Number(semester) < credits) {
-      setColor("green")
+    let color = "red"
+    if (credits > 124) {
+      color = "blue"
+    } else if (124/9 * Number(semester) < credits) {
+      color = "green"
+    } 
+    const totalPoints = breakpoints[breakpoints.length - 1].point > credits ? breakpoints[breakpoints.length - 1].point : credits;
+    if (totalPoints < credits) {
+      totalPoints = credits
     }
-    const totalPoints = breakpoints[breakpoints.length - 1].point;
     const creditPercentage = (credits / totalPoints) * 100;
 
     const graphContainerRef = useRef(null);
@@ -38,13 +43,17 @@ const CreditsProgressBar = ({ breakpoints, unit, credits, semester}) => {
             {/* Breakpoints */}
             {breakpoints.map((breakpoint, index) => {
                 const x = `${(breakpoint.point / totalPoints) * 100}%`;
-                return (
-                <g key={index}>
-                    <line x1={x} y1="50" x2={x} y2="70" stroke="#000" strokeWidth="2" />
-                    <text x={x} y="40" textAnchor="middle" fontSize="12">{breakpoint.label}</text>
-                    <text x={x} y="90" textAnchor="middle" fontSize="12">{breakpoint.point}{unit}</text>
-                </g>
-                );
+                if (breakpoint.point <= 124) {
+                  return (
+                    <g key={index}>
+                        <line x1={x} y1="50" x2={x} y2="70" stroke="#000" strokeWidth="2" />
+                        <text x={x} y="40" textAnchor="middle" fontSize="12">{breakpoint.label}</text>
+                        <text x={x} y="90" textAnchor="middle" fontSize="12">{breakpoint.point}{unit}</text>
+                    </g>
+                    );
+                } else {
+                
+                }
             })}
 
             {/* Credit Indicator */}
