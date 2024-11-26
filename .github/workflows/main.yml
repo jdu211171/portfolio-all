@@ -13,15 +13,42 @@ jobs:
     runs-on: windows
 
     steps:
+      # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20.9.0
 
-      - name: Install dependencies (server)
+      # Step 3: Install and build frontend
+      - name: Install and build frontend
+        run: |
+          cd portfolio-client
+          npm install
+          npm run build
+
+      # Step 4: Move built frontend files to backend
+      - name: Move frontend build to backend
+        run: |
+          powershell -Command "Copy-Item -Recurse portfolio-client\\dist\\* portfolio-server\\src\\public\\"
+
+      # Step 5: Install backend dependencies
+      - name: Install backend dependencies
         run: |
           cd portfolio-server
           npm install
+
+      # Step 6: Run database migrations (if needed)
+      - name: Run migrations
+        run: |
+          cd portfolio-server
+          npm run migrate
+
+      # Step 7: Start backend server for testing (Optional)
+      - name: Start backend server
+        run: |
+          cd portfolio-server
+          npm run start
