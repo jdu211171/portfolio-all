@@ -35,7 +35,7 @@ configureRoutes(app);
 
 
 app.get('/test', (req, res)=>{
-  res.status(200).json({message: "AMIME"});
+  res.status(200).json({message: "Lalaku"});
 });
 
 cron.schedule('0 4 * * *', async () => {
