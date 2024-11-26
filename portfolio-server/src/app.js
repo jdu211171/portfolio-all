@@ -33,6 +33,11 @@ app.use(cors({ origin: '*' }));
 // Configure routes
 configureRoutes(app);
 
+
+app.get('/test', (req, res)=>{
+  res.status(200).json({message: "Hello it's test"});
+});
+
 cron.schedule('0 4 * * *', async () => {
   console.log('syncing with kintone');
   await KintoneService.syncData();
