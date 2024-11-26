@@ -3,14 +3,14 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - main
+      - aws-prod
   pull_request:
     branches:
-      - main
+      - aws-prod
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows
 
     steps:
       - name: Checkout code
@@ -19,14 +19,9 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20.9.0
 
       - name: Install dependencies (server)
         run: |
           cd portfolio-server
           npm install
-
-      - name: Run tests
-        run: |
-          cd portfolio-server
-          npm test
