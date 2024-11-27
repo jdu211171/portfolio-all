@@ -9,6 +9,7 @@ import {
   Input,
   Typography,
   Button,
+  Tooltip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -35,7 +36,18 @@ const Gallery = ({
   };
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files); // Convert FileList to an array
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB in bytes
+  
+    // Check if any file exceeds the size limit
+    for (let file of files) {
+      if (file.size > MAX_SIZE) {
+        alert(`ファイル "${file.name}" は最大5MBのサイズを超えています。`);
+        return; // Prevent further processing if a file exceeds size limit
+      }
+    }
+  
+    // If all files are valid, call the updateEditData function
     updateEditData(files, true);
   };
 
@@ -72,13 +84,18 @@ const Gallery = ({
           />
         ))}
         {editMode && (
-          <label
-            htmlFor="file-upload"
-            className={styles.editPlaceholder}
-            onClick={handleAddImageClick}
+          <Tooltip
+            title="クリックして画像をアップロードアップロードしてください。対応形式: JPG, PNG。最大ファイルサイズ: 5MB"
+            placement="top"
           >
-            <Typography variant="h6">画像を追加</Typography>
-          </label>
+            <label
+              htmlFor="file-upload"
+              className={styles.editPlaceholder}
+              onClick={handleAddImageClick}
+            >
+              <Typography variant="h6">画像を追加</Typography>
+            </label>
+          </Tooltip>
         )}
       </Box>
       <Dialog open={open} onClose={handleClose} maxWidth="lg" fullWidth>
@@ -152,13 +169,18 @@ const Gallery = ({
               </div>
             ))}
             {editMode && (
-              <label
-                htmlFor="file-upload"
-                className={styles.editPlaceholder}
-                onClick={handleAddImageClick}
+              <Tooltip
+                title="クリックして画像をアップロードアップロードしてください。対応形式: JPG, PNG。最大ファイルサイズ: 5MB"
+                placement="top"
               >
-                <Typography variant="h6">画像を追加</Typography>
-              </label>
+                <label
+                  htmlFor="file-upload"
+                  className={styles.editPlaceholder}
+                  onClick={handleAddImageClick}
+                >
+                  <Typography variant="h6">画像を追加</Typography>
+                </label>
+              </Tooltip>
             )}
           </Box>
         </DialogContent>
@@ -171,7 +193,7 @@ const Gallery = ({
       <Input
         id="file-upload"
         type="file"
-        inputProps={{ multiple: true, accept: "image/*" }}
+        inputProps={{ multiple: true, accept: "image/jpeg, image/png" }} 
         style={{ display: "none" }} // ファイル入力を非表示
         ref={fileInputRef}
         onChange={handleFileChange}
