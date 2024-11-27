@@ -1,19 +1,16 @@
-name: CI Pipeline
+name: Sync Projects and Deploy
 
 on:
   push:
     branches:
       - aws-prod
-  pull_request:
-    branches:
-      - aws-prod
 
 jobs:
-  build:
-    runs-on: windows
+  sync-and-deploy:
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -23,32 +20,47 @@ jobs:
         with:
           node-version: 20.9.0
 
-      # Step 3: Install and build frontend
-      - name: Install and build frontend
-        run: |
-          cd portfolio-client
-          npm install
-          npm run build
-
-      # Step 4: Move built frontend files to backend
-      - name: Move frontend build to backend
-        run: |
-          powershell -Command "Copy-Item -Recurse portfolio-client\\dist\\* portfolio-server\\src\\public\\"
-
-      # Step 5: Install backend dependencies
-      - name: Install backend dependencies
+      # Step 3: Install dependencies for Project 4000
+      - name: Install dependencies for Project 4000
         run: |
           cd portfolio-server
+          echo "PORT=4000" > .env
           npm install
 
-      # Step 6: Run database migrations (if needed)
-      - name: Run migrations
+      # Step 4: Start Project 4000
+      - name: Start Project 4000
         run: |
           cd portfolio-server
-          npm run migrate
+          node src/app.js &
 
-      # Step 7: Start backend server for testing (Optional)
-      - name: Start backend server
+      # Step 5: Sync Project 4000 to Project 5000
+      - name: Sync Project 4000 to Project 5000
+        run: |
+          cp -r portfolio-server portfolio-server-5000
+          cd portfolio-server-5000
+          echo "PORT=5000" > .env
+
+      # Step 6: Install dependencies for Project 5000
+      - name: Install dependencies for Project 5000
+        run: |
+          cd portfolio-server-5000
+          npm install
+
+      # Step 7: Start Project 5000
+      - name: Start Project 5000
+        run: |
+          cd portfolio-server-5000
+          node src/app.js &
+
+      # Step 8: Deploy Project 4000 and Project 5000
+      - name: Deploy Projects
         run: |
           cd portfolio-server
-          npm run start
+          git add .
+          git commit -m "Deployed Project 4000"
+          git push origin aws-prod
+
+          cd ../portfolio-server-5000
+          git add .
+          git commit -m "Deployed Project 5000"
+          git push origin aws-prod
