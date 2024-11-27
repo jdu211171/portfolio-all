@@ -57,19 +57,38 @@ class KintoneService {
   static async getRecordBy(appName, colName, colValue) {
     try {
       const { appId, token } = this.getAppConfig(appName);
-      const query = `${colName} = "${colValue}"`;
 
-      const response = await axios.get(`${this.baseUrl}/k/v1/records.json`, {
-        headers: {
-          'X-Cybozu-API-Token': token,
-        },
-        params: {
-          app: appId,
-          query: query,
-        },
-      });
+      let allRecords = [];
+      let offset = 0;
+      let hasMoreRecords = true;
 
-      return response.data;
+      let query;
+
+      while (hasMoreRecords) {
+        query = `${colName} = "${colValue}" limit 100 offset ${offset}`
+        const response = await axios.get(`${this.baseUrl}/k/v1/records.json`, {
+          headers: {
+            'X-Cybozu-API-Token': token,
+          },
+          params: {
+            app: appId,
+            query: query,
+          },
+        });
+
+        // Add the current batch of records to the allRecords array
+        allRecords = allRecords.concat(response.data.records);
+        // Check if more records are available (if the response contains 100 records)
+        hasMoreRecords = response.data.records.length === 100;
+
+        // Increment offset for next batch
+        offset += 100;
+      }
+
+      let data = {
+        records: allRecords
+      }
+      return data;
     } catch (error) {
       console.error(`Error fetching record by ${colName} from Kintone:`, error.message);
       console.error('Error details:', error.response ? error.response.data : error);
