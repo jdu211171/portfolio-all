@@ -8,7 +8,7 @@ const CreditsProgressBar = ({ breakpoints, unit, credits, semester}) => {
     } else if (124/9 * Number(semester) < credits) {
       color = "green"
     } 
-    const totalPoints = breakpoints[breakpoints.length - 1].point > credits ? breakpoints[breakpoints.length - 1].point : credits;
+    let totalPoints = breakpoints[breakpoints.length - 1].point > credits ? breakpoints[breakpoints.length - 1].point : credits;
     if (totalPoints < credits) {
       totalPoints = credits
     }
