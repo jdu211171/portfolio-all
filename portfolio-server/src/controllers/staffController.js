@@ -24,7 +24,7 @@ class StaffController {
           last_name: record.staffLastName.value,
           department: record.staffDepartment.value,
           position: record.staffPosition.value,
-          photo: "https://randomuser.me/api/portraits/med/men/" + parseInt(Math.random() * 100) + ".jpg",
+          photo: "",
           kintone_id: record['$id'].value
         };
 
