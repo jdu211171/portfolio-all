@@ -18,8 +18,6 @@ import SettingStyle from "./Setting.module.css";
 import { useAlert } from "../../contexts/AlertContext";
 
 const Setting = () => {
-  const showAlert = useAlert();
-
   const { activeUser, updateUser } = useContext(UserContext);
 
   const [role, setRole] = useState(null);
@@ -31,6 +29,7 @@ const Setting = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  const showAlert = useAlert();
   const {
     control,
     handleSubmit,
@@ -96,11 +95,12 @@ const Setting = () => {
         });
       } catch (error) {
         console.error("Failed to fetch user data:", error);
+        showAlert("ユーザーデータの取得に失敗しました。", "error");
       }
     };
 
     fetchUser();
-  }, [reset, role]);
+  }, [reset, role, showAlert]);
 
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
@@ -213,6 +213,7 @@ const Setting = () => {
       sessionStorage.setItem("loginUser", JSON.stringify(tempUser));
       updateUser();
       setIsEditing(false);
+      showAlert("プロフィールが更新されました。", "success");
     } catch (error) {
       console.error("Failed to update profile:", error);
       if (error.response && error.response.data && error.response.data.error) {
@@ -220,8 +221,8 @@ const Setting = () => {
           type: "manual",
           message: error.response.data.error,
         });
-      } else {
-        alert("Failed to update profile. Please try again.");
+       } else {
+        showAlert("プロフィールの更新に失敗しました。再試行してください。", "error");
       }
     }
   };
@@ -229,10 +230,10 @@ const Setting = () => {
   const handleSync = async () => {
     try {
       await axios.post("api/kintone/sync");
-      showAlert("システムがキントーン同期しました", "success");
+      showAlert("同期に成功しました。", "success");
     } catch (error) {
       console.error("Sync failed:", error);
-      alert("システムがキントーン同期できませんでした", "error");
+      showAlert("同期に失敗しました。再試行してください。", "error");
     }
   };
 
