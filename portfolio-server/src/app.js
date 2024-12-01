@@ -8,6 +8,7 @@ const { exec } = require('child_process');
 
 const configureRoutes = require('./routes');
 const KintoneService = require('./services/kintoneService');
+const { log } = require('console');
 
 const PORT = process.env.PORT || 5000;
 
@@ -30,15 +31,12 @@ app.use(cors({ origin: '*' }));
 // Configure routes
 configureRoutes(app);
 
-app.get('/test', (req, res) => {
-  res.status(200).json({ message: "Hello it's test" });
-});
-
 // Schedule a cron job
 cron.schedule('0 4 * * *', async () => {
   console.log('syncing with kintone');
   await KintoneService.syncData();
 });
+console.log('1234');
 
 // Add webhook listener for GitHub push events
 app.post('/github-webhook', (req, res) => {
