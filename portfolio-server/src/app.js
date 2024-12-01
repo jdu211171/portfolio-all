@@ -41,6 +41,25 @@ app.get('/test', (req, res)=>{
   res.status(200).json({message: 4321});
 });
 
+app.post('/aws-prod', (req, res) => {
+  console.log('Received request to push changes to GitHub.');
+
+  // Commit message with timestamp
+  const commitMessage = `Auto-update via /aws-prod API: ${new Date().toISOString()}`;
+
+  // Stage all changes, commit, and push
+  exec(`git add . && git commit -m "${commitMessage}" && git push origin aws-prod`, { cwd: process.cwd() }, (err, stdout, stderr) => {
+    if (err) {
+      console.error(`Error during git operations: ${stderr}`);
+      res.status(500).send('Error committing and pushing changes to GitHub.');
+      return;
+    }
+
+    console.log(`Git push output: ${stdout}`);
+    res.status(200).send('Changes pushed to GitHub successfully.');
+  });
+});
+
 // Add webhook listener for GitHub push events
 app.post('/github-webhook', (req, res) => {
   if (req.headers['x-github-event'] === 'push') {
