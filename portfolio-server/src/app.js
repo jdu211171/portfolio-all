@@ -110,7 +110,7 @@ cron.schedule('0 4 * * *', async () => {
 
 // Test endpoint
 app.get('/test', (req, res) => {
-  res.status(200).json({ message: "anime coming" });
+  res.status(200).json({ message: "anime coming 2" });
 });
 
 // Serve the React app
