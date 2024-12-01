@@ -38,7 +38,7 @@ cron.schedule('0 4 * * *', async () => {
 });
 
 app.get('/test', (req, res)=>{
-  res.status(200).json({message: "aji buju"});
+  res.status(200).json({message: "anime-123"});
 });
 
 app.post('/aws-prod', (req, res) => {
