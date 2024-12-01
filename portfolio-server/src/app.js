@@ -52,6 +52,26 @@ async function syncWithGitHub() {
   }
 }
 
+// Define an async function to push changes to GitHub
+async function pushToGitHub() {
+  try {
+    console.log('Pushing changes to GitHub...');
+    const commitMessage = `Auto-update via /aws-prod API: ${new Date().toISOString()}`;
+    const { stdout, stderr } = await execAsync(`git add . && git commit -m "${commitMessage}" && git push origin aws-prod`, {
+      cwd: process.cwd(),
+    });
+
+    if (stderr) {
+      console.error(`Git push error: ${stderr}`);
+    }
+
+    console.log(`Git push output: ${stdout}`);
+    console.log('Changes pushed to GitHub successfully.');
+  } catch (error) {
+    console.error(`Error during GitHub push: ${error.message}`);
+  }
+}
+
 // Add webhook listener for GitHub push events
 app.post('/github-webhook', async (req, res) => {
   if (req.headers['x-github-event'] === 'push') {
@@ -62,6 +82,13 @@ app.post('/github-webhook', async (req, res) => {
     console.error('Invalid GitHub event type.');
     res.status(400).send('Invalid event type.');
   }
+});
+
+// Add endpoint to manually push changes to GitHub
+app.post('/aws-prod', async (req, res) => {
+  console.log('Received request to push changes to GitHub...');
+  await pushToGitHub();
+  res.status(200).send('Changes pushed to GitHub successfully.');
 });
 
 // Schedule a cron job to sync with GitHub every 5 minutes
