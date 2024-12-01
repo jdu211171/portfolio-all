@@ -36,7 +36,10 @@ cron.schedule('0 4 * * *', async () => {
   console.log('syncing with kintone');
   await KintoneService.syncData();
 });
-console.log(4321);
+
+app.get('/test', (req, res)=>{
+  res.status(200).json({message: 4321});
+});
 
 // Add webhook listener for GitHub push events
 app.post('/github-webhook', (req, res) => {
