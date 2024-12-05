@@ -1,12 +1,12 @@
 const { Setting } = require('../models');
 
 class SettingsService {
-  async getSetting(key) {
+  static async getSetting(key) {
     const setting = await Setting.findOne({ where: { key } });
     return setting ? setting.value : null;
   }
 
-  async updateSetting(key, value) {
+  static async updateSetting(key, value) {
     const [setting, created] = await Setting.upsert(
       { key, value },
       { returning: true }
@@ -14,7 +14,7 @@ class SettingsService {
     return { setting, created };
   }
 
-  async getAllSettings() {
+  static async getAllSettings() {
     const settings = await Setting.findAll();
     return settings.reduce((acc, { key, value }) => {
       acc[key] = value;
@@ -27,7 +27,7 @@ class SettingsService {
    * @param {Array<string>} keys - Array of setting keys to fetch
    * @returns {Object} - Object containing key-value pairs for the requested settings
    */
-  async getSettingsByKeys(keys) {
+  static async getSettingsByKeys(keys) {
     const settings = await Setting.findAll({
       where: { key: keys },
     });
@@ -39,4 +39,4 @@ class SettingsService {
   }
 }
 
-module.exports = new SettingsService();
+module.exports = SettingsService;
