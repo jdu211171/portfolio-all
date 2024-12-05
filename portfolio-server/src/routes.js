@@ -9,6 +9,8 @@ const staffRoute = require('./routes/staff-route');
 const studentRoute = require('./routes/students-route');
 const bookmarkRoute = require('./routes/bookmarks-route');
 const qaRoute = require('./routes/qa-route');
+const settingRoute = require('./routes/settings-route');
+
 const fileRoutes = require('./routes/file-routes');
 const kintoneRoutes = require('./routes/kintone-routes');
 const webhookRoutes = require('./routes/webhook-routes');
@@ -27,6 +29,7 @@ const configureRoutes = (app) => {
   app.use('/api/files', fileRoutes);
   app.use('/api/kintone', kintoneRoutes);
   app.use('/api/webhook', webhookRoutes);
+  app.use('/api/settings', settingRoute);
 };
 
 module.exports = configureRoutes;

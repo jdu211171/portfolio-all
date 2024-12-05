@@ -22,6 +22,7 @@ db.Staff = require('./Staff')(sequelize, Sequelize);
 db.Student = require('./Student')(sequelize, Sequelize);
 db.Bookmark = require('./Bookmark')(sequelize, Sequelize);
 db.QA = require('./QA')(sequelize, Sequelize);
+db.Setting = require('./Settings')(sequelize, Sequelize);
 
 // Load other models here if needed
 // db.User = require('./User')(sequelize, Sequelize);
@@ -42,4 +43,5 @@ module.exports = {
   Student: db.Student,
   Bookmark: db.Bookmark,
   QA: db.QA,
+  Setting: db.Setting
 };
