@@ -26,33 +26,19 @@ import { useAlert } from "../../contexts/AlertContext";
 
 const FAQ = () => {
   const [editData, setEditData] = useState({});
+  const [settings, setSettings] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [role, setRole] = useState(null);
 
   const showAlert = useAlert();
-
-  const questionAnswer = [
-    {
-      question: "ポートフォリオシステムで何を登録できますか？",
-      answer:
-        "ポートフォリオシステムでは、自己 PR、特技、IT スキル、成果物、その他を他人と共有できます。これにより、あなたの学業成果やスキルを効果的にアピールできます。",
-    },
-    {
-      question: "他の学生のポートフォリオを見ることはできますか？",
-      answer:
-        "リクルーターのプロフィールを見ることができますが、他の学生のポートフォリオを見られません。",
-    },
-    {
-      question: "モバイルデバイスでもポートフォリオを閲覧できますか？",
-      answer:
-        "はい、ポートフォリオシステムはレスポンシブデザインを対応しており、スマートフォンやタブレットなど、どのデバイスでも快適に閲覧できます。",
-    },
-  ];
 
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const fetchFAQ = async () => {
+    const userRole = sessionStorage.getItem("role");
+    await setRole(userRole);
     try {
       const response = await axios.get("/api/settings/faq"); // Assuming this is the endpoint for FAQ
       await setEditData(JSON.parse(response.data.value)); // Set the FAQ data
@@ -61,7 +47,30 @@ const FAQ = () => {
     }
   };
 
+  const fetchSettings = async () => {
+    const keys = ["contactEmail", "contactPhone", "workingHours", "location"]; // Define the keys here
+
+    try {
+      // Make the GET request to the endpoint with the keys
+      const response = await axios.get("/api/settings", {
+        params: {
+          keys: keys.join(","), // Convert the array into a comma-separated string
+        },
+      });
+
+      // Process the response and return the settings object
+      const data = response.data;
+      setSettings(data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+      // Handle errors appropriately, for example by showing a notification
+      throw new Error("Failed to fetch settings");
+    }
+  };
+
   useEffect(() => {
+    fetchSettings();
     fetchFAQ();
   }, []);
 
@@ -115,37 +124,42 @@ const FAQ = () => {
         FAQ
       </Typography>
       <>
-        {editMode ? (
+        {role == "Admin" && (
           <>
-            <Button
-              onClick={handleSave}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              保存
-            </Button>
+            {editMode ? (
+              <>
+                <Button
+                  onClick={handleSave}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  保存
+                </Button>
 
-            <Button
-              onClick={handleCancel}
-              variant="outlined"
-              color="error"
-              size="small"
-            >
-              キャンセル
-            </Button>
+                <Button
+                  onClick={handleCancel}
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                >
+                  キャンセル
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={toggleEditMode}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                QAを編集
+              </Button>
+            )}
           </>
-        ) : (
-          <Button
-            onClick={toggleEditMode}
-            variant="contained"
-            color="primary"
-            size="small"
-          >
-            QAを編集
-          </Button>
         )}
       </>
+
       <Box my={2}>
         {editMode &&
           Object.entries(editData).map(([key, { question, answer }]) => (
@@ -172,55 +186,30 @@ const FAQ = () => {
           ))}
       </Box>
 
-      {questionAnswer.map((qa, index) => (
-        <Accordion
-          key={index}
-          expanded={expanded === `panel${index}`}
-          defaultExpanded={index === 0}
-          sx={{ mb: 2 }}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={`panel${index}bh-content`}
-            id={`panel${index}bh-header`}
-          >
-            <Typography className={FAQstyle["title-accordion"]}>
-              {qa.question}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography className={FAQstyle["body-accordion"]}>
-              {qa.answer}
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      ))}
       <Box sx={{ mt: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={3}>
             <Box display="flex">
               <EmailIcon className={FAQstyle["faq-icons"]} />
-              <Typography sx={{ ml: 1 }}>test@jdu.uz</Typography>
+              <Typography sx={{ ml: 1 }}>{settings.contactEmail}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Box display="flex">
               <PhoneIcon className={FAQstyle["faq-icons"]} />
-              <Typography sx={{ ml: 1 }}>+998 90 123 45 67</Typography>
+              <Typography sx={{ ml: 1 }}>{settings.contactPhone}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Box display="flex">
               <AccessTimeIcon className={FAQstyle["faq-icons"]} />
-              <Typography sx={{ ml: 1 }}>09:00 ~ 18:00</Typography>
+              <Typography sx={{ ml: 1 }}>{settings.workingHours}</Typography>
             </Box>
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <Box display="flex">
               <LocationOnIcon className={FAQstyle["faq-icons"]} />
-              <Typography sx={{ ml: 1 }}>
-                Tashkent, Shayhontohur district, Sebzor, 21
-              </Typography>
+              <Typography sx={{ ml: 1 }}>{settings.location}</Typography>
             </Box>
           </Grid>
         </Grid>
