@@ -2,20 +2,17 @@ import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Box,
   Grid,
   useTheme,
-  useMediaQuery,
+  IconButton,
   Button,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FAQstyle from "./Faq.module.css";
 
 import QATextField from "../../components/QATextField/QATextField";
@@ -25,16 +22,14 @@ import axios from "../../utils/axiosUtils";
 import { useAlert } from "../../contexts/AlertContext";
 
 const FAQ = () => {
-  const [editData, setEditData] = useState({});
+  const [editData, setEditData] = useState([]);
   const [settings, setSettings] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [role, setRole] = useState(null);
 
   const showAlert = useAlert();
 
-  const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const fetchFAQ = async () => {
     const userRole = sessionStorage.getItem("role");
@@ -77,7 +72,7 @@ const FAQ = () => {
   const handleUpdate = (keyName, value, qa) => {
     setEditData((prevEditData) => {
       // Clone the previous editData
-      const updatedEditData = { ...prevEditData };
+      const updatedEditData = [...prevEditData];
 
       // If the key exists, update the corresponding value
       if (updatedEditData[keyName]) {
@@ -118,95 +113,142 @@ const FAQ = () => {
     setEditMode(false);
   };
 
+  const handleAdd = async () => {
+    await setEditData((prevEditData) => [
+      ...prevEditData,
+      { question: "", answer: "" },
+    ]);
+    console.log(
+      document
+        .querySelectorAll('textarea[aria-invalid="false"]')
+        [editData.length * 2].focus()
+    );
+  };
+
+  const handleDelete = (indexToDelete) => {
+    console.log(indexToDelete);
+    setEditData((prevEditData) =>
+      prevEditData.filter((_, index) => {
+        console.log(_, index);
+        return index != indexToDelete;
+      })
+    );
+  };
+
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h5" gutterBottom className={FAQstyle["faq-title"]}>
-        FAQ
-      </Typography>
-      <>
-        {role == "Admin" && (
-          <>
-            {editMode ? (
-              <>
+    <Container>
+      <Box display={"flex"} justifyContent={"space-between"}>
+        <Typography variant="h5" gutterBottom className={FAQstyle["faq-title"]}>
+          FAQ
+        </Typography>
+        <Box display={"flex"} gap={"10px"}>
+          {role == "Admin" && (
+            <>
+              {editMode ? (
+                <>
+                  <Button
+                    onClick={handleSave}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    保存
+                  </Button>
+
+                  <Button
+                    onClick={handleCancel}
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                  >
+                    キャンセル
+                  </Button>
+                  <Button
+                    onClick={handleAdd}
+                    variant="outlined"
+                    color="primary"
+                    size="small"
+                  >
+                    追加
+                  </Button>
+                </>
+              ) : (
                 <Button
-                  onClick={handleSave}
+                  onClick={toggleEditMode}
                   variant="contained"
                   color="primary"
                   size="small"
                 >
-                  保存
+                  QAを編集
                 </Button>
+              )}
+            </>
+          )}
+        </Box>
+      </Box>
+      <Box className={FAQstyle["faq-content"]}>
+        <Box my={2}>
+          {editMode &&
+            Object.entries(editData).map(([key, { question, answer }]) => (
+              <Box display={"flex"} key={key}>
+                <Box style={{ width: "90%" }}>
+                  <QATextField
+                    data={editData} // Pass any relevant data here if needed
+                    editData={editData}
+                    category={false} // Use labels to get the current category
+                    question={question}
+                    keyName={key}
+                    updateEditData={handleUpdate}
+                  />
+                </Box>
+                <Box pt={"10px"}>
+                  <IconButton
+                    aria-label="削除"
+                    onClick={() => handleDelete(key)}
+                    sx={{
+                      color: "red",
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </Box>
+            ))}
+        </Box>
 
-                <Button
-                  onClick={handleCancel}
-                  variant="outlined"
-                  color="error"
-                  size="small"
-                >
-                  キャンセル
-                </Button>
-              </>
-            ) : (
-              <Button
-                onClick={toggleEditMode}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                QAを編集
-              </Button>
-            )}
-          </>
-        )}
-      </>
-
-      <Box my={2}>
-        {editMode &&
-          Object.entries(editData).map(([key, { question, answer }]) => (
-            <QATextField
-              key={key}
-              data={editData} // Pass any relevant data here if needed
-              editData={editData}
-              category={false} // Use labels to get the current category
-              question={question}
-              keyName={key}
-              updateEditData={handleUpdate}
-            />
-          ))}
+        <Box my={2}>
+          {!editMode &&
+            Object.entries(editData).map(([key, { question, answer }]) => (
+              <QAAccordion
+                key={key}
+                question={question}
+                answer={answer ? answer : "回答なし"}
+              />
+            ))}
+        </Box>
       </Box>
 
-      <Box my={2}>
-        {!editMode &&
-          Object.entries(editData).map(([key, { question, answer }]) => (
-            <QAAccordion
-              key={key}
-              question={question}
-              answer={answer ? answer : "回答なし"}
-            />
-          ))}
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
+      <Box position={"absolute"} bottom={"8px"}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <Box display="flex">
               <EmailIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>{settings.contactEmail}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <Box display="flex">
               <PhoneIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>{settings.contactPhone}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <Box display="flex">
               <AccessTimeIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>{settings.workingHours}</Typography>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={6}>
             <Box display="flex">
               <LocationOnIcon className={FAQstyle["faq-icons"]} />
               <Typography sx={{ ml: 1 }}>{settings.location}</Typography>
