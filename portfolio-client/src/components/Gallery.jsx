@@ -85,7 +85,7 @@ const Gallery = ({
         ))}
         {editMode && (
           <Tooltip
-            title="クリックして画像をアップロードアップロードしてください。対応形式: JPG, PNG。最大ファイルサイズ: 5MB"
+            title="クリックして画像をアップロードしてください。対応形式: JPG, PNG。最大ファイルサイズ: 5MB"
             placement="top"
           >
             <label
@@ -170,7 +170,7 @@ const Gallery = ({
             ))}
             {editMode && (
               <Tooltip
-                title="クリックして画像をアップロードアップロードしてください。対応形式: JPG, PNG。最大ファイルサイズ: 5MB"
+                title="クリックして画像をアップロードしてください。対応形式: JPG, PNG。最大ファイルサイズ: 5MB"
                 placement="top"
               >
                 <label
