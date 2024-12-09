@@ -1,37 +1,135 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+import axios from "../../utils/axiosUtils";
+import { useAlert } from "../../contexts/AlertContext";
 
 import RichTextEditor from "../../components/RichTextEditor/RichTextEditor";
 
 import styles from "./Home.module.css";
 import Photo1 from "../../assets/Photo1.jpg";
 import Photo2 from "../../assets/Photo2.jpg";
+import { Box, Button } from "@mui/material";
 
 const Home = () => {
   const navigate = useNavigate();
+
+  const [role, setRole] = useState(null);
+  const [editData, setEditData] = useState("");
+  const [editMode, setEditMode] = useState(false);
+
+  const showAlert = useAlert();
+
+  const fetchHomePageData = async () => {
+    const userRole = sessionStorage.getItem("role");
+    await setRole(userRole);
+    try {
+      const response = await axios.get("/api/settings/homepage");
+      await setEditData(response.data.value);
+    } catch (error) {
+      console.error("Error fetching homepage data:", error);
+    }
+  };
+
+  const handleContentChange = (newContent) => {
+    setEditData(newContent);
+  };
 
   const handleClick = () => {
     navigate("/student");
   };
 
+  const toggleEditMode = () => {
+    setEditMode((prev) => !prev);
+  };
+
+  const handleCancel = () => {
+    fetchHomePageData();
+    setEditMode(false);
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(`/api/settings/homepage`, {
+        value: editData,
+      });
+
+      if (response.status === 200) {
+        setEditMode(false);
+        showAlert("Changes saved successfully!", "success");
+      }
+    } catch (error) {
+      console.error("Error updating homepage data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchHomePageData();
+  }, []);
+
   return (
     <div>
-      <div className={styles.header}>
+      <Box className={styles.header}>
         <h3>
           <a href="https://www.jdu.uz/">Japan Digital University</a>
         </h3>
-      </div>
+        <Box display={"flex"} gap={"10px"}>
+          {role == "Admin" && (
+            <>
+              {editMode ? (
+                <>
+                  <Button
+                    onClick={handleSave}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    保存
+                  </Button>
+
+                  <Button
+                    onClick={handleCancel}
+                    variant="outlined"
+                    color="error"
+                    size="small"
+                  >
+                    キャンセル
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={toggleEditMode}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  編集
+                </Button>
+              )}
+            </>
+          )}
+        </Box>
+      </Box>
       <div className={styles.container}>
         <div className={styles.textSection}>
-          <div className={styles.titleContainer}>
+          {editMode && (
+            <RichTextEditor value={editData} onChange={handleContentChange} />
+          )}
+
+          {!editMode && (
+            <>
+              <p
+                className={styles.textParagraph}
+                dangerouslySetInnerHTML={{ __html: editData }}
+              ></p>
+            </>
+          )}
+
+          {/* <div className={styles.titleContainer}>
             <span className={styles.subtitle}>より良い</span>
             <span className={styles.title}>明日へ</span>
-          </div>
-          {false && <RichTextEditor></RichTextEditor>}
+          </div> */}
 
-          <p className={styles.textParagraph}>
-            2020年に日本資本がウズベキスタンに設立し運営している正式な私立大学です。ウズベキスタンにあるサテライトキャンパスをJDUと呼びます。ウズベキスタンの学生は、提携している日本の大学の授業にオンラインで参加し、日本の大学の試験を経て単位取得、卒業を目指します。（日本とウズベキスタン両面の学位を取得し卒業することが可能です）卒業時には日本企業への就職を目指し、勉学に励む学生がたくさん入学しています。
-          </p>
           <div className={styles.buttonContainer}>
             <button className={styles.button} onClick={handleClick}>
               次へ➜
