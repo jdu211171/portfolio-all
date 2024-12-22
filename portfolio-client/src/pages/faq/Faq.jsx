@@ -13,7 +13,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FAQstyle from "./Faq.module.css";
+import FAQstyle from "./FAQ.module.css";
 
 import QATextField from "../../components/QATextField/QATextField";
 import QAAccordion from "../../components/QAAccordion/QAAccordion";

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
-import Table from "../../components/table/Table";
-import Filter from "../../components/filter/Filter";
+import Table from "../../components/Table/Table";
+import Filter from "../../components/Filter/Filter";
 
 const Recruiter = () => {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import axios from "../../utils/axiosUtils";
 import style from "./Table.module.css";
 
-import UserAvatar from "./avatar/UserAvatar";
+import UserAvatar from "./Avatar/UserAvatar";
 import {
   Box,
   Table,

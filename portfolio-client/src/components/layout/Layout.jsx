@@ -1,7 +1,7 @@
  import React, { useState, useEffect, useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
-import UserAvatar from "../table/avatar/UserAvatar";
+import UserAvatar from "../Table/Avatar/UserAvatar";
 
 // icons
 import { ReactComponent as NavButtonIcon } from "../../assets/icons/navButton.svg";

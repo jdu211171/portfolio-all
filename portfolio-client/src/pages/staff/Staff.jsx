@@ -2,8 +2,8 @@ import React, { useState } from "react";
 
 import { Box } from "@mui/material";
 
-import Table from "../../components/table/Table";
-import Filter from "../../components/filter/Filter";
+import Table from "../../components/Table/Table";
+import Filter from "../../components/Filter/Filter";
 
 const Staff = () => {
   const headers = [

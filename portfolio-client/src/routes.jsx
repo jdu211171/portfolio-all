@@ -1,24 +1,24 @@
 import React, { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
-import Layout from "./components/layout/Layout";
+import Layout from "./components/Layout/Layout";
 import ProtectedLayout from "./components/ProtectedLayout";
 import { UserContext } from "./contexts/UserContext";
 
-import Login from "./pages/login/Login";
+import Login from "./pages/Login/Login";
 import FirstLoginPage from "./pages/FirstLoginPage/FirstLoginPage";
-import Home from "./pages/home/Home";
-import Student from "./pages/student/Student";
-import Recruiter from "./pages/recruiter/Recruiter";
-import Staff from "./pages/staff/Staff";
-import CompanyProfile from "./pages/profile/CompanyProfile/CompanyProfile";
-import StudentProfile from "./pages/profile/StudentProfile/StudentProfile";
-import Top from "./pages/profile/Top/Top";
-import Qa from "./pages/profile/Qa/Qa";
-import Stats from "./pages/profile/Stats/Stats";
+import Home from "./pages/Home/Home";
+import Student from "./pages/Student/Student";
+import Recruiter from "./pages/Recruiter/Recruiter";
+import Staff from "./pages/Staff/Staff";
+import CompanyProfile from "./pages/Profile/CompanyProfile/CompanyProfile";
+import StudentProfile from "./pages/Profile/StudentProfile/StudentProfile";
+import Top from "./pages/Profile/Top/Top";
+import QA from "./pages/Profile/QA/QA";
+import Stats from "./pages/Profile/Stats/Stats";
 import CreditDetails from "./pages/CreditDetails/CreditDetails";
-import Setting from "./pages/setting/Setting";
-import FAQ from "./pages/faq/Faq";
+import Setting from "./pages/Setting/Setting";
+import FAQ from "./pages/Faq/FAQ";
 import NotFound from "./pages/NotFound/NotFound";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import LogOut from "./components/LogOut";
@@ -41,7 +41,7 @@ const AppRoutes = () => {
                 <Route index element={<Navigate to="top" />} />{" "}
                 {/* Redirect index to top */}
                 <Route path="top" element={<Top />} />
-                <Route path="qa" element={<Qa />} />
+                <Route path="qa" element={<QA />} />
                 <Route path="stats" element={<Stats />} />
               </Route>
             </Route>
@@ -65,7 +65,7 @@ const AppRoutes = () => {
                 <Route index element={<Navigate to="top" state={{ userId: userId }} />} />{" "}
                 {/* Redirect index to top */}
                 <Route path="top" element={<Top />} />
-                <Route path="qa" element={<Qa />} />
+                <Route path="qa" element={<QA />} />
                 <Route path="stats" element={<Stats />} />
               </Route>
             </Route>
@@ -80,7 +80,7 @@ const AppRoutes = () => {
                 <Route index element={<Navigate to="top" />} />{" "}
                 {/* Redirect index to top */}
                 <Route path="top" element={<Top />} />
-                <Route path="qa" element={<Qa />} />
+                <Route path="qa" element={<QA />} />
                 <Route path="stats" element={<Stats />} />
               </Route>
             </Route>

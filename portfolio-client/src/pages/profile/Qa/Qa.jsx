@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useLocation, useParams } from "react-router-dom";
-import styles from "./Qa.module.css";
+import styles from "./QA.module.css";
 import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
 import qaList from "../../../utils/qaList";
