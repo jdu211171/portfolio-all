@@ -1,7 +1,8 @@
 // src/components/QATextField.js
 
 import React, { useState, useEffect } from "react";
-import { TextField as MuiTextField } from "@mui/material";
+import { TextField as MuiTextField, IconButton, Box } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import styles from "./QATextField.module.css"; // Assuming you have some CSS for styling
 
 const QATextField = ({
@@ -10,6 +11,9 @@ const QATextField = ({
   keyName,
   editData,
   updateEditData,
+  DeleteQA,
+  aEdit = false,
+  qEdit = false,
 }) => {
   // Initialize editData with the value from props
   const [localEditData, setLocalEditData] = useState("");
@@ -32,41 +36,63 @@ const QATextField = ({
       if (fieldType === "question") {
         // Update the question field
         setLocalQuestion(updatedValue); // Assuming you're using a state for the question (e.g., `setQuestion`)
-        updateEditData(keyName, updatedValue, "question"); // Pass the updated question and answer to the parent
       } else if (fieldType === "answer") {
         // Update the answer fields
         setLocalEditData(updatedValue); // Update the answer field (localEditData state)
-        updateEditData(keyName, updatedValue, "answer"); // Pass the updated answer and question to the parent
       }
+      updateEditData(keyName, updatedValue, fieldType);
     } else {
-      setLocalEditData(updatedValue);
-      updateEditData(category, keyName, updatedValue); // Call the function to update parent state
+      if (fieldType === "question") {
+        // Update the question field
+        setLocalQuestion(updatedValue); // Assuming you're using a state for the question (e.g., `setQuestion`)
+      } else if (fieldType === "answer") {
+        // Update the answer fields
+        setLocalEditData(updatedValue); // Update the answer field (localEditData state)
+      }
+      updateEditData(category, keyName, updatedValue, fieldType);
     }
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.title}>
-        {category === false ? (
+        {aEdit ? (
+          <Box display={"flex"}>
+            <MuiTextField
+              value={localEditQuestion}
+              onChange={(e) => handleChange(e, "question")} // Pass 'question' as a type identifier
+              variant="outlined"
+              fullWidth
+              multiline
+            />
+            {aEdit && (
+              <IconButton
+                aria-label="削除"
+                onClick={() => DeleteQA(keyName)}
+                sx={{
+                  color: "red",
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </Box>
+        ) : (
+          <div>{localEditQuestion}</div>
+        )}
+      </div>
+      <div className={styles.data}>
+        {qEdit ? (
           <MuiTextField
-            value={localEditQuestion}
-            onChange={(e) => handleChange(e, "question")} // Pass 'question' as a type identifier
+            value={localEditData}
+            onChange={(e) => handleChange(e, "answer")} // Pass 'answer' as a type identifier
             variant="outlined"
             fullWidth
             multiline
           />
         ) : (
-          <div>{localEditQuestion}</div> // Show question as plain text when category is not false
+          <div>{localEditData}</div>
         )}
-      </div>
-      <div className={styles.data}>
-        <MuiTextField
-          value={localEditData}
-          onChange={(e) => handleChange(e, "answer")} // Pass 'answer' as a type identifier
-          variant="outlined"
-          fullWidth
-          multiline
-        />
       </div>
     </div>
   );

@@ -126,7 +126,6 @@ const FAQ = () => {
   };
 
   const handleDelete = (indexToDelete) => {
-    console.log(indexToDelete);
     setEditData((prevEditData) =>
       prevEditData.filter((_, index) => {
         console.log(_, index);
@@ -190,28 +189,18 @@ const FAQ = () => {
         <Box my={2}>
           {editMode &&
             Object.entries(editData).map(([key, { question, answer }]) => (
-              <Box display={"flex"} key={key}>
-                <Box style={{ width: "90%" }}>
-                  <QATextField
-                    data={editData} // Pass any relevant data here if needed
-                    editData={editData}
-                    category={false} // Use labels to get the current category
-                    question={question}
-                    keyName={key}
-                    updateEditData={handleUpdate}
-                  />
-                </Box>
-                <Box pt={"10px"}>
-                  <IconButton
-                    aria-label="削除"
-                    onClick={() => handleDelete(key)}
-                    sx={{
-                      color: "red",
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
+              <Box key={key}>
+                <QATextField
+                  data={editData} // Pass any relevant data here if needed
+                  editData={editData}
+                  category={false} // Use labels to get the current category
+                  question={question}
+                  keyName={key}
+                  updateEditData={handleUpdate}
+                  DeleteQA={handleDelete}
+                  aEdit={role == "Admin"}
+                  qEdit={role == "Admin"}
+                />
               </Box>
             ))}
         </Box>

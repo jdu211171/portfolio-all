@@ -62,7 +62,7 @@ const QA = () => {
     fetchStudent();
   }, [id]);
 
-  const handleUpdate = (category, keyName, value) => {
+  const handleUpdate = (category, keyName, value, qa) => {
     setEditData((prevEditData) => {
       const updatedEditData = { ...prevEditData };
       if (updatedEditData[category]) {
@@ -70,7 +70,7 @@ const QA = () => {
           ...updatedEditData[category],
           [keyName]: {
             ...updatedEditData[category][keyName],
-            answer: value,
+            [qa]: value,
           },
         };
       }
@@ -134,7 +134,7 @@ const QA = () => {
 
   const portalContent = (
     <Box my={2} className={styles.buttonsContainer}>
-      {role == "Student" && (
+      {(role == "Student") | (role == "Admin") && (
         <>
           {editMode ? (
             <>
@@ -163,7 +163,8 @@ const QA = () => {
               color="primary"
               size="small"
             >
-              QAを編集
+              {role == "Student" ? "QAを編集" : ""}
+              {role == "Admin" ? "質問を編集" : ""}
             </Button>
           )}
         </>
@@ -208,6 +209,8 @@ const QA = () => {
                 category={labels[subTabIndex]} // Use labels to get the current category
                 question={question}
                 keyName={key}
+                aEdit={role == "Admin"}
+                qEdit={role == "Student"}
                 updateEditData={handleUpdate}
               />
             )
