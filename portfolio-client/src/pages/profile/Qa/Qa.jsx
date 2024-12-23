@@ -132,7 +132,6 @@ const QA = () => {
       }
       return updatedEditData;
     });
-    console.log(nextKeyNumber);
     console.log(
       document
         .querySelectorAll('textarea[aria-invalid="false"]')
@@ -141,7 +140,6 @@ const QA = () => {
   };
 
   const handleDelete = (indexToDelete) => {
-    console.log(indexToDelete);
     setEditData((prevEditData) => {
       const updatedEditData = { ...prevEditData };
       const category = labels[subTabIndex];
