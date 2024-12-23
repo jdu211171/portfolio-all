@@ -96,7 +96,6 @@ const QA = () => {
         } else {
           res = await axios.put(`/api/qa/${id}`, { data: answers });
         }
-        console.log(res.data);
         setStudentQA(res.data);
         setEditMode(false);
       }
@@ -111,6 +110,52 @@ const QA = () => {
   const handleCancel = () => {
     fetchStudent();
     setEditMode(false);
+  };
+
+  const handleAdd = async () => {
+    let keys = Object.keys(getCategoryData(subTabIndex));
+    let lastKey = keys[keys.length - 1];
+    let nextKeyNumber = parseInt(lastKey.slice(1)) + 1;
+    let nextKey = "q" + nextKeyNumber;
+
+    await setEditData((prevEditData) => {
+      const updatedEditData = { ...prevEditData };
+      const category = labels[subTabIndex];
+      if (updatedEditData[category]) {
+        updatedEditData[category] = {
+          ...updatedEditData[category],
+          [nextKey]: {
+            question: "",
+            answer: "",
+          },
+        };
+      }
+      return updatedEditData;
+    });
+    console.log(nextKeyNumber);
+    console.log(
+      document
+        .querySelectorAll('textarea[aria-invalid="false"]')
+        [nextKeyNumber - 1].focus()
+    );
+  };
+
+  const handleDelete = (indexToDelete) => {
+    console.log(indexToDelete);
+    setEditData((prevEditData) => {
+      const updatedEditData = { ...prevEditData };
+      const category = labels[subTabIndex];
+
+      if (
+        updatedEditData[category] &&
+        updatedEditData[category][indexToDelete]
+      ) {
+        // Delete the key from the category
+        delete updatedEditData[category][indexToDelete];
+      }
+
+      return updatedEditData;
+    });
   };
 
   const removeKey = (obj, excludeKey) => {
@@ -155,7 +200,11 @@ const QA = () => {
         for (const key in questions[category]) {
           combinedData[category][key] = {
             question: questions[category][key].question, // Store the question
-            answer: firsttime ? "" : answers[category][key].answer, // Store the answer
+            answer: firsttime
+              ? ""
+              : !answers[category][key]
+              ? ""
+              : answers[category][key].answer, // Store the answer
           };
         }
       }
@@ -198,6 +247,14 @@ const QA = () => {
         <>
           {editMode ? (
             <>
+              <Button
+                onClick={handleAdd}
+                variant="outlined"
+                color="primary"
+                size="small"
+              >
+                追加
+              </Button>
               <Button
                 onClick={handleSave}
                 variant="contained"
@@ -272,6 +329,7 @@ const QA = () => {
                 aEdit={role == "Admin"}
                 qEdit={role == "Student"}
                 updateEditData={handleUpdate}
+                DeleteQA={handleDelete}
               />
             )
           )}
