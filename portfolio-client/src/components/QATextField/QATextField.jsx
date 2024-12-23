@@ -91,7 +91,7 @@ const QATextField = ({
             multiline
           />
         ) : (
-          <div>{localEditData}</div>
+          <>{!aEdit && <div>{localEditData}</div>}</>
         )}
       </div>
     </div>
