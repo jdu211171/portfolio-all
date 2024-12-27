@@ -18,7 +18,7 @@ import QA from "./pages/Profile/QA/QA";
 import Stats from "./pages/Profile/Stats/Stats";
 import CreditDetails from "./pages/CreditDetails/CreditDetails";
 import Setting from "./pages/Setting/Setting";
-import FAQ from "./pages/Faq/FAQ";
+import FAQ from "./pages/FAQ/FAQ";
 import NotFound from "./pages/NotFound/NotFound";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import LogOut from "./components/LogOut";
