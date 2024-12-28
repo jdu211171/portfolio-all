@@ -197,3 +197,16 @@ footer {
     display: none;
   }
 }
+
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.languageSwitcher select {
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 14px; 
+}

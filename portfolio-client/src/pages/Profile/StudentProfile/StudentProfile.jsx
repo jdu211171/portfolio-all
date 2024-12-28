@@ -11,10 +11,14 @@ import { Box, Typography, IconButton, Chip, Avatar, Grid } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EmailIcon from "@mui/icons-material/Email";
 import styles from "./StudentProfile.module.css";
+import translations from "../../../locales/translations";
+import { useContext } from "react";
+import { UserContext } from "../../../contexts/UserContext"; // Добавьте эту строку
 
 const StudentProfile = ({ userId = 0 }) => {
   const { studentId } = useParams();
-
+  const { language } = useContext(UserContext); // Получаем текущий язык
+  const t = translations[language] || translations.en; // Выбираем переводы на основе языка
   let id;
   if (userId != 0) {
     id = userId;
@@ -75,7 +79,7 @@ const StudentProfile = ({ userId = 0 }) => {
       <Grid container>
         <Grid></Grid>
       </Grid>
-
+  
       <Box className={styles.topControlButtons}>
         <Box
           display="flex"
@@ -90,7 +94,7 @@ const StudentProfile = ({ userId = 0 }) => {
           <IconButton onClick={handleBackClick}>
             <ArrowBackIcon />
           </IconButton>
-          | Back
+          | {t.back}
         </Box>
         <Box id="saveButton"></Box>
       </Box>
@@ -122,7 +126,7 @@ const StudentProfile = ({ userId = 0 }) => {
           </Box>
           <Box className={styles.chipContainer}>
             <Chip
-              label={`学籍番号: ${student.student_id}`}
+              label={`${t.student_id}: ${student.student_id}`}
               variant="outlined"
               sx={{
                 fontSize: "12px",
@@ -133,7 +137,7 @@ const StudentProfile = ({ userId = 0 }) => {
               }}
             />
             <Chip
-              label={`年齢: ${calculateAge(student.date_of_birth)}`}
+              label={`${t.age}: ${calculateAge(student.date_of_birth)}`}
               variant="outlined"
               sx={{
                 fontSize: "12px",
@@ -152,14 +156,14 @@ const StudentProfile = ({ userId = 0 }) => {
           state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
-          トップ
+          {t.top}
         </NavLink>
         <NavLink
           to={`qa`}
           state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
-          Q&A
+          {t.qa}
         </NavLink>
         <NavLink
           to={`stats`}
@@ -167,12 +171,12 @@ const StudentProfile = ({ userId = 0 }) => {
           className={({ isActive }) => (isActive ? styles.active : "")}
           style={{ minWidth: "130px" }}
         >
-          単位数とスキル
+          {t.stats}
         </NavLink>
       </Box>
       <Outlet />
     </Box>
-  );
+  );  
 };
 
 export default StudentProfile;

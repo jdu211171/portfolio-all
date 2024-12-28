@@ -1,26 +1,34 @@
-import React from 'react';
-import { Box, Typography, Button, Container } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import styles from './Unauthorized.module.css';
+import React, { useContext } from "react";
+import { Box, Typography, Button, Container } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../contexts/UserContext";
+import translations from "../../locales/translations";
+import styles from "./Unauthorized.module.css";
 
 const Unauthorized = () => {
   const navigate = useNavigate();
+  const { language } = useContext(UserContext);
+  const t = translations[language] || translations.en;
 
   const handleBackToLogin = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
     <Box className={styles.unauthorizedBackground}>
       <Container maxWidth="md" className={styles.unauthorizedContainer}>
         <Typography variant="h3" gutterBottom>
-          403 - アクセスが拒否されました
+          {t.unauthorizedTitle}
         </Typography>
         <Typography variant="body1" gutterBottom>
-          このページにアクセスする権限がありません。
+          {t.unauthorizedMessage}
         </Typography>
-        <Button onClick={handleBackToLogin} variant="contained" className={styles.unauthorizedButton}>
-          ログインページへ戻る
+        <Button
+          onClick={handleBackToLogin}
+          variant="contained"
+          className={styles.unauthorizedButton}
+        >
+          {t.unauthorizedButton}
         </Button>
       </Container>
     </Box>

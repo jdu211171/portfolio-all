@@ -24,7 +24,7 @@ import Unauthorized from "./pages/Unauthorized/Unauthorized";
 import LogOut from "./components/LogOut";
 
 const AppRoutes = () => {
-  const { role, userId, updateUser } = useContext(UserContext);
+  const { role, userId, updateUser, language } = useContext(UserContext);
 
   return (
     <Router>
@@ -91,7 +91,7 @@ const AppRoutes = () => {
           <Route path="/unauthorized" element={<Unauthorized />} />
         </Route>
         <Route path="/credit-details" element={<CreditDetails />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound lang={language} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<LogOut updateUser={updateUser} />} />
         <Route path="/FirstloginPage" element={<FirstLoginPage />} />

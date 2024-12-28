@@ -16,10 +16,14 @@ import { UserContext } from "../../contexts/UserContext";
 import jduLogo from "../../assets/logo.png";
 import SettingStyle from "./Setting.module.css";
 import { useAlert } from "../../contexts/AlertContext";
+import { useLanguage } from "../../contexts/LanguageContext";
+import translations from "../../locales/translations";
 
 const Setting = () => {
   const { activeUser, updateUser } = useContext(UserContext);
 
+  const { language } = useLanguage(); // Получение текущего языка
+  const t = (key) => translations[language][key] || key; // Функция перевода
   const [role, setRole] = useState(null);
   const [user, setUser] = useState({});
   const [avatarImage, setAvatarImage] = useState(null);
@@ -76,7 +80,7 @@ const Setting = () => {
             response = await axios.get(`/api/recruiters/${id}`);
             break;
           default:
-            throw new Error("Unknown role");
+            throw new Error(t("unknown_role_error"));
         }
         setUser(response.data);
         setAvatarImage(response.data.photo);
@@ -89,19 +93,17 @@ const Setting = () => {
           contactEmail: response.data.contactEmail || "test@jdu.uz",
           contactPhone: response.data.contactPhone || "+998 90 234 56 78",
           workingHours: response.data.workingHours || "09:00 - 18:00",
-          location:
-            response.data.location ||
-            "Tashkent, Shayhontohur district, Sebzor, 21",
+          location: response.data.location || "Tashkent, Shayhontohur district, Sebzor, 21",
         });
       } catch (error) {
-        console.error("Failed to fetch user data:", error);
-        showAlert("ユーザーデータの取得に失敗しました。", "error");
+        console.error(t("user_fetch_error"), error);
+        showAlert(t("user_fetch_error"), "error");
       }
     };
-
+  
     fetchUser();
   }, [reset, role, showAlert]);
-
+  
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -134,7 +136,7 @@ const Setting = () => {
     if (data.password !== data.confirmPassword) {
       setError("confirmPassword", {
         type: "manual",
-        message: "パスワードが一致しません",
+        message: t("password_mismatch"), // Используем перевод
       });
       return false;
     }
@@ -142,14 +144,14 @@ const Setting = () => {
     if (data.password && !data.currentPassword) {
       setError("currentPassword", {
         type: "manual",
-        message: "現在のパスワードを入力してください",
+        message: t("current_password_required"), // Используем перевод
       });
       return false;
     }
     clearErrors("currentPassword");
     return true;
   };
-
+  
   const onSubmit = async (data) => {
     if (!validatePasswords(data)) {
       return;
@@ -170,7 +172,7 @@ const Setting = () => {
         updateData.password = data.password;
         updateData.currentPassword = data.currentPassword;
       }
-
+  
       if (selectedFile) {
         const formData = new FormData();
         formData.append("file", selectedFile);
@@ -179,16 +181,14 @@ const Setting = () => {
         formData.append("id", id);
         formData.append("oldFilePath", user.photo);
         const fileResponse = await axios.post("/api/files/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         });
-
-        updateData.photo = fileResponse.data.Location; // Adjust based on your backend response
+  
+        updateData.photo = fileResponse.data.Location;
       }
-
+  
       let updatedData;
-
+  
       switch (role) {
         case "Admin":
           updatedData = await axios.put(`/api/admin/${id}`, updateData);
@@ -203,30 +203,29 @@ const Setting = () => {
           updatedData = await axios.put(`/api/recruiters/${id}`, updateData);
           break;
         default:
-          throw new Error("Unknown role");
+          throw new Error(t("unknown_role_error"));
       }
       await setUser(updatedData.data);
       let tempUser = activeUser;
-      tempUser.name =
-        updatedData.data.first_name + " " + updatedData.data.last_name;
+      tempUser.name = updatedData.data.first_name + " " + updatedData.data.last_name;
       tempUser.photo = updatedData.data.photo;
       sessionStorage.setItem("loginUser", JSON.stringify(tempUser));
       updateUser();
       setIsEditing(false);
-      showAlert("プロフィールが更新されました。", "success");
+      showAlert(t("profile_update_success"), "success");
     } catch (error) {
-      console.error("Failed to update profile:", error);
+      console.error(t("profile_update_failed"), error);
       if (error.response && error.response.data && error.response.data.error) {
         setError("currentPassword", {
           type: "manual",
           message: error.response.data.error,
         });
-       } else {
-        showAlert("プロフィールの更新に失敗しました。再試行してください。", "error");
+      } else {
+        showAlert(t("profile_update_failed_retry"), "error");
       }
     }
   };
-
+  
   const handleSync = async () => {
     try {
       await axios.post("api/kintone/sync");
@@ -258,17 +257,17 @@ const Setting = () => {
         <Box display="flex" alignItems="center">
           <Box display="flex" alignItems="center" position="relative" mr={2}>
             <Avatar
-              alt="User Avatar"
+              alt={t("user_avatar")}
               src={avatarImage}
               sx={{ width: 100, height: 100 }}
             >
-              {role === "Recruiter" && "会社ロゴ"}
+              {role === "Recruiter" && t("company_logo")}
             </Avatar>
             <label htmlFor="avatar-upload">
               {isEditing && (
                 <IconButton
                   color="primary"
-                  aria-label="upload picture"
+                  aria-label={t("upload_picture")}
                   component="span"
                   size="small"
                   sx={{
@@ -292,7 +291,7 @@ const Setting = () => {
           </Box>
           <Box ml={2}>
             <div className={SettingStyle["userTitle"]}>
-              {user.first_name + " " + user.last_name || "User"}
+              {user.first_name + " " + user.last_name || t("user")}
             </div>
           </Box>
         </Box>
@@ -309,7 +308,7 @@ const Setting = () => {
               style={{ minWidth: "124px" }}
               onClick={handleEditClick}
             >
-              編集
+              {t("edit")}
             </Button>
           ) : (
             <>
@@ -320,7 +319,7 @@ const Setting = () => {
                 style={{ minWidth: "124px" }}
                 onClick={handleCancel}
               >
-                キャンセル
+                {t("cancel")}
               </Button>
               <Button
                 variant="contained"
@@ -329,7 +328,7 @@ const Setting = () => {
                 onClick={handleSubmit(onSubmit)}
                 style={{ minWidth: "76px" }}
               >
-                保存
+                {t("save")}
               </Button>
             </>
           )}
@@ -338,7 +337,7 @@ const Setting = () => {
       <Box my={1} className={SettingStyle.syncButton}>
         {role === "Admin" && (
           <Button variant="contained" color="primary" onClick={handleSync}>
-            同期
+            {t("sync")}
           </Button>
         )}
       </Box>
@@ -350,7 +349,7 @@ const Setting = () => {
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="名"
+                  label={t("first_name")}
                   variant="outlined"
                   fullWidth
                   {...field}
@@ -365,7 +364,7 @@ const Setting = () => {
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="姓"
+                  label={t("last_name")}
                   variant="outlined"
                   fullWidth
                   {...field}
@@ -380,7 +379,7 @@ const Setting = () => {
               control={control}
               render={({ field }) => (
                 <TextField
-                  label="電話番号"
+                  label={t("phone")}
                   variant="outlined"
                   fullWidth
                   {...field}
@@ -396,7 +395,7 @@ const Setting = () => {
               render={({ field }) => (
                 <TextField
                   autoComplete="false"
-                  label="メール"
+                  label={t("email")}
                   variant="outlined"
                   fullWidth
                   {...field}
@@ -407,7 +406,7 @@ const Setting = () => {
           </Grid>
         </Grid>
         <Box className={SettingStyle["section"]}>
-          <h2 className={SettingStyle["h2"]}>パスワードの変更</h2>
+          <h2 className={SettingStyle["h2"]}>{t("change_password")}</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -415,7 +414,7 @@ const Setting = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="現在のパスワード"
+                    label={t("current_password")}
                     variant="outlined"
                     type={showCurrentPassword ? "text" : "password"}
                     fullWidth
@@ -428,7 +427,7 @@ const Setting = () => {
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
-                            aria-label="toggle password visibility"
+                            aria-label={t("toggle_password_visibility")}
                             onClick={() => togglePasswordVisibility("current")}
                             edge="end"
                           >
@@ -451,7 +450,7 @@ const Setting = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="新しいパスワード"
+                    label={t("new_password")}
                     variant="outlined"
                     type={showNewPassword ? "text" : "password"}
                     fullWidth
@@ -464,7 +463,7 @@ const Setting = () => {
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
-                            aria-label="toggle password visibility"
+                            aria-label={t("toggle_password_visibility")}
                             onClick={() => togglePasswordVisibility("new")}
                             edge="end"
                           >
@@ -487,7 +486,7 @@ const Setting = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField
-                    label="パスワードを認証する"
+                    label={t("confirm_password")}
                     variant="outlined"
                     type={showConfirmPassword ? "text" : "password"}
                     fullWidth
@@ -500,7 +499,7 @@ const Setting = () => {
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
-                            aria-label="toggle password visibility"
+                            aria-label={t("toggle_password_visibility")}
                             onClick={() => togglePasswordVisibility("confirm")}
                             edge="end"
                           >
@@ -521,7 +520,7 @@ const Setting = () => {
         </Box>
         {role === "Admin" && (
           <Box className={SettingStyle["section"]}>
-            <h2 className={SettingStyle["h2"]}>コンタクト情報</h2>
+            <h2 className={SettingStyle["h2"]}>{t("contact_info")}</h2>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <Controller
@@ -529,7 +528,7 @@ const Setting = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="メール"
+                      label={t("contact_email")}
                       variant="outlined"
                       fullWidth
                       {...field}
@@ -544,7 +543,7 @@ const Setting = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="電話番号"
+                      label={t("contact_phone")}
                       variant="outlined"
                       fullWidth
                       {...field}
@@ -559,7 +558,7 @@ const Setting = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="労働時間"
+                      label={t("working_hours")}
                       variant="outlined"
                       fullWidth
                       {...field}
@@ -574,7 +573,7 @@ const Setting = () => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      label="位置"
+                      label={t("location")}
                       variant="outlined"
                       fullWidth
                       {...field}

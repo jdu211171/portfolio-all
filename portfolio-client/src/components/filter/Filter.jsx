@@ -17,9 +17,14 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { useLanguage } from "../../contexts/LanguageContext"; // Import the language context
+import translations from "../../locales/translations"; // Import translations
 import style from "./Filter.module.css";
 
 const Filter = ({ fields, filterState, onFilterChange }) => {
+  const { language } = useLanguage(); // Get the current language
+  const t = (key) => translations[language][key] || key; // Translation function
+
   const [open, setOpen] = useState(false);
   const [collapse, setCollapse] = useState(false);
   const [localFilterState, setLocalFilterState] = useState(filterState);
@@ -163,7 +168,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
                 },
               }}
             >
-              検索
+              {t("search")} {/* Translation for 検索 */}
             </Button>
           </ButtonGroup>
         </Grid>
@@ -171,7 +176,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
           <FormControl fullWidth>
             <TextField
               className={style.textfield}
-              label="氏名の検索"
+              label={t("name_search")}
               value={localFilterState.search || ""}
               onChange={(e) => handleChange("search", e.target.value)}
             />
@@ -180,7 +185,7 @@ const Filter = ({ fields, filterState, onFilterChange }) => {
       </Grid>
       <Grid item xs={12} style={{ position: "relative" }}>
         <div className={style.clear} onClick={handleClear}>
-        戻る
+          {t("reset")} {/* Translation for 戻る */}
         </div>
         <div className={style.filterButtonContainer}>
           {fields.length > 1 && (

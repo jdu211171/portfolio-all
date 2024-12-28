@@ -18,13 +18,18 @@ import styles from "./CompanyProfile.module.css";
 import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
 
+import translations from "../../../locales/translations";
+import { useContext } from "react";
+import { UserContext } from "../../../contexts/UserContext";
+
 const CompanyProfile = ({ userId = 0 }) => {
   const role = sessionStorage.getItem("role");
   const navigate = useNavigate();
   const location = useLocation();
 
   const { recruiterId } = location.state || {};
-
+  const { language } = useContext(UserContext);
+  const t = translations[language] || translations.en;
   let id;
   if (userId != 0) {
     id = userId;
@@ -157,7 +162,7 @@ const CompanyProfile = ({ userId = 0 }) => {
       <Grid container>
         <Grid></Grid>
       </Grid>
-
+  
       <Box className={styles.topControlButtons}>
         <Box
           display="flex"
@@ -172,11 +177,11 @@ const CompanyProfile = ({ userId = 0 }) => {
           <IconButton onClick={handleBackClick}>
             <ArrowBackIcon />
           </IconButton>
-          | Back
+          | {t["back"]}
         </Box>
         <Box id="saveButton">
           <Box my={2} className={styles.buttonsContainer}>
-            {role == "Recruiter" && (
+            {role === "Recruiter" && (
               <>
                 {editMode ? (
                   <>
@@ -186,16 +191,16 @@ const CompanyProfile = ({ userId = 0 }) => {
                       color="primary"
                       size="small"
                     >
-                      保存
+                      {t["save"]}
                     </Button>
-
+  
                     <Button
                       onClick={handleCancel}
                       variant="outlined"
                       color="error"
                       size="small"
                     >
-                      キャンセル
+                      {t["cancel"]}
                     </Button>
                   </>
                 ) : (
@@ -205,7 +210,7 @@ const CompanyProfile = ({ userId = 0 }) => {
                     color="primary"
                     size="small"
                   >
-                    プロフィールを編集
+                    {t["edit_profile"]}
                   </Button>
                 )}
               </>
@@ -255,7 +260,7 @@ const CompanyProfile = ({ userId = 0 }) => {
       </Box>
       <Box p={2}>
         <TextField
-          title="会社概要"
+          title={t["company_overview"]}
           data={company.company_description}
           editData={editData}
           editMode={editMode}
@@ -272,7 +277,7 @@ const CompanyProfile = ({ userId = 0 }) => {
         />
       </Box>
     </Box>
-  );
+  );  
 };
 
 export default CompanyProfile;

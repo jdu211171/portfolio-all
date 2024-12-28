@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import axios from "../../utils/axiosUtils";
 import { useAlert } from "../../contexts/AlertContext";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 import RichTextEditor from "../../components/RichTextEditor/RichTextEditor";
 
@@ -11,8 +12,13 @@ import Photo1 from "../../assets/Photo1.jpg";
 import Photo2 from "../../assets/Photo2.jpg";
 import { Box, Button } from "@mui/material";
 
+import translations from "../../locales/translations";
+
 const Home = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage(); // Получение текущего языка из контекста
+
+  const t = (key) => translations[language][key] || key; // Функция перевода
 
   const [role, setRole] = useState(null);
   const [editData, setEditData] = useState("");
@@ -22,10 +28,10 @@ const Home = () => {
 
   const fetchHomePageData = async () => {
     const userRole = sessionStorage.getItem("role");
-    await setRole(userRole);
+    setRole(userRole);
     try {
       const response = await axios.get("/api/settings/homepage");
-      await setEditData(response.data.value);
+      setEditData(response.data.value);
     } catch (error) {
       console.error("Error fetching homepage data:", error);
     }
@@ -56,7 +62,7 @@ const Home = () => {
 
       if (response.status === 200) {
         setEditMode(false);
-        showAlert("Changes saved successfully!", "success");
+        showAlert(t("changes_saved"), "success");
       }
     } catch (error) {
       console.error("Error updating homepage data:", error);
@@ -68,13 +74,13 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <div key={language}> {/* Динамическое обновление при смене языка */}
       <Box className={styles.header}>
         <h3>
           <a href="https://www.jdu.uz/">Japan Digital University</a>
         </h3>
         <Box display={"flex"} gap={"10px"}>
-          {role == "Admin" && (
+          {role === "Admin" && (
             <>
               {editMode ? (
                 <>
@@ -84,7 +90,7 @@ const Home = () => {
                     color="primary"
                     size="small"
                   >
-                    保存
+                    {t("save")}
                   </Button>
 
                   <Button
@@ -93,7 +99,7 @@ const Home = () => {
                     color="error"
                     size="small"
                   >
-                    キャンセル
+                    {t("cancel")}
                   </Button>
                 </>
               ) : (
@@ -103,7 +109,7 @@ const Home = () => {
                   color="primary"
                   size="small"
                 >
-                  編集
+                  {t("edit")}
                 </Button>
               )}
             </>
@@ -117,28 +123,21 @@ const Home = () => {
           )}
 
           {!editMode && (
-            <>
-              <p
-                className={styles.textParagraph}
-                dangerouslySetInnerHTML={{ __html: editData }}
-              ></p>
-            </>
+            <p
+              className={styles.textParagraph}
+              dangerouslySetInnerHTML={{ __html: editData }}
+            ></p>
           )}
-
-          {/* <div className={styles.titleContainer}>
-            <span className={styles.subtitle}>より良い</span>
-            <span className={styles.title}>明日へ</span>
-          </div> */}
 
           <div className={styles.buttonContainer}>
             <button className={styles.button} onClick={handleClick}>
-              次へ➜
+              {t("next_button")}
             </button>
           </div>
         </div>
         <div className={styles.imageSection}>
-          <img src={Photo1} alt="Large class photo" />
-          <img src={Photo2} alt="Group photo" />
+          <img src={Photo1} alt={t("large_class_photo_alt")} />
+          <img src={Photo2} alt={t("group_photo_alt")} />
         </div>
       </div>
     </div>

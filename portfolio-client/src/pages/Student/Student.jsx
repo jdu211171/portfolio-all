@@ -5,77 +5,81 @@ import Table from "../../components/Table/Table";
 import Filter from "../../components/Filter/Filter";
 
 import axios from "../../utils/axiosUtils";
+import { useLanguage } from "../../contexts/LanguageContext"; // Подключение контекста языка
+import translations from "../../locales/translations"; // Подключение переводов
 
 const Student = ({ OnlyBookmarked = false }) => {
+  const { language } = useLanguage(); // Получение текущего языка из контекста
+  const t = (key) => translations[language][key] || key; // Функция перевода
   const [filterState, setFilterState] = useState({});
   const [updatedBookmark, setUpdatedBookmark] = useState({
     studentId: null,
     timestamp: new Date().getTime(),
   });
   const recruiterId = JSON.parse(sessionStorage.getItem("loginUser")).id;
-  // Ensure filterProps have unique keys matching your database columns
+
   const filterProps = [
     {
       key: "semester",
-      label: "学年",
+      label: t("semester"), // Переводится
       type: "checkbox",
-      options: ["1年生", "2年生", "3年生", "4年生"],
+      options: [t("1st_year"), t("2nd_year"), t("3rd_year"), t("4th_year")],
       minWidth: "120px",
     },
     {
       key: "it_skills",
-      label: "プログラミング言語",
+      label: t("programming_languages"),
       type: "checkbox",
       options: ["JS", "Python", "Java", "SQL"],
       minWidth: "160px",
     },
     {
       key: "jlpt",
-      label: "日本語能力試験",
+      label: t("jlpt"),
       type: "checkbox",
       options: ["N1", "N2", "N3", "N4", "N5"],
       minWidth: "160px",
     },
     {
       key: "ielts",
-      label: "IELTS (英語力)",
+      label: t("ielts"),
       type: "checkbox",
       options: ["6.0", "6.5", "7.0", "7.5", "8.0"],
       minWidth: "160px",
     },
     {
       key: "jdu_japanese_certification",
-      label: "JDU日本語認定試験",
+      label: t("jdu_japanese_certification"),
       type: "checkbox",
       options: ["Q1", "Q2", "Q3", "Q4", "Q5"],
       minWidth: "160px",
     },
     {
       key: "partner_university_credits",
-      label: "単位数",
+      label: t("credits"),
       type: "radio",
       options: ["20", "40", "60", "80", "100"],
-      unit: "単位内",
+      unit: t("within_credits"),
       minWidth: "160px",
     },
     {
       key: "partner_university",
-      label: "提携大学",
+      label: t("partner_universities"),
       type: "checkbox",
       options: [
-        "東京通信大学",
-        "産能短期大学",
-        "京都大学",
-        "大手前大学",
-        "新潟大学",
+        t("tokyo_communication_university"),
+        t("sanno_junior_college"),
+        t("kyoto_university"),
+        t("otemae_university"),
+        t("niigata_university"),
       ],
       minWidth: "160px",
     },
     {
       key: "other_information",
-      label: "特技 (有無)",
+      label: t("special_skills"),
       type: "radio",
-      options: ["有り", "無し"],
+      options: [t("yes"), t("no")],
       minWidth: "160px",
     },
   ];
@@ -119,7 +123,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       id: "first_name",
       numeric: false,
       disablePadding: true,
-      label: "学生",
+      label: t("student"),
       type: "avatar",
       minWidth: "220px",
       onClickAction: navigateToProfile,
@@ -128,7 +132,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       id: "email",
       numeric: false,
       disablePadding: false,
-      label: "メール",
+      label: t("email"),
       type: "email",
       minWidth: "160px",
     },
@@ -136,7 +140,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       id: "jlpt",
       numeric: true,
       disablePadding: false,
-      label: "日本語能力試験",
+      label: t("jlpt"),
       minWidth: "160px",
       isJSON: true,
     },
@@ -144,9 +148,9 @@ const Student = ({ OnlyBookmarked = false }) => {
       id: "ielts",
       numeric: true,
       disablePadding: false,
-      label: "IELTS",
+      label: t("ielts"),
       isJSON: true,
-    }
+    },
   ];
 
   const tableProps = {
@@ -158,7 +162,7 @@ const Student = ({ OnlyBookmarked = false }) => {
   };
 
   return (
-    <div>
+    <div key={language}> {/* Перерендеринг при смене языка */}
       <Box sx={{ width: "100%", height: "100px" }}>
         <Filter
           fields={filterProps}

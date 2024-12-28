@@ -9,7 +9,8 @@ import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import Deliverables from "../../../components/Deliverables/Deliverables";
 import { useAlert } from "../../../contexts/AlertContext";
-
+import { UserContext } from "../../../contexts/UserContext";
+import translations from "../../../locales/translations"; // Импортируем переводы
 import styles from "./Top.module.css";
 
 const Top = () => {
@@ -18,6 +19,8 @@ const Top = () => {
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
+  const { language } = React.useContext(UserContext);
+  const t = translations[language] || translations.en;
 
   if (userId !== 0 && userId) {
     id = userId;
@@ -96,30 +99,31 @@ const Top = () => {
   const handleSave = async () => {
     try {
       const formData = new FormData();
-
+  
       // Append each file in the `newImages` array to the form data
       newImages.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
-
+  
       // Append other necessary fields
       formData.append("role", role);
       formData.append("imageType", "Gallery");
       formData.append("id", id);
-
+  
       // Append the array of deleted URLs
       deletedUrls.forEach((url, index) => {
         formData.append(`oldFilePath[${index}]`, url);
       });
-
+  
       // Send the form data via POST request
       const fileResponse = await axios.post("/api/files/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+  
       let oldFiles = editData.gallery;
-
+  
       if (Array.isArray(fileResponse.data)) {
         fileResponse.data.forEach((file) => {
           oldFiles.push(file.Location);
@@ -127,10 +131,10 @@ const Top = () => {
       } else if (fileResponse.data.Location) {
         oldFiles.push(fileResponse.data.Location);
       }
-
+  
       await handleUpdateEditData("gallery", oldFiles);
-
-      // Check if there are deliverable images to process
+  
+      // Process deliverable images
       for (const [index, file] of Object.entries(deliverableImages)) {
         if (file) {
           const deliverableFormData = new FormData();
@@ -141,8 +145,8 @@ const Top = () => {
           deliverableFormData.append(
             "oldFilePath",
             editData.deliverables[index]?.imageLink || ""
-          ); // Append old file path if exists
-
+          );
+  
           const deliverableFileResponse = await axios.post(
             "/api/files/upload",
             deliverableFormData,
@@ -152,24 +156,30 @@ const Top = () => {
               },
             }
           );
-
+  
           const deliverableImageLink = deliverableFileResponse.data.Location;
           // Update the deliverable's imageLink with the new file location
           editData.deliverables[index].imageLink = deliverableImageLink;
         }
       }
-
+  
       await axios.put(`/api/students/${id}`, editData);
       setStudent(editData);
       setNewImages([]);
       setDeletedUrls([]);
       setEditMode(false);
-      showAlert("Changes saved successfully!", "success");
+      showAlert(
+        translations[language]?.changesSavedSuccessfully || translations.en.changesSavedSuccessfully,
+        "success"
+      );
     } catch (error) {
       console.error("Error saving student data:", error);
-      showAlert("Error saving changes.", "error");
+      showAlert(
+        translations[language]?.errorSavingChanges || translations.en.errorSavingChanges,
+        "error"
+      );
     }
-  };
+  };  
 
   const handleCancel = () => {
     setEditData(student);
@@ -183,7 +193,7 @@ const Top = () => {
   };
 
   if (!student) {
-    return <div>Loading...</div>;
+    return <div>{t.loading}</div>;
   }
 
   const portalContent = (
@@ -198,7 +208,7 @@ const Top = () => {
                 color="primary"
                 size="small"
               >
-                保存
+                {t.save}
               </Button>
 
               <Button
@@ -207,7 +217,7 @@ const Top = () => {
                 color="error"
                 size="small"
               >
-                キャンセル
+               {t.cancel}
               </Button>
             </>
           ) : (
@@ -217,7 +227,7 @@ const Top = () => {
               color="primary"
               size="small"
             >
-              プロフィールを編集
+               {t.editProfile}
             </Button>
           )}
         </>
@@ -233,19 +243,19 @@ const Top = () => {
           document.getElementById("saveButton")
         )}
       </>
-
+  
       <Tabs
         className={styles.Tabs}
         value={subTabIndex}
         onChange={handleSubTabChange}
       >
-        <Tab label="自己PR" />
-        <Tab label="成果物" />
+        <Tab label={t.selfIntroduction} />
+        <Tab label={t.deliverables} />
       </Tabs>
       {subTabIndex === 0 && (
         <Box my={2}>
           <TextField
-            title="自己紹介"
+            title={t.selfIntroduction}
             data={student.self_introduction}
             editData={editData}
             editMode={editMode}
@@ -261,7 +271,7 @@ const Top = () => {
             keyName="gallery"
           />
           <TextField
-            title="趣味"
+            title={t.hobbies}
             data={student.hobbies}
             editData={editData}
             editMode={editMode}
@@ -269,7 +279,7 @@ const Top = () => {
             keyName="hobbies"
           />
           <TextField
-            title="特技"
+            title={t.specialSkills}
             data={student.other_information}
             editData={editData}
             editMode={editMode}
@@ -277,7 +287,7 @@ const Top = () => {
             keyName="other_information"
           />
           <SkillSelector
-            title="ITスキル"
+            title={t.itSkills}
             headers={{
               上級: "3年間以上",
               中級: "1年間〜1年間半",
@@ -292,7 +302,7 @@ const Top = () => {
             keyName="it_skills"
           />
           <SkillSelector
-            title="その他"
+            title={t.otherSkills}
             headers={{
               上級: "3年間以上",
               中級: "1年間〜1年間半",
@@ -324,7 +334,7 @@ const Top = () => {
         </Box>
       )}
     </Box>
-  );
+  );  
 };
 
 export default Top;

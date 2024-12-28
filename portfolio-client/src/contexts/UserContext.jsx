@@ -7,6 +7,7 @@ export const UserProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [userId, setUserId] = useState(null);
   const [activeUser, setActiveUser] = useState(null);
+  const [language, setLanguage] = useState(localStorage.getItem("language") || "en"); // Default to English
 
   const fetchAndSetUser = () => {
     const userRole = sessionStorage.getItem("role");
@@ -27,8 +28,15 @@ export const UserProvider = ({ children }) => {
     return fetchAndSetUser();
   };
 
+  // Function to change the language
+  const changeLanguage = (lang) => {
+    setLanguage(lang);
+    localStorage.setItem("language", lang);
+  };
+
   return (
-    <UserContext.Provider value={{ role, userId, activeUser, updateUser }}>
+    <UserContext.Provider
+      value={{ role, userId, activeUser, updateUser, language, changeLanguage }}>
       {children}
     </UserContext.Provider>
   );

@@ -5,8 +5,12 @@ import { Box } from "@mui/material";
 
 import Table from "../../components/Table/Table";
 import Filter from "../../components/Filter/Filter";
+import { useLanguage } from "../../contexts/LanguageContext";
+import translations from "../../locales/translations";
 
 const Recruiter = () => {
+  const { language } = useLanguage();
+  const t = (key) => translations[language][key] || key;
   const navigate = useNavigate();
   const navigateToCompanyProfile = (recruiterId) => {
     navigate(`/companyprofile`, {
@@ -19,7 +23,7 @@ const Recruiter = () => {
       id: "name",
       numeric: false,
       disablePadding: true,
-      label: "リクルーター",
+      label: t("recruiter"),
       type: "avatar",
       minWidth: "160px",
       onClickAction: navigateToCompanyProfile,
@@ -28,30 +32,30 @@ const Recruiter = () => {
       id: "company_name",
       numeric: false,
       disablePadding: false,
-      label: "会社名",
+      label: t("company_name"),
       minWidth: "220px",
     },
     {
       id: "phone",
       numeric: true,
       disablePadding: false,
-      label: "電話番号",
+      label: t("phone_number"),
       minWidth: "160px",
     },
     {
       id: "email",
       numeric: false,
       disablePadding: false,
-      label: "メール",
+      label: t("email"),
       type: "email",
       minWidth: "220px",
-    }
+    },
   ];
 
   const [filterState, setFilterState] = useState({});
   // must match with db table col names
   const filterProps = [
-    { key: "name", label: "名前", type: "text", minWidth: "160px" },
+    { key: "name", label: t("name"), type: "text", minWidth: "160px" },
   ];
 
   const tableProps = {

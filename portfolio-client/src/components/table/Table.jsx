@@ -19,8 +19,13 @@ import {
 } from "@mui/material";
 
 import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
+import { useLanguage } from "../../contexts/LanguageContext"; // Используем контекст языка
+import translations from "../../locales/translations"; // Импорт переводов
 
 const EnhancedTable = ({ tableProps, updatedBookmark }) => {
+  const { language } = useLanguage(); // Получаем текущий язык
+  const t = (key) => translations[language][key] || key; // Функция перевода
+
   const role = sessionStorage.getItem("role");
 
   const [order, setOrder] = useState("asc");
@@ -168,7 +173,11 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 ? style.hoverEffect
                                 : style.default
                             }
-                            style={ header.type === "avatar" ? { minWidth: header.minWidth, padding: "4px" } : {minWidth: header.minWidth}}
+                            style={
+                              header.type === "avatar"
+                                ? { minWidth: header.minWidth, padding: "4px" }
+                                : { minWidth: header.minWidth }
+                            }
                           >
                             {header.type === "bookmark" ? (
                               <>
@@ -224,12 +233,12 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               JSON.parse(row[header.id])?.highest ? (
                                 JSON.parse(row[header.id])?.highest
                               ) : (
-                                "無し"
+                                "N/A"
                               )
                             ) : row[header.id] ? (
                               row[header.id]
                             ) : (
-                              "無し"
+                              "N/A"
                             )}
                           </TableCell>
                         )
@@ -254,7 +263,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="表示件数:"
+        labelRowsPerPage={t("rows_per_page")} // Используем перевод
       />
     </Box>
   );

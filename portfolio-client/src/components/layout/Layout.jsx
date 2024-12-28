@@ -1,7 +1,8 @@
- import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
 import UserAvatar from "../Table/Avatar/UserAvatar";
+import translations from "../../locales/translations"; // Импорт переводов
 
 // icons
 import { ReactComponent as NavButtonIcon } from "../../assets/icons/navButton.svg";
@@ -22,30 +23,35 @@ const checkRole = (role, allowedRoles) => {
   return allowedRoles.includes(role);
 };
 
-// Define navigation items and their allowed roles
-const navItems = [
-  {
-    section: "GENERAL",
-    items: [
-        { to: "/", icon: <HomeIcon />, label: "Home", roles: ["Admin", "Staff", "Recruiter"] },
-        { to: "/companyprofile", icon: <ProfileIcon />, label: "プロフィール", roles: ["Recruiter"] },
-        { to: "/student", icon: <StudentIcon />, label: "学生検索", roles: ["Admin", "Staff", "Recruiter"] },
-        { to: "/staff", icon: <UserPlusIcon />, label: "職員", roles: ["Admin"] },
-        { to: "/profile", icon: <ProfileIcon />, label: "プロフィール", roles: ["Student"] },
-        { to: "/recruiter", icon: <UserPlusIcon />, label: "リクルーター", roles: ["Admin", "Staff", "Student"] },
-        { to: "/bookmarked", icon: <BookmarkIcon />, label: "気になる", roles: ["Recruiter"] },
-    ],
-  },  {
-    section: "GENERAL",
-    items: [
-        { to: "/settings", icon: <SettingsIcon />, label: "設定", roles: ["Admin", "Staff", "Recruiter", "Student"] },
-        { to: "/help", icon: <HelpIcon />, label: "ヘルプ", roles: ["Admin", "Staff", "Recruiter", "Student"] },
-    ],
-  },
-];
-
 const Layout = () => {
-  const { activeUser, updateUser } = useContext(UserContext);
+  const savedLanguage = localStorage.getItem("language") || "en"; // Получаем язык из localStorage
+  const [language, setLanguage] = useState(savedLanguage); // Устанавливаем начальный язык
+
+  const t = (key) => translations[language][key] || key; // Простая функция перевода
+
+  const navItems = [
+    {
+      section: "GENERAL", // Оставляем статичным
+      items: [
+        { to: "/", icon: <HomeIcon />, label: t("home"), roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/companyprofile", icon: <ProfileIcon />, label: t("profile"), roles: ["Recruiter"] },
+        { to: "/student", icon: <StudentIcon />, label: t("student_search"), roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/staff", icon: <UserPlusIcon />, label: t("staff"), roles: ["Admin"] },
+        { to: "/profile", icon: <ProfileIcon />, label: t("profile"), roles: ["Student"] },
+        { to: "/recruiter", icon: <UserPlusIcon />, label: t("recruiter"), roles: ["Admin", "Staff", "Student"] },
+        { to: "/bookmarked", icon: <BookmarkIcon />, label: t("bookmarked"), roles: ["Recruiter"] },
+      ],
+    },
+    {
+      section: "GENERAL", // Оставляем статичным
+      items: [
+        { to: "/settings", icon: <SettingsIcon />, label: t("settings"), roles: ["Admin", "Staff", "Recruiter", "Student"] },
+        { to: "/help", icon: <HelpIcon />, label: t("help"), roles: ["Admin", "Staff", "Recruiter", "Student"] },
+      ],
+    },
+  ];
+
+  const { activeUser } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [smallScreen, setSmallScreen] = useState(false);
   const [userData, setUserData] = useState({});
@@ -85,11 +91,18 @@ const Layout = () => {
     const intervalId = setInterval(updateTime, 60000);
     return () => {
       window.removeEventListener("resize", handleResize);
+      clearInterval(intervalId);
     };
   }, []);
 
   const handleNavButtonClick = () => {
     setIsMenuOpen((prevState) => !prevState);
+  };
+
+  const changeLanguage = (lng) => {
+    setLanguage(lng); // Устанавливаем язык
+    localStorage.setItem("language", lng); // Сохраняем язык в localStorage
+    window.location.reload(); // Перезагружаем страницу
   };
 
   return (
@@ -108,9 +121,19 @@ const Layout = () => {
             <NavButtonIcon />
           </div>
           <div className={style.topBarBox}>
+            <div className={style.languageSwitcher}>
+              <select
+                onChange={(e) => changeLanguage(e.target.value)}
+                defaultValue={language}
+              >
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="uz">O‘zbek</option>
+              </select>
+            </div>
             <div className={style.timeBox}>
               <div style={{ textAlign: "right" }}>
-                <div className={style.timeText}>Japan</div>
+                <div className={style.timeText}>{t("japan")}</div>
                 <div className={style.time}>{japanTime}</div>
               </div>
               <svg
@@ -136,7 +159,7 @@ const Layout = () => {
               </svg>
 
               <div>
-                <div className={style.timeText}>Uzbekistan</div>
+                <div className={style.timeText}>{t("uzbekistan")}</div>
                 <div className={style.time}>{uzbekistanTime}</div>
               </div>
             </div>
@@ -181,7 +204,7 @@ const Layout = () => {
                   className={({ isActive }) => (isActive ? style.active : "")}
                 >
                   <LogOutIcon />
-                  <div>ログアウト</div>
+                  <div>{t("logout")}</div>
                 </NavLink>
               </li>
             </ul>
