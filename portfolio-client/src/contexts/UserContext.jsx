@@ -7,7 +7,7 @@ export const UserProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [userId, setUserId] = useState(null);
   const [activeUser, setActiveUser] = useState(null);
-  const [language, setLanguage] = useState(localStorage.getItem("language") || "en"); // Default to English
+  const [language, setLanguage] = useState(localStorage.getItem("language") || "ja"); // Default to English
 
   const fetchAndSetUser = () => {
     const userRole = sessionStorage.getItem("role");
