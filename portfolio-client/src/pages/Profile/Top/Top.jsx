@@ -9,7 +9,7 @@ import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import Deliverables from "../../../components/Deliverables/Deliverables";
 import { useAlert } from "../../../contexts/AlertContext";
-import { UserContext } from "../../../contexts/UserContext";
+import { useLanguage } from "../../../contexts/LanguageContext";
 import translations from "../../../locales/translations"; // Импортируем переводы
 import styles from "./Top.module.css";
 
@@ -19,8 +19,9 @@ const Top = () => {
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
-  const { language } = React.useContext(UserContext);
-  const t = translations[language] || translations.en;
+  const { language } = useLanguage(); // Получение текущего языка из контекста
+
+  const t = (key) => translations[language][key] || key; // Функция перевода
 
   if (userId !== 0 && userId) {
     id = userId;
@@ -193,7 +194,7 @@ const Top = () => {
   };
 
   if (!student) {
-    return <div>{t.loading}</div>;
+    return <div>{t("loading")}</div>;
   }
 
   const portalContent = (
@@ -208,7 +209,7 @@ const Top = () => {
                 color="primary"
                 size="small"
               >
-                {t.save}
+                {t("save")}
               </Button>
 
               <Button
@@ -217,7 +218,7 @@ const Top = () => {
                 color="error"
                 size="small"
               >
-               {t.cancel}
+               {t("cancel")}
               </Button>
             </>
           ) : (
@@ -227,7 +228,7 @@ const Top = () => {
               color="primary"
               size="small"
             >
-               {t.editProfile}
+               {t("editProfile")}
             </Button>
           )}
         </>
@@ -249,13 +250,13 @@ const Top = () => {
         value={subTabIndex}
         onChange={handleSubTabChange}
       >
-        <Tab label={t.selfIntroduction} />
-        <Tab label={t.deliverables} />
+        <Tab label={t("selfIntroduction")} />
+        <Tab label={t("deliverables")} />
       </Tabs>
       {subTabIndex === 0 && (
         <Box my={2}>
           <TextField
-            title={t.selfIntroduction}
+            title={t("selfIntroduction")}
             data={student.self_introduction}
             editData={editData}
             editMode={editMode}
@@ -271,7 +272,7 @@ const Top = () => {
             keyName="gallery"
           />
           <TextField
-            title={t.hobbies}
+            title={t("hobbies")}
             data={student.hobbies}
             editData={editData}
             editMode={editMode}
@@ -279,7 +280,7 @@ const Top = () => {
             keyName="hobbies"
           />
           <TextField
-            title={t.specialSkills}
+            title={t("specialSkills")}
             data={student.other_information}
             editData={editData}
             editMode={editMode}
@@ -287,11 +288,11 @@ const Top = () => {
             keyName="other_information"
           />
           <SkillSelector
-            title={t.itSkills}
+            title={t("itSkills")}
             headers={{
-              上級: "3年間以上",
-              中級: "1年間〜1年間半",
-              初級: "基礎",
+              "上級": t("threeYearsOrMore"),
+              "中級": t("threeYearsOrMore"),
+              "初級": t("oneToOneAndHalfYears"),
             }}
             data={student}
             editData={editData}
@@ -302,7 +303,7 @@ const Top = () => {
             keyName="it_skills"
           />
           <SkillSelector
-            title={t.otherSkills}
+            title={t("otherSkills")}
             headers={{
               上級: "3年間以上",
               中級: "1年間〜1年間半",

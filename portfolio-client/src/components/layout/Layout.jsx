@@ -24,7 +24,7 @@ const checkRole = (role, allowedRoles) => {
 };
 
 const Layout = () => {
-  const savedLanguage = localStorage.getItem("language") || "en"; // Получаем язык из localStorage
+  const savedLanguage = localStorage.getItem("language") || "ja"; // Получаем язык из localStorage
   const [language, setLanguage] = useState(savedLanguage); // Устанавливаем начальный язык
 
   const t = (key) => translations[language][key] || key; // Простая функция перевода
@@ -126,8 +126,8 @@ const Layout = () => {
                 onChange={(e) => changeLanguage(e.target.value)}
                 defaultValue={language}
               >
-                <option value="en">English</option>
                 <option value="ja">日本語</option>
+                <option value="en">English</option>
                 <option value="uz">O‘zbek</option>
               </select>
             </div>

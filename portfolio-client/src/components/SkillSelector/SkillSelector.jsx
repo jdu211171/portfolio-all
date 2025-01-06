@@ -14,6 +14,9 @@ import AddIcon from "@mui/icons-material/Add";
 import styles from "./SkillSelector.module.css";
 import skills from "../../utils/skills";
 
+import { useLanguage } from "../../contexts/LanguageContext";
+import translations from "../../locales/translations"; // Импортируем переводы
+
 const SkillSelector = ({
   title,
   data,
@@ -29,6 +32,11 @@ const SkillSelector = ({
   const [editJsonData, setEditJsonData] = useState(editData[keyName]);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [selectedLevel, setSelectedLevel] = useState("初級");
+
+  const { language } = useLanguage(); // Получение текущего языка из контекста
+  
+  
+  const t = (key) => translations[language][key] || key; // Функция перевода
   useEffect(() => {
     setJsonData(data[keyName]);
     setEditJsonData(editData[keyName]);
@@ -88,7 +96,7 @@ const SkillSelector = ({
         {showHeaders &&
           Object.entries(headers).map(([level, description]) => (
             <div key={level}>
-              <span style={{ fontWeight: 800 }}>{level}</span>: {description}
+              <span style={{ fontWeight: 800 }}>{t("levels")[level]}</span>: {description}
             </div>
           ))}
       </div>
@@ -129,7 +137,7 @@ const SkillSelector = ({
             >
               {Object.keys(headers).map((key) => (
                 <MenuItem key={key} value={key}>
-                  {key}
+                  {t("levels")[key]}
                 </MenuItem>
               ))}
             </Select>
@@ -145,7 +153,7 @@ const SkillSelector = ({
             {Object.entries(editMode ? editJsonData : jsonData).map(
               ([level, skills]) => (
                 <tr key={level}>
-                  <td style={{ textAlign: "right" }}>{level}:</td>
+                  <td style={{ textAlign: "right" }}>{t("levels")[level]}:</td>
                   <td>
                     {skills.map((skill, index) => (
                       <Chip
