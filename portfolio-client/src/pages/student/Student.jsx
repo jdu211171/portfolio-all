@@ -21,9 +21,9 @@ const Student = ({ OnlyBookmarked = false }) => {
   const filterProps = [
     {
       key: "semester",
-      label: t("semester"), // Переводится
+      label: t("grade"), // Переводится
       type: "checkbox",
-      options: [t("1st_year"), t("2nd_year"), t("3rd_year"), t("4th_year")],
+      options: [t("grade1"), t("grade2"), t("grade3"), t("grade4")],
       minWidth: "120px",
     },
     {
@@ -40,16 +40,16 @@ const Student = ({ OnlyBookmarked = false }) => {
       options: ["N1", "N2", "N3", "N4", "N5"],
       minWidth: "160px",
     },
-    {
-      key: "ielts",
-      label: t("ielts"),
-      type: "checkbox",
-      options: ["6.0", "6.5", "7.0", "7.5", "8.0"],
-      minWidth: "160px",
-    },
+    // {  //deleted from table // todo, disscuss, whether it is managed by student?
+    //   key: "ielts",
+    //   label: t("ielts"),
+    //   type: "checkbox",
+    //   options: ["6.0", "6.5", "7.0", "7.5", "8.0"],
+    //   minWidth: "160px",
+    // },
     {
       key: "jdu_japanese_certification",
-      label: t("jdu_japanese_certification"),
+      label: t("jdu_certification"),
       type: "checkbox",
       options: ["Q1", "Q2", "Q3", "Q4", "Q5"],
       minWidth: "160px",
@@ -59,12 +59,12 @@ const Student = ({ OnlyBookmarked = false }) => {
       label: t("credits"),
       type: "radio",
       options: ["20", "40", "60", "80", "100"],
-      unit: t("within_credits"),
+      unit: t("credits_unit"),
       minWidth: "160px",
     },
     {
       key: "partner_university",
-      label: t("partner_universities"),
+      label: t("partner_university"),
       type: "checkbox",
       options: [
         t("tokyo_communication_university"),
@@ -145,11 +145,11 @@ const Student = ({ OnlyBookmarked = false }) => {
       isJSON: true,
     },
     {
-      id: "ielts",
-      numeric: true,
+      id: "partner_university",
+      numeric: false,
       disablePadding: false,
-      label: t("ielts"),
-      isJSON: true,
+      label: t("partner_university"),
+      isJSON: false,
     },
   ];
 

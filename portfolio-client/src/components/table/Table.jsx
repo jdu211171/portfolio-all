@@ -233,7 +233,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               JSON.parse(row[header.id])?.highest ? (
                                 JSON.parse(row[header.id])?.highest
                               ) : (
-                                "N/A"
+                                "未提出"
                               )
                             ) : row[header.id] ? (
                               row[header.id]
