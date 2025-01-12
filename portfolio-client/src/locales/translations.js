@@ -131,6 +131,11 @@ const translations = {
       上級: "Advanced",
       中級: "Intermediate",
       初級: "Beginner",
+      JLPT: "JLPT",
+      JDU_JLPT: "JDU Japanese Certification Test",
+      IELTS: "IELTS",
+      日本語弁論大会学内: "Japanese Speech Contest",
+      ITコンテスト学内: "IT contest"
     },
   },
   ja: {
@@ -264,6 +269,11 @@ const translations = {
       初級: "初級",
       中級: "中級",
       上級: "上級",
+      JLPT: "JLPT",
+      JDU_JLPT: "JDU日本語認定試験",
+      IELTS: "IELTS",
+      日本語弁論大会学内: "日本語弁論大会学内",
+      ITコンテスト学内: "ITコンテスト学内"
     },
   },
   uz: {
@@ -401,6 +411,11 @@ const translations = {
       初級: "Boshlang'ich",
       中級: "O'rta",
       上級: "Yuqori",
+      JLPT: "JLPT",
+      JDU_JLPT: "JDU Yapon tili sertifikati",
+      IELTS: "IELTS",
+      日本語弁論大会学内: "Yapon tili notiqlik san'ati",
+      ITコンテスト学内: "IT tanlov"
     },
   },
 };
