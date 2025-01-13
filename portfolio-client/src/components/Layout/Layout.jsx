@@ -15,6 +15,8 @@ import { ReactComponent as LogOutIcon } from "../../assets/icons/logOut.svg";
 import { ReactComponent as BookmarkIcon } from "../../assets/icons/bookmark.svg";
 import { ReactComponent as ProfileIcon } from "../../assets/icons/profile.svg";
 
+import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+
 import logo from "/src/assets/logo.png";
 import style from "./Layout.module.css";
 
@@ -47,6 +49,7 @@ const Layout = () => {
       items: [
         { to: "/settings", icon: <SettingsIcon />, label: t("settings"), roles: ["Admin", "Staff", "Recruiter", "Student"] },
         { to: "/help", icon: <HelpIcon />, label: t("help"), roles: ["Admin", "Staff", "Recruiter", "Student"] },
+        { to: "/student-qa", icon: <QuestionAnswerIcon sx={{height:"18px", width:"18px"}} />, label: t("student_qa"), roles: ["Admin"] },
       ],
     },
   ];

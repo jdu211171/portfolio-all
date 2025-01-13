@@ -74,6 +74,10 @@ const AppRoutes = () => {
               <Route index element={<Staff />} />
             </Route>
 
+            <Route path="/student-qa" element={<ProtectedLayout allowedRoles={["Admin"]} />}>
+              <Route index element={<QA />} />
+            </Route>
+
             <Route path="/bookmarked" element={<ProtectedLayout allowedRoles={["Recruiter"]} />}>
               <Route index element={<Student key="bookmarked" OnlyBookmarked={true} />} />
               <Route path="profile/:studentId/*" element={<StudentProfile />}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ReactDOM from "react-dom";
 import { useLocation, useParams } from "react-router-dom";
 import styles from "./QA.module.css";
@@ -13,7 +13,10 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import axios from "../../../utils/axiosUtils";
-import { Box, Tabs, Tab, Button, Snackbar, Alert } from "@mui/material";
+import { Box, Tabs, Tab, Button, Snackbar, Alert, IconButton } from "@mui/material";
+
+import translations from "../../../locales/translations";
+import { UserContext } from "../../../contexts/UserContext";
 
 const QA = () => {
   const role = sessionStorage.getItem("role");
@@ -22,6 +25,9 @@ const QA = () => {
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
+
+  const { language } = useContext(UserContext);
+  const t = translations[language] || translations.en;
 
   if (userId != 0 && userId) {
     id = userId;
@@ -36,12 +42,20 @@ const QA = () => {
 
   const fetchStudent = async () => {
     try {
-      const answers = (await axios.get(`/api/qa/student/${id}`)).data;
+      let answers
+      if (id) {
+        answers = (await axios.get(`/api/qa/student/${id}`)).data;
+      }      
 
       const questions = JSON.parse(
         (await axios.get("/api/settings/studentQA")).data.value
       );
-      let response = combineQuestionsAndAnswers(questions, answers);
+      let response
+      if (answers) {
+         response = combineQuestionsAndAnswers(questions, answers);
+      } else {
+         response = questions
+      }
 
       setStudentQA(response);
 
@@ -251,7 +265,7 @@ const QA = () => {
                 color="primary"
                 size="small"
               >
-                追加
+               {t["add"]}
               </Button>
               <Button
                 onClick={handleSave}
@@ -259,7 +273,7 @@ const QA = () => {
                 color="primary"
                 size="small"
               >
-                保存
+                {t["save"]}
               </Button>
 
               <Button
@@ -268,7 +282,7 @@ const QA = () => {
                 color="error"
                 size="small"
               >
-                キャンセル
+                {t["cancel"]}
               </Button>
             </>
           ) : (
@@ -278,8 +292,8 @@ const QA = () => {
               color="primary"
               size="small"
             >
-              {role == "Student" ? "QAを編集" : ""}
-              {role == "Admin" ? "質問を編集" : ""}
+              {role == "Student" ? t["qa_edit"]: ""}
+              {role == "Admin" ? t["q_edit"] : ""}
             </Button>
           )}
         </>
@@ -289,8 +303,17 @@ const QA = () => {
 
   return (
     <Box my={2}>
+      {!id && (
+        <Box className={styles.topControlButtons}>
+        
+        <Box id="saveButton">
+          {portalContent}
+        </Box>
+      </Box>
+      )}
+      
       <>
-        {ReactDOM.createPortal(
+        {id && ReactDOM.createPortal(
           portalContent,
           document.getElementById("saveButton")
         )}
@@ -342,6 +365,7 @@ const QA = () => {
                   key={key}
                   question={question.split("]")[1]}
                   answer={answer ? answer : "回答なし"}
+                  notExpand = {id ? false : true}
                 />
               )
           )}
