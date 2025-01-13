@@ -162,7 +162,7 @@ const CompanyProfile = ({ userId = 0 }) => {
       <Grid container>
         <Grid></Grid>
       </Grid>
-  
+
       <Box className={styles.topControlButtons}>
         <Box
           display="flex"
@@ -193,7 +193,7 @@ const CompanyProfile = ({ userId = 0 }) => {
                     >
                       {t["save"]}
                     </Button>
-  
+
                     <Button
                       onClick={handleCancel}
                       variant="outlined"
@@ -237,12 +237,14 @@ const CompanyProfile = ({ userId = 0 }) => {
                 {company.first_name} {company.last_name}
               </Typography>
             </Box>
-            <Box>
-              <a href={`mailto:${company.email}`} className={styles.email}>
-                <EmailIcon className={styles.emailIcon} />
-                {company.email}
-              </a>
-            </Box>
+            {["Admin", "Staff", "Recruiter"].includes(role) && (
+              <Box>
+                <a href={`mailto:${company.email}`} className={styles.email}>
+                  <EmailIcon className={styles.emailIcon} />
+                  {company.email}
+                </a>
+              </Box>
+            )}
           </Box>
           <Box className={styles.chipContainer}>
             <Chip
@@ -277,7 +279,7 @@ const CompanyProfile = ({ userId = 0 }) => {
         />
       </Box>
     </Box>
-  );  
+  );
 };
 
 export default CompanyProfile;

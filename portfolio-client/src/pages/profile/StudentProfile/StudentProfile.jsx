@@ -25,6 +25,7 @@ const StudentProfile = ({ userId = 0 }) => {
   } else {
     id = studentId;
   }
+  const role = sessionStorage.getItem("role");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -117,12 +118,14 @@ const StudentProfile = ({ userId = 0 }) => {
                 {student.first_name} {student.last_name}
               </Typography>
             </Box>
+            {["Admin", "Staff", "Student"].includes(role) && (
             <Box>
               <a href={`mailto:${student.email}`} className={styles.email}>
                 <EmailIcon className={styles.emailIcon} />
                 {student.email}
               </a>
             </Box>
+            )}
           </Box>
           <Box className={styles.chipContainer}>
             <Chip

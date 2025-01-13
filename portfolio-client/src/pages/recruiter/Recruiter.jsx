@@ -49,6 +49,7 @@ const Recruiter = () => {
       label: t("email"),
       type: "email",
       minWidth: "220px",
+      visibleTo: ["Admin", "Staff"]
     },
   ];
 

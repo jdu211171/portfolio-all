@@ -112,7 +112,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
             <TableRow>
               {tableProps.headers.map(
                 (header) =>
-                  (header.role == undefined || header.role == role) && (
+                  ((header.role == undefined || header.role == role) && header.visibleTo ?  header.visibleTo.includes(role) : true) && (
                     <TableCell
                       sx={{ borderBottom: "1px solid #aaa" }}
                       key={"header" + header.id}
@@ -158,7 +158,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                   >
                     {tableProps.headers.map(
                       (header) =>
-                        (header.role == undefined || header.role == role) && (
+                        ((header.role == undefined || header.role == role) && header.visibleTo ?  header.visibleTo.includes(role) : true) && (
                           <TableCell
                             key={"data" + header.id}
                             align={header.numeric ? "right" : "left"}
@@ -279,6 +279,8 @@ EnhancedTable.propTypes = {
         numeric: PropTypes.bool,
         disablePadding: PropTypes.bool,
         type: PropTypes.string,
+        role: PropTypes.string,
+        visibleTo: PropTypes.array
       })
     ).isRequired,
     filter: PropTypes.object.isRequired, // Assuming filter is an object

@@ -135,6 +135,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       label: t("email"),
       type: "email",
       minWidth: "160px",
+      visibleTo: ["Admin", "Staff"]
     },
     {
       id: "jlpt",
