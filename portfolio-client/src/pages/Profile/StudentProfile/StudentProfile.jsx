@@ -161,13 +161,13 @@ const StudentProfile = ({ userId = 0 }) => {
         >
           {t.top}
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to={`qa`}
           state={{ userId: userId }}
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
           {t.qa}
-        </NavLink>
+        </NavLink> */}
         <NavLink
           to={`stats`}
           state={{ userId: userId }}

@@ -4,7 +4,6 @@ import { useLocation, useParams } from "react-router-dom";
 import styles from "./QA.module.css";
 import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
-import qaList from "../../../utils/qaList";
 import {
   School,
   AutoStories,
@@ -254,7 +253,7 @@ const QA = () => {
   }
 
   const portalContent = (
-    <Box my={2} className={styles.buttonsContainer}>
+    <Box className={styles.buttonsContainer}>
       {(role == "Student") | (role == "Admin") && (
         <>
           {editMode ? (

@@ -41,7 +41,6 @@ const AppRoutes = () => {
                 <Route index element={<Navigate to="top" />} />{" "}
                 {/* Redirect index to top */}
                 <Route path="top" element={<Top />} />
-                <Route path="qa" element={<QA />} />
                 <Route path="stats" element={<Stats />} />
               </Route>
             </Route>
@@ -65,7 +64,6 @@ const AppRoutes = () => {
                 <Route index element={<Navigate to="top" state={{ userId: userId }} />} />{" "}
                 {/* Redirect index to top */}
                 <Route path="top" element={<Top />} />
-                <Route path="qa" element={<QA />} />
                 <Route path="stats" element={<Stats />} />
               </Route>
             </Route>
@@ -84,7 +82,6 @@ const AppRoutes = () => {
                 <Route index element={<Navigate to="top" />} />{" "}
                 {/* Redirect index to top */}
                 <Route path="top" element={<Top />} />
-                <Route path="qa" element={<QA />} />
                 <Route path="stats" element={<Stats />} />
               </Route>
             </Route>

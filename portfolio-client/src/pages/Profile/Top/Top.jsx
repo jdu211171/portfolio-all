@@ -8,6 +8,7 @@ import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import Deliverables from "../../../components/Deliverables/Deliverables";
+import QA from "../../../pages/Profile/QA/QA";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import translations from "../../../locales/translations"; // Импортируем переводы
@@ -198,7 +199,7 @@ const Top = () => {
   }
 
   const portalContent = (
-    <Box my={2} className={styles.buttonsContainer}>
+    <Box className={styles.buttonsContainer}>
       {role === "Student" && (
         <>
           {editMode ? (
@@ -239,7 +240,7 @@ const Top = () => {
   return (
     <Box my={2}>
       <>
-        {ReactDOM.createPortal(
+        {subTabIndex !== 2 && ReactDOM.createPortal(
           portalContent,
           document.getElementById("saveButton")
         )}
@@ -252,6 +253,7 @@ const Top = () => {
       >
         <Tab label={t("selfIntroduction")} />
         <Tab label={t("deliverables")} />
+        <Tab label={t("qa")} />
       </Tabs>
       {subTabIndex === 0 && (
         <Box my={2}>
@@ -332,6 +334,11 @@ const Top = () => {
             updateEditMode={handleUpdateEditMode}
             onImageUpload={handleImageUpload} // Pass image upload handler
           />
+        </Box>
+      )}
+      {subTabIndex === 2 && (
+        <Box my={2}>
+          <QA />
         </Box>
       )}
     </Box>
