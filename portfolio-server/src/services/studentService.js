@@ -317,6 +317,26 @@ class StudentService {
 
     return "email send successfully";
   }
+
+
+
+  static async getStudentsWithPendingDrafts() {
+    try {
+      const students = await Student.findAll({
+        include: [
+          {
+            model: Draft,
+            as: 'drafts',
+            where: { status: 'pending' }, // status = "pending" filter
+          }
+        ]
+      });
+      return students;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
 
 module.exports = StudentService;
