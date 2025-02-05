@@ -2,6 +2,7 @@
 
 const { Sequelize } = require('sequelize');
 const config = require('../config/config'); // Adjust the path as needed
+const Log = require('./Log');
 
 const env = process.env.NODE_ENV || 'development';
 
@@ -23,6 +24,9 @@ db.Student = require('./Student')(sequelize, Sequelize);
 db.Bookmark = require('./Bookmark')(sequelize, Sequelize);
 db.QA = require('./QA')(sequelize, Sequelize);
 db.Setting = require('./Settings')(sequelize, Sequelize);
+db.Draft = require('./Draft')(sequelize, Sequelize);
+db.Log = require('./Log')(sequelize, Sequelize);
+db.Notification = require('./Notification')(sequelize, Sequelize);
 
 // Load other models here if needed
 // db.User = require('./User')(sequelize, Sequelize);
@@ -43,5 +47,8 @@ module.exports = {
   Student: db.Student,
   Bookmark: db.Bookmark,
   QA: db.QA,
-  Setting: db.Setting
+  Setting: db.Setting,
+  Draft: db.Draft,
+  Log: db.Log,
+  Notification: db.Notification,
 };

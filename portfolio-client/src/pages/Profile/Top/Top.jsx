@@ -140,7 +140,7 @@ const Top = () => {
       newImages.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
-      console.log(newImages)
+      console.log(newImages);
       // Append other necessary fields
       formData.append("role", role);
       formData.append("imageType", "Gallery");

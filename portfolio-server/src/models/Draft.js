@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
         },
         student_id: {
-            type: DataTypes.BIGINT,
+            type: DataTypes.STRING,
             allowNull: false,
             references: {
                 model: 'Students',
