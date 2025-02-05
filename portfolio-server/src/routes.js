@@ -10,6 +10,9 @@ const studentRoute = require('./routes/students-route');
 const bookmarkRoute = require('./routes/bookmarks-route');
 const qaRoute = require('./routes/qa-route');
 const settingRoute = require('./routes/settings-route');
+const draftRoute = require('./routes/drafts-route');
+const logRoute = require('./routes/log-route');
+const notificationRoute = require('./routes/notification-route'); 
 
 const fileRoutes = require('./routes/file-routes');
 const kintoneRoutes = require('./routes/kintone-routes');
@@ -30,6 +33,9 @@ const configureRoutes = (app) => {
   app.use('/api/kintone', kintoneRoutes);
   app.use('/api/webhook', webhookRoutes);
   app.use('/api/settings', settingRoute);
+  app.use('/api/draft', draftRoute);
+  app.use('/api/log', logRoute);
+  app.use('/api/notification', notificationRoute);
 };
 
 module.exports = configureRoutes;

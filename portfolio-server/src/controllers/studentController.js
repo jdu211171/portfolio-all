@@ -189,6 +189,17 @@ class StudentController {
       next(error);
     }
   }
+
+  // Draft controller
+  static async getStudentsWithPendingDrafts(req, res, next) {
+    try {
+      const students = await StudentService.getStudentsWithPendingDrafts();
+      return res.status(200).json(students);
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }
 
 module.exports = StudentController;

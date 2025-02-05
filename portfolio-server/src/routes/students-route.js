@@ -22,4 +22,7 @@ router.put('/:id', validateStudentUpdate, StudentController.updateStudent);
 // DELETE /api/students/:id
 router.delete('/:id', StudentController.deleteStudent);
 
+// GET Pending status drafts
+router.get('/pending-drafts', StudentController.getStudentsWithPendingDrafts);
+
 module.exports = router;
