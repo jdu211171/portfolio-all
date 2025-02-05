@@ -3,9 +3,10 @@ const DraftController = require('../controllers/draftController');
 const router = express.Router();
 
 router.post('/', DraftController.createDraft);
-router.get('/:id', DraftController.getDraftById);
+router.get('/', DraftController.getAllDrafts);                // Get all drafts
+router.get('/id/:id', DraftController.getDraftById);          // Get draft by ID
+router.get('/student/:student_id', DraftController.getDraftByStudentId); // Get drafts by student_id
 router.put('/:id', DraftController.updateDraft);
 router.delete('/:id', DraftController.deleteDraft);
-router.get('/', DraftController.getAllDrafts);
 
 module.exports = router;
