@@ -22,6 +22,7 @@ const Gallery = ({
   editMode,
   updateEditData,
   keyName,
+  parentKey = null,
 }) => {
   const [open, setOpen] = useState(false);
   const [newImageUrls, setNewImageUrls] = useState([]);
@@ -38,7 +39,7 @@ const Gallery = ({
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files); // Convert FileList to an array
     const MAX_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-  
+
     // Check if any file exceeds the size limit
     for (let file of files) {
       if (file.size > MAX_SIZE) {
@@ -46,13 +47,13 @@ const Gallery = ({
         return; // Prevent further processing if a file exceeds size limit
       }
     }
-  
+
     // If all files are valid, call the updateEditData function
-    updateEditData(files, true);
+    updateEditData(files, true, false, (parentKey = parentKey));
   };
 
   const handleFileDelete = (index, isNewFiles = false) => {
-    updateEditData(index, isNewFiles, true);
+    updateEditData(index, isNewFiles, true, (parentKey = parentKey));
   };
 
   useEffect(() => {
@@ -75,7 +76,10 @@ const Gallery = ({
   return (
     <Box>
       <Box className={styles.galleryContainer} onClick={handleClickOpen}>
-        {galleryUrls[keyName].slice(0, 2).map((url, index) => (
+        {(parentKey
+          ? galleryUrls[parentKey]?.[keyName].slice(0, 2)
+          : galleryUrls[keyName].slice(0, 2)
+        ).map((url, index) => (
           <img
             key={`gallery-${index}`}
             src={url}
@@ -116,7 +120,10 @@ const Gallery = ({
         </DialogTitle>
         <DialogContent dividers>
           <Box className={styles.fullGalleryContainer}>
-            {galleryUrls[keyName].map((url, index) => (
+            {(parentKey
+              ? galleryUrls[parentKey]?.[keyName]
+              : galleryUrls[keyName]
+            ).map((url, index) => (
               <div
                 className={styles.fullGalleryImageContainer}
                 key={`gallery-full-${index}`}
@@ -193,7 +200,7 @@ const Gallery = ({
       <Input
         id="file-upload"
         type="file"
-        inputProps={{ multiple: true, accept: "image/jpeg, image/png" }} 
+        inputProps={{ multiple: true, accept: "image/jpeg, image/png" }}
         style={{ display: "none" }} // ファイル入力を非表示
         ref={fileInputRef}
         onChange={handleFileChange}
@@ -203,3 +210,4 @@ const Gallery = ({
 };
 
 export default Gallery;
+
