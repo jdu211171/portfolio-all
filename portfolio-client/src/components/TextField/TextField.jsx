@@ -16,6 +16,7 @@ const TextField = ({
   const handleChange = (e) => {
     updateEditData(keyName, e.target.value);
   };
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>{title}</div>

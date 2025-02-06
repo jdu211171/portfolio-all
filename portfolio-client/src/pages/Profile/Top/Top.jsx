@@ -8,6 +8,7 @@ import Gallery from "../../../components/Gallery";
 import TextField from "../../../components/TextField/TextField";
 import SkillSelector from "../../../components/SkillSelector/SkillSelector";
 import Deliverables from "../../../components/Deliverables/Deliverables";
+import DraftsModal from "../../../components/Modals/DraftsModal";
 import QA from "../../../pages/Profile/QA/QA";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
@@ -38,24 +39,39 @@ const Top = () => {
   const [deletedUrls, setDeletedUrls] = useState([]);
   const [deliverableImages, setDeliverableImages] = useState({});
 
+  const fetchStudent = async () => {
+    try {
+      const response = await axios.get(`/api/students/${id}`);
+      const mappedData = mapData(response.data);
+      setStudent(mappedData);
+      setEditData(mappedData);
+    } catch (error) {
+      showAlert("Error fetching student data", "error");
+    }
+  };
   useEffect(() => {
-    const fetchStudent = async () => {
-      try {
-        const response = await axios.get(`/api/students/${id}`);
-        const mappedData = mapData(response.data);
-        setStudent(mappedData);
-        setEditData(mappedData);
-      } catch (error) {
-        showAlert("Error fetching student data", "error");
-      }
-    };
-
     fetchStudent();
   }, [id]);
 
+  const setHonban = () => {
+    fetchStudent();
+  };
+
+  const setDraft = (draft) => {
+    setEditData((prevEditData) => {
+      const updatedEditData = {
+        ...prevEditData,
+        draft: draft.profile_data,
+      };
+      setStudent(updatedEditData);
+      return updatedEditData;
+    });
+  };
+
   const mapData = (data) => {
-    // Keys that should be moved inside 'introduction'
-    const introductionKeys = [
+    // Keys that should be moved inside 'draft'
+    const draftKeys = [
+      "deliverables",
       "gallery",
       "self_introduction",
       "hobbies",
@@ -66,8 +82,8 @@ const Top = () => {
 
     return {
       ...data, // Keep existing data
-      introduction: introductionKeys.reduce((acc, key) => {
-        acc[key] = data[key] || ""; // Move keys inside 'introduction', default to an empty string if undefined
+      draft: draftKeys.reduce((acc, key) => {
+        acc[key] = data[key] || ""; // Move keys inside 'draft', default to an empty string if undefined
         return acc;
       }, {}),
     };
@@ -76,12 +92,9 @@ const Top = () => {
   const handleUpdateEditData = (key, value) => {
     setEditData((prevEditData) => ({
       ...prevEditData,
-      ...(key === "deliverables"
-        ? { [key]: value } // Directly set 'deliverables'
-        : { introduction: { ...prevEditData.introduction, [key]: value } }), // Set inside 'introduction'
+      ...{ draft: { ...prevEditData.draft, [key]: value } }, // Set inside 'draft'
     }));
   };
-  console.log(editData);
   const handleGalleryUpdate = (
     files,
     isNewFiles = false,
@@ -158,7 +171,7 @@ const Top = () => {
         },
       });
 
-      let oldFiles = editData.introduction.gallery;
+      let oldFiles = editData.draft.gallery;
 
       if (Array.isArray(fileResponse.data)) {
         fileResponse.data.forEach((file) => {
@@ -219,6 +232,100 @@ const Top = () => {
     }
   };
 
+  const handleDraftSave = async () => {
+    try {
+      const formData = new FormData();
+
+      // Append each file in the `newImages` array to the form data
+      newImages.forEach((file, index) => {
+        formData.append(`files[${index}]`, file);
+      });
+      console.log(newImages);
+      // Append other necessary fields
+      formData.append("role", role);
+      formData.append("imageType", "Gallery");
+      formData.append("id", id);
+
+      // Append the array of deleted URLs
+      deletedUrls.forEach((url, index) => {
+        formData.append(`oldFilePath[${index}]`, url);
+      });
+
+      // Send the form data via POST request
+      const fileResponse = await axios.post("/api/files/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      let oldFiles = editData.draft.gallery;
+
+      if (Array.isArray(fileResponse.data)) {
+        fileResponse.data.forEach((file) => {
+          oldFiles.push(file.Location);
+        });
+      } else if (fileResponse.data.Location) {
+        oldFiles.push(fileResponse.data.Location);
+      }
+
+      await handleUpdateEditData("gallery", oldFiles);
+
+      // Process deliverable images
+      for (const [index, file] of Object.entries(deliverableImages)) {
+        if (file) {
+          const deliverableFormData = new FormData();
+          deliverableFormData.append("role", role);
+          deliverableFormData.append("file", file);
+          deliverableFormData.append("imageType", "Deliverable");
+          deliverableFormData.append("id", id);
+          deliverableFormData.append(
+            "oldFilePath",
+            editData.deliverables[index]?.imageLink || ""
+          );
+
+          const deliverableFileResponse = await axios.post(
+            "/api/files/upload",
+            deliverableFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          const deliverableImageLink = deliverableFileResponse.data.Location;
+          // Update the deliverable's imageLink with the new file location
+          editData.deliverables[index].imageLink = deliverableImageLink;
+        }
+      }
+      const draftData = {
+        student_id: editData.student_id,
+        profile_data: editData.draft,
+        status: "draft",
+        submit_count: 0,
+      };
+      const res = await axios.post(`/api/draft`, draftData);
+      console.log("draft saved");
+
+      setStudent(editData);
+      setNewImages([]);
+      setDeletedUrls([]);
+      setEditMode(false);
+      showAlert(
+        translations[language]?.changesSavedSuccessfully ||
+          translations.en.changesSavedSuccessfully,
+        "success"
+      );
+    } catch (error) {
+      console.error("Error saving student data:", error);
+      showAlert(
+        translations[language]?.errorSavingChanges ||
+          translations.en.errorSavingChanges,
+        "error"
+      );
+    }
+  };
+
   const handleCancel = () => {
     setEditData(student);
     setEditMode(!editMode);
@@ -240,6 +347,14 @@ const Top = () => {
         <>
           {editMode ? (
             <>
+              <Button
+                onClick={handleDraftSave}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                {t("saveDraft")}
+              </Button>
               <Button
                 onClick={handleSave}
                 variant="contained"
@@ -282,26 +397,33 @@ const Top = () => {
             document.getElementById("saveButton")
           )}
       </>
+      <Box className={styles.TabsContainer}>
+        <Tabs
+          className={styles.Tabs}
+          value={subTabIndex}
+          onChange={handleSubTabChange}
+        >
+          <Tab label={t("selfIntroduction")} />
+          <Tab label={t("deliverables")} />
+          <Tab label={t("qa")} />
+        </Tabs>
+        <DraftsModal
+          id={editData.student_id}
+          handleSettingtoHonban={setHonban}
+          handleSettingDraft={setDraft}
+        />
+      </Box>
 
-      <Tabs
-        className={styles.Tabs}
-        value={subTabIndex}
-        onChange={handleSubTabChange}
-      >
-        <Tab label={t("selfIntroduction")} />
-        <Tab label={t("deliverables")} />
-        <Tab label={t("qa")} />
-      </Tabs>
       {subTabIndex === 0 && (
         <Box my={2}>
           <TextField
             title={t("selfIntroduction")}
-            data={student.self_introduction}
+            data={student.draft.self_introduction}
             editData={editData}
             editMode={editMode}
             updateEditData={handleUpdateEditData}
             keyName="self_introduction"
-            parentKey="introduction"
+            parentKey="draft"
           />
           <Gallery
             galleryUrls={editData}
@@ -310,25 +432,25 @@ const Top = () => {
             editMode={editMode}
             updateEditData={handleGalleryUpdate}
             keyName="gallery"
-            parentKey="introduction"
+            parentKey="draft"
           />
           <TextField
             title={t("hobbies")}
-            data={student.hobbies}
+            data={student.draft.hobbies}
             editData={editData}
             editMode={editMode}
             updateEditData={handleUpdateEditData}
             keyName="hobbies"
-            parentKey="introduction"
+            parentKey="draft"
           />
           <TextField
             title={t("specialSkills")}
-            data={student.other_information}
+            data={student.draft.other_information}
             editData={editData}
             editMode={editMode}
             updateEditData={handleUpdateEditData}
             keyName="other_information"
-            parentKey="introduction"
+            parentKey="draft"
           />
           <SkillSelector
             title={t("itSkills")}
@@ -337,14 +459,14 @@ const Top = () => {
               中級: t("threeYearsOrMore"),
               初級: t("oneToOneAndHalfYears"),
             }}
-            data={student}
+            data={student.draft}
             editData={editData}
             editMode={editMode}
             updateEditData={handleUpdateEditData}
             showAutocomplete={true}
             showHeaders={true}
             keyName="it_skills"
-            parentKey="introduction"
+            parentKey="draft"
           />
           <SkillSelector
             title={t("otherSkills")}
@@ -353,21 +475,21 @@ const Top = () => {
               中級: "1年間〜1年間半",
               初級: "基礎",
             }}
-            data={student}
+            data={student.draft}
             editMode={editMode}
             editData={editData}
             updateEditData={handleUpdateEditData}
             showAutocomplete={false}
             showHeaders={false}
             keyName="skills"
-            parentKey="introduction"
+            parentKey="draft"
           />
         </Box>
       )}
       {subTabIndex === 1 && (
         <Box my={2}>
           <Deliverables
-            data={student.deliverables}
+            data={student.draft.deliverables}
             editMode={editMode}
             editData={editData.deliverables}
             updateEditData={handleUpdateEditData}
