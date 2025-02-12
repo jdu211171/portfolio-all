@@ -40,6 +40,7 @@ const Top = () => {
   const [student, setStudent] = useState(null);
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
+  const [isHonban, setIsHonban] = useState(true);
 
   // ** NEW STATE: controls visibility of the confirm dialog
   const [confirmMode, setConfirmMode] = useState(false);
@@ -91,10 +92,12 @@ const Top = () => {
 
   // Handlers for applying a previously saved draft / honban
   const setHonban = () => {
+    setIsHonban(true);
     fetchStudent();
   };
 
   const setDraft = (draft) => {
+    setIsHonban(false);
     setEditData((prevEditData) => {
       const updatedEditData = {
         ...prevEditData,
@@ -363,6 +366,16 @@ const Top = () => {
         <>
           {editMode ? (
             <>
+              {!isHonban && (
+                <Button
+                  onClick={handleDraftSave}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t("updateDraft")}
+                </Button>
+              )}
               <Button
                 onClick={handleDraftSave}
                 variant="contained"
@@ -372,14 +385,14 @@ const Top = () => {
                 {t("saveDraft")}
               </Button>
 
-              <Button
+              {/* <Button
                 onClick={handleSave}
                 variant="contained"
                 color="primary"
                 size="small"
               >
                 {t("save")}
-              </Button>
+              </Button> */}
 
               <Button
                 onClick={handleCancel}

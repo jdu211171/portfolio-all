@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Modal, Typography, Chip, Stack } from "@mui/material";
 import axios from "../../utils/axiosUtils";
 
+import styles from "./DraftsModal.module.css";
+
 const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
   const [open, setOpen] = useState(false); // Modal visibility state
   const [drafts, setDrafts] = useState([]); // Store drafts
@@ -16,6 +18,10 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
     }
   };
 
+  const draftClick = (draft) => {
+    handleSettingDraft(draft);
+    setOpen(false);
+  };
   // Open modal and fetch drafts
   const handleOpen = () => {
     setOpen(true);
@@ -68,15 +74,8 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
               drafts.map((draft, index) => (
                 <Box
                   key={index}
-                  sx={{
-                    p: 1.5,
-                    mb: 1,
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    backgroundColor: "#f9f9f9",
-                    boxShadow: 1,
-                  }}
-                  onClick={() => handleSettingDraft(draft)}
+                  className={styles.draftBox}
+                  onClick={() => draftClick(draft)}
                 >
                   {/* Header */}
                   <Stack
@@ -138,14 +137,21 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
               </Typography>
             )}
           </Box>
-          <Button
-            variant="outlined"
-            color="primary"
-            sx={{ mt: 2 }}
-            onClick={handleClose}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+            }}
           >
-            Close
-          </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              sx={{ mt: 2 }}
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </Box>
