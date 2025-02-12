@@ -43,6 +43,8 @@ const Top = () => {
   const [isHonban, setIsHonban] = useState(true);
   const [currentDraft, setCurrentDraft] = useState({});
 
+  const [updateQA, SetUpdateQA] = useState(true);
+
   // ** NEW STATE: controls visibility of the confirm dialog
   const [confirmMode, setConfirmMode] = useState(false);
 
@@ -60,6 +62,7 @@ const Top = () => {
       const mappedData = mapData(response.data);
       setStudent(mappedData);
       setEditData(mappedData);
+      SetUpdateQA(!updateQA);
     } catch (error) {
       showAlert("Error fetching student data", "error");
     }
@@ -100,6 +103,7 @@ const Top = () => {
 
   const setDraft = (draft) => {
     setIsHonban(false);
+    console.log(editData);
     setCurrentDraft(draft);
     setEditData((prevEditData) => {
       const updatedEditData = {
@@ -109,6 +113,7 @@ const Top = () => {
       setStudent(updatedEditData);
       return updatedEditData;
     });
+    SetUpdateQA(!updateQA);
   };
 
   // ---------------------
@@ -122,6 +127,24 @@ const Top = () => {
         [key]: value,
       },
     }));
+  };
+
+  // ---------------------
+  // Edit data update
+  // ---------------------
+  const handleQAUpdate = (value) => {
+    console.log(editData.draft.qa);
+    setEditData((prevEditData) => {
+      const updatedEditData = {
+        ...prevEditData,
+        draft: {
+          ...prevEditData.draft, // Preserve existing draft data
+          qa: value, // Save inside `qa` within `draft`
+        },
+      };
+      setStudent(updatedEditData);
+      return updatedEditData;
+    });
   };
 
   // ---------------------
@@ -562,7 +585,13 @@ const Top = () => {
 
       {subTabIndex === 2 && (
         <Box my={2}>
-          <QA />
+          <QA
+            updateQA={updateQA}
+            data={editData.draft.qa}
+            handleQAUpdate={handleQAUpdate}
+            isFromTopPage={true}
+            topEditMode={editMode}
+          />
         </Box>
       )}
     </Box>

@@ -19,7 +19,6 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
   };
 
   const draftClick = (draft) => {
-    console.log(draft);
     handleSettingDraft(draft);
     setOpen(false);
   };

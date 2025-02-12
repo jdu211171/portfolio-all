@@ -25,7 +25,13 @@ import {
 import translations from "../../../locales/translations";
 import { UserContext } from "../../../contexts/UserContext";
 
-const QA = () => {
+const QA = ({
+  data = {},
+  handleQAUpdate,
+  isFromTopPage = false,
+  topEditMode = false,
+  updateQA = false,
+}) => {
   const role = sessionStorage.getItem("role");
   const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
   let id;
@@ -42,31 +48,32 @@ const QA = () => {
     id = studentId;
   }
 
-  const [studentQA, setStudentQA] = useState(null);
-  const [editData, setEditData] = useState({});
-  const [editMode, setEditMode] = useState(false);
+  const [studentQA, setStudentQA] = useState(isFromTopPage ? data : {});
+  const [editData, setEditData] = useState(isFromTopPage ? data : {});
+  const [editMode, setEditMode] = useState(topEditMode);
   const [isFirstTime, setIsFirstTime] = useState(false);
 
   const fetchStudent = async () => {
     try {
-      let answers;
-      if (id) {
-        answers = (await axios.get(`/api/qa/student/${id}`)).data;
+      if (!(Object.keys(data).length > 0)) {
+        let answers;
+        if (id) {
+          answers = (await axios.get(`/api/qa/student/${id}`)).data;
+        }
+
+        const questions = JSON.parse(
+          (await axios.get("/api/settings/studentQA")).data.value
+        );
+        let response;
+        if (answers) {
+          response = combineQuestionsAndAnswers(questions, answers);
+        } else {
+          response = questions;
+        }
+
+        setStudentQA(response);
+        setEditData(response);
       }
-
-      const questions = JSON.parse(
-        (await axios.get("/api/settings/studentQA")).data.value
-      );
-      let response;
-      if (answers) {
-        response = combineQuestionsAndAnswers(questions, answers);
-      } else {
-        response = questions;
-      }
-
-      setStudentQA(response);
-
-      setEditData(response);
     } catch (error) {
       console.error("Error fetching student data:", error);
     }
@@ -74,7 +81,11 @@ const QA = () => {
 
   useEffect(() => {
     fetchStudent();
-  }, [id]);
+  }, [id, updateQA]);
+
+  useEffect(() => {
+    setEditData(isFromTopPage ? data : {});
+  }, [updateQA]);
 
   const handleUpdate = (category, keyName, value, qa) => {
     setEditData((prevEditData) => {
@@ -90,6 +101,9 @@ const QA = () => {
       }
       return updatedEditData;
     });
+    if (isFromTopPage) {
+      handleQAUpdate(editData);
+    }
   };
 
   const toggleEditMode = () => {
@@ -311,9 +325,9 @@ const QA = () => {
   );
 
   return (
-    <Box my={2}>
+    <Box mb={2}>
       {!id && (
-        <Box className={styles.topControlButtons}>
+        <Box className={styles.topControlButtons} mb={2} px={2}>
           <Box id="saveButton">{portalContent}</Box>
         </Box>
       )}
