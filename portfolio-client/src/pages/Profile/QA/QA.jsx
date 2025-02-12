@@ -4,6 +4,8 @@ import { useLocation, useParams } from "react-router-dom";
 import styles from "./QA.module.css";
 import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
+import ProfileConfirmDialog from "../../../components/Dialogs/ProfileConfirmDialog";
+
 import {
   School,
   AutoStories,
@@ -31,6 +33,10 @@ const QA = ({
   isFromTopPage = false,
   topEditMode = false,
   updateQA = false,
+  currentDraft = {},
+  isHonban = false,
+  handleDraftUpsert = () => {},
+  setTopEditMode = () => {},
 }) => {
   const role = sessionStorage.getItem("role");
   const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
@@ -52,6 +58,8 @@ const QA = ({
   const [editData, setEditData] = useState(isFromTopPage ? data : {});
   const [editMode, setEditMode] = useState(topEditMode);
   const [isFirstTime, setIsFirstTime] = useState(false);
+
+  const [confirmMode, setConfirmMode] = useState(false);
 
   const fetchStudent = async () => {
     try {
@@ -108,6 +116,31 @@ const QA = ({
 
   const toggleEditMode = () => {
     setEditMode((prev) => !prev);
+    console.log(!editMode);
+    setTopEditMode(!editMode);
+  };
+  const toggleConfirmMode = () => {
+    setConfirmMode((prev) => !prev);
+  };
+
+  // ---------------------
+  // Confirm Profile Handler
+  // ---------------------
+  const handleConfirmProfile = async () => {
+    try {
+      // Example final confirmation logic:
+      console.log(currentDraft);
+      const res = await axios.put(`/api/draft/${currentDraft.id}`, {
+        status: "submitted",
+      });
+      console.log(res);
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
   };
 
   const handleSave = async () => {
@@ -123,6 +156,7 @@ const QA = ({
         });
         showAlert("Changes saved successfully!", "success");
         setEditMode(false);
+        setTopEditMode(false);
       } else {
         let answers = removeKey(editData, "question");
         let res;
@@ -133,6 +167,7 @@ const QA = ({
         }
         setStudentQA(res.data);
         setEditMode(false);
+        setTopEditMode(false);
       }
 
       showAlert("Changes saved successfully!", "success");
@@ -145,6 +180,7 @@ const QA = ({
   const handleCancel = () => {
     fetchStudent();
     setEditMode(false);
+    setTopEditMode(false);
   };
 
   const handleAdd = async () => {
@@ -290,13 +326,23 @@ const QA = ({
                   {t["add"]}
                 </Button>
               )}
+              {!isHonban && (
+                <Button
+                  onClick={() => handleDraftUpsert({ update: true })}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t["updateDraft"]}
+                </Button>
+              )}
               <Button
-                onClick={handleSave}
+                onClick={handleDraftUpsert}
                 variant="contained"
                 color="primary"
                 size="small"
               >
-                {t["save"]}
+                {t["saveDraft"]}
               </Button>
 
               <Button
@@ -309,15 +355,26 @@ const QA = ({
               </Button>
             </>
           ) : (
-            <Button
-              onClick={toggleEditMode}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              {role == "Student" ? t["qa_edit"] : ""}
-              {role == "Admin" ? t["q_edit"] : ""}
-            </Button>
+            <>
+              {/* CONFIRM PROFILE BUTTON */}
+              <Button
+                onClick={toggleConfirmMode}
+                variant="contained"
+                color="secondary"
+                size="small"
+              >
+                {t["submitAgree"]}
+              </Button>
+              <Button
+                onClick={toggleEditMode}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                {role == "Student" ? t["editProfile"] : ""}
+                {role == "Admin" ? t["q_edit"] : ""}
+              </Button>
+            </>
           )}
         </>
       )}
@@ -406,6 +463,12 @@ const QA = ({
           {alert.message}
         </Alert>
       </Snackbar>
+      {/* ---- CONFIRM DIALOG ---- */}
+      <ProfileConfirmDialog
+        open={confirmMode}
+        onClose={toggleConfirmMode}
+        onConfirm={handleConfirmProfile}
+      />
     </Box>
   );
 };

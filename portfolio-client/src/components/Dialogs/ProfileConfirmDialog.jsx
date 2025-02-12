@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogActions,
   Typography,
-  Button
+  Button,
 } from "@mui/material";
 
 function ConfirmationDialog({ open, onClose, onConfirm }) {
@@ -15,11 +15,10 @@ function ConfirmationDialog({ open, onClose, onConfirm }) {
       onClose={onClose}
       fullWidth
       maxWidth="sm" // You can change to "xs", "md", etc.
+      closeAfterTransition={false}
     >
       {/* Large Title */}
-      <DialogTitle sx={{ fontWeight: "100" }}>
-        承認依頼・同意
-      </DialogTitle>
+      <DialogTitle sx={{ fontWeight: "100" }}>承認依頼・同意</DialogTitle>
 
       <DialogContent dividers>
         {/* Large Title */}
@@ -46,11 +45,7 @@ function ConfirmationDialog({ open, onClose, onConfirm }) {
           いいえ
         </Button>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onConfirm}
-        >
+        <Button variant="contained" color="primary" onClick={onConfirm}>
           はい
         </Button>
       </DialogActions>
@@ -59,3 +54,4 @@ function ConfirmationDialog({ open, onClose, onConfirm }) {
 }
 
 export default ConfirmationDialog;
+

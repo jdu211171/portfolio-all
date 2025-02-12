@@ -101,6 +101,10 @@ const Top = () => {
     fetchStudent();
   };
 
+  const setTopEditMode = (val) => {
+    setEditMode(val);
+  };
+
   const setDraft = (draft) => {
     setIsHonban(false);
     console.log(editData);
@@ -195,23 +199,6 @@ const Top = () => {
   // Toggle states
   // ---------------------
   const toggleEditMode = () => setEditMode((prev) => !prev);
-  const toggleConfirmMode = () => setConfirmMode((prev) => !prev);
-
-  // ---------------------
-  // Confirm Profile Handler
-  // ---------------------
-  const handleConfirmProfile = async () => {
-    try {
-      // Example final confirmation logic:
-      // await axios.post(`/api/profile/confirm`, { studentId: id });
-      showAlert(t("profileConfirmed"), "success");
-    } catch (error) {
-      showAlert(t("errorConfirmingProfile"), "error");
-    } finally {
-      // Always close the dialog
-      setConfirmMode(false);
-    }
-  };
 
   // ---------------------
   // Save / Draft Handlers
@@ -350,10 +337,10 @@ const Top = () => {
         status: "draft",
         submit_count: 0,
       };
-
       if (!update) {
         // Save draft
-        await axios.post(`/api/draft`, draftData);
+        const res = await axios.post(`/api/draft`, draftData);
+        setCurrentDraft(res.data);
       } else {
         // Update draft
         const res = await axios.put(`/api/draft/${currentDraft.id}`, draftData);
@@ -401,7 +388,7 @@ const Top = () => {
             <>
               {!isHonban && (
                 <Button
-                  onClick={() => handleDraftUpsert({ update: true })}
+                  onClick={() => handleDraftUpsert(true)}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -410,7 +397,7 @@ const Top = () => {
                 </Button>
               )}
               <Button
-                onClick={handleDraftUpsert}
+                onClick={() => handleDraftUpsert(false)}
                 variant="contained"
                 color="primary"
                 size="small"
@@ -446,16 +433,6 @@ const Top = () => {
               {t("editProfile")}
             </Button>
           )}
-
-          {/* CONFIRM PROFILE BUTTON */}
-          <Button
-            onClick={toggleConfirmMode}
-            variant="contained"
-            color="warning"
-            size="small"
-          >
-            {t("confirmProfile")}
-          </Button>
         </>
       )}
     </Box>
@@ -489,13 +466,6 @@ const Top = () => {
           />
         )}
       </Box>
-
-      {/* ---- CONFIRM DIALOG ---- */}
-      <ProfileConfirmDialog
-        open={confirmMode}
-        onClose={toggleConfirmMode}
-        onConfirm={handleConfirmProfile}
-      />
 
       {/* ---- TAB PANELS ---- */}
       {subTabIndex === 0 && (
@@ -588,9 +558,13 @@ const Top = () => {
           <QA
             updateQA={updateQA}
             data={editData.draft.qa}
+            currentDraft={currentDraft}
             handleQAUpdate={handleQAUpdate}
             isFromTopPage={true}
             topEditMode={editMode}
+            handleDraftUpsert={handleDraftUpsert}
+            isHonban={isHonban}
+            setTopEditMode={setTopEditMode}
           />
         </Box>
       )}
