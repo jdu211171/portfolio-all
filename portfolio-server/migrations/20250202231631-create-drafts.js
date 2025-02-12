@@ -10,11 +10,11 @@ module.exports = {
         primaryKey: true,
       },
       student_id: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.STRING,
         allowNull: false,
         references: {
           model: 'Students',
-          key: 'id',
+          key: 'student_id',
         },
       },
       profile_data: {

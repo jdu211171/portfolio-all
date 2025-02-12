@@ -23,6 +23,27 @@ class DraftController {
     }
   }
 
+  static async getDraftByStudentId(req, res) {
+    try {
+      const { student_id } = req.params; // Get student_id from URL params
+
+      if (!student_id) {
+        return res.status(400).json({ error: "student_id is required" });
+      }
+
+      const drafts = await DraftService.getByStudentId(student_id);
+
+      if (!drafts || drafts.length === 0) {
+        return res.status(404).json({ message: "No drafts found for this student" });
+      }
+
+      return res.status(200).json(drafts);
+    } catch (error) {
+      console.error("Error fetching drafts:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  }
+
   static async updateDraft(req, res) {
     try {
       const { id } = req.params;

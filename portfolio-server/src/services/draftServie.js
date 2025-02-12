@@ -11,6 +11,10 @@ class DraftService {
     return Draft.findByPk(id);
   }
 
+  static async getByStudentId(student_id) {
+    return Draft.findAll({ where: { student_id } });
+  }
+
   // update draft
   static async update(id, data) {
     const draft = await Draft.findByPk(id);
