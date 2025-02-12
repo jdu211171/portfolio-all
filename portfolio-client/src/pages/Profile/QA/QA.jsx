@@ -12,7 +12,15 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import axios from "../../../utils/axiosUtils";
-import { Box, Tabs, Tab, Button, Snackbar, Alert, IconButton } from "@mui/material";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Button,
+  Snackbar,
+  Alert,
+  IconButton,
+} from "@mui/material";
 
 import translations from "../../../locales/translations";
 import { UserContext } from "../../../contexts/UserContext";
@@ -41,19 +49,19 @@ const QA = () => {
 
   const fetchStudent = async () => {
     try {
-      let answers
+      let answers;
       if (id) {
         answers = (await axios.get(`/api/qa/student/${id}`)).data;
-      }      
+      }
 
       const questions = JSON.parse(
         (await axios.get("/api/settings/studentQA")).data.value
       );
-      let response
+      let response;
       if (answers) {
-         response = combineQuestionsAndAnswers(questions, answers);
+        response = combineQuestionsAndAnswers(questions, answers);
       } else {
-         response = questions
+        response = questions;
       }
 
       setStudentQA(response);
@@ -258,14 +266,16 @@ const QA = () => {
         <>
           {editMode ? (
             <>
-              <Button
-                onClick={handleAdd}
-                variant="outlined"
-                color="primary"
-                size="small"
-              >
-               {t["add"]}
-              </Button>
+              {role == "Admin" && (
+                <Button
+                  onClick={handleAdd}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                >
+                  {t["add"]}
+                </Button>
+              )}
               <Button
                 onClick={handleSave}
                 variant="contained"
@@ -291,7 +301,7 @@ const QA = () => {
               color="primary"
               size="small"
             >
-              {role == "Student" ? t["qa_edit"]: ""}
+              {role == "Student" ? t["qa_edit"] : ""}
               {role == "Admin" ? t["q_edit"] : ""}
             </Button>
           )}
@@ -304,18 +314,16 @@ const QA = () => {
     <Box my={2}>
       {!id && (
         <Box className={styles.topControlButtons}>
-        
-        <Box id="saveButton">
-          {portalContent}
+          <Box id="saveButton">{portalContent}</Box>
         </Box>
-      </Box>
       )}
-      
+
       <>
-        {id && ReactDOM.createPortal(
-          portalContent,
-          document.getElementById("saveButton")
-        )}
+        {id &&
+          ReactDOM.createPortal(
+            portalContent,
+            document.getElementById("saveButton")
+          )}
       </>
 
       <Tabs
@@ -364,7 +372,7 @@ const QA = () => {
                   key={key}
                   question={question.split("]")[1]}
                   answer={answer ? answer : "回答なし"}
-                  notExpand = {id ? false : true}
+                  notExpand={id ? false : true}
                 />
               )
           )}
@@ -389,3 +397,4 @@ const QA = () => {
 };
 
 export default QA;
+

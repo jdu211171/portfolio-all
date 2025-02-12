@@ -135,9 +135,7 @@ const Top = () => {
       // Deleting an image
       if (isNewFiles) {
         // If we're deleting from the newImages array
-        setNewImages((prevImages) =>
-          prevImages.filter((_, i) => i !== files)
-        );
+        setNewImages((prevImages) => prevImages.filter((_, i) => i !== files));
       } else {
         // If we're deleting from existing images
         const oldFiles = parentKey
@@ -419,12 +417,13 @@ const Top = () => {
 
   return (
     <Box my={2}>
-      {/* Render "portalContent" in your #saveButton div (like your existing code) */}
-      {subTabIndex !== 2 &&
-        ReactDOM.createPortal(
-          portalContent,
-          document.getElementById("saveButton")
-        )}
+      <>
+        {subTabIndex !== 2 &&
+          ReactDOM.createPortal(
+            portalContent,
+            document.getElementById("saveButton")
+          )}
+      </>
 
       <Box className={styles.TabsContainer}>
         <Tabs
@@ -436,12 +435,13 @@ const Top = () => {
           <Tab label={t("deliverables")} />
           <Tab label={t("qa")} />
         </Tabs>
-
-        <DraftsModal
-          id={editData.student_id}
-          handleSettingtoHonban={setHonban}
-          handleSettingDraft={setDraft}
-        />
+        {role == "Student" && (
+          <DraftsModal
+            id={editData.student_id}
+            handleSettingtoHonban={setHonban}
+            handleSettingDraft={setDraft}
+          />
+        )}
       </Box>
 
       {/* ---- CONFIRM DIALOG ---- */}
@@ -547,3 +547,4 @@ const Top = () => {
 };
 
 export default Top;
+
