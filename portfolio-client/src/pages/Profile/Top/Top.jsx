@@ -41,6 +41,7 @@ const Top = () => {
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [isHonban, setIsHonban] = useState(true);
+  const [currentDraft, setCurrentDraft] = useState({});
 
   // ** NEW STATE: controls visibility of the confirm dialog
   const [confirmMode, setConfirmMode] = useState(false);
@@ -93,11 +94,13 @@ const Top = () => {
   // Handlers for applying a previously saved draft / honban
   const setHonban = () => {
     setIsHonban(true);
+    setCurrentDraft({});
     fetchStudent();
   };
 
   const setDraft = (draft) => {
     setIsHonban(false);
+    setCurrentDraft(draft);
     setEditData((prevEditData) => {
       const updatedEditData = {
         ...prevEditData,
@@ -264,7 +267,7 @@ const Top = () => {
     }
   };
 
-  const handleDraftSave = async () => {
+  const handleDraftUpsert = async (update = false) => {
     try {
       const formData = new FormData();
       newImages.forEach((file, index) => {
@@ -318,21 +321,28 @@ const Top = () => {
         }
       }
 
-      // Save draft
       const draftData = {
         student_id: editData.student_id,
         profile_data: editData.draft,
         status: "draft",
         submit_count: 0,
       };
-      await axios.post(`/api/draft`, draftData);
+
+      if (!update) {
+        // Save draft
+        await axios.post(`/api/draft`, draftData);
+      } else {
+        // Update draft
+        const res = await axios.put(`/api/draft/${currentDraft.id}`, draftData);
+
+        console.log(res);
+      }
 
       // Reset
       setStudent(editData);
       setNewImages([]);
       setDeletedUrls([]);
       setEditMode(false);
-
       showAlert(t("changesSavedSuccessfully"), "success");
     } catch (error) {
       console.error("Error saving student data:", error);
@@ -368,7 +378,7 @@ const Top = () => {
             <>
               {!isHonban && (
                 <Button
-                  onClick={handleDraftSave}
+                  onClick={() => handleDraftUpsert({ update: true })}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -377,7 +387,7 @@ const Top = () => {
                 </Button>
               )}
               <Button
-                onClick={handleDraftSave}
+                onClick={handleDraftUpsert}
                 variant="contained"
                 color="primary"
                 size="small"

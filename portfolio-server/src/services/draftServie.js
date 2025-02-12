@@ -12,9 +12,11 @@ class DraftService {
   }
 
   static async getByStudentId(student_id) {
-    return Draft.findAll({ where: { student_id } });
+    return Draft.findAll({
+      where: { student_id },
+      order: [['created_at', 'DESC']] // Sort by created_at in descending order
+    });
   }
-
   // update draft
   static async update(id, data) {
     const draft = await Draft.findByPk(id);
