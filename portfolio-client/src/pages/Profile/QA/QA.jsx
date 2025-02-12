@@ -95,6 +95,10 @@ const QA = ({
     setEditData(isFromTopPage ? data : {});
   }, [updateQA]);
 
+  useEffect(() => {
+    setEditMode(topEditMode);
+  }, [topEditMode]);
+
   const handleUpdate = (category, keyName, value, qa) => {
     setEditData((prevEditData) => {
       const updatedEditData = { ...prevEditData };
@@ -328,7 +332,7 @@ const QA = ({
               )}
               {!isHonban && (
                 <Button
-                  onClick={() => handleDraftUpsert({ update: true })}
+                  onClick={() => handleDraftUpsert(true)}
                   variant="contained"
                   color="primary"
                   size="small"
@@ -337,7 +341,7 @@ const QA = ({
                 </Button>
               )}
               <Button
-                onClick={handleDraftUpsert}
+                onClick={() => handleDraftUpsert(false)}
                 variant="contained"
                 color="primary"
                 size="small"

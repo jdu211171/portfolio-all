@@ -40,10 +40,10 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
         color="secondary"
         onClick={handleSettingtoHonban}
       >
-        honban
+        本番
       </Button>
       <Button variant="contained" color="secondary" onClick={handleOpen}>
-        shitagaki
+        下書き
       </Button>
 
       {/* Modal */}

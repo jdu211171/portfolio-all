@@ -38,6 +38,7 @@ const Layout = () => {
         { to: "/", icon: <HomeIcon />, label: t("home"), roles: ["Admin", "Staff", "Recruiter"] },
         { to: "/companyprofile", icon: <ProfileIcon />, label: t("profile"), roles: ["Recruiter"] },
         { to: "/student", icon: <StudentIcon />, label: t("student_search"), roles: ["Admin", "Staff", "Recruiter"] },
+        { to: "/checkprofile", icon: <StudentIcon />, label: t("student_check"), roles: ["Admin", "Staff"] },
         { to: "/staff", icon: <UserPlusIcon />, label: t("staff"), roles: ["Admin"] },
         { to: "/profile", icon: <ProfileIcon />, label: t("profile"), roles: ["Student"] },
         { to: "/recruiter", icon: <UserPlusIcon />, label: t("recruiter"), roles: ["Admin", "Staff", "Student"] },

@@ -107,7 +107,6 @@ const Top = () => {
 
   const setDraft = (draft) => {
     setIsHonban(false);
-    console.log(editData);
     setCurrentDraft(draft);
     setEditData((prevEditData) => {
       const updatedEditData = {
@@ -137,7 +136,6 @@ const Top = () => {
   // Edit data update
   // ---------------------
   const handleQAUpdate = (value) => {
-    console.log(editData.draft.qa);
     setEditData((prevEditData) => {
       const updatedEditData = {
         ...prevEditData,
@@ -344,8 +342,6 @@ const Top = () => {
       } else {
         // Update draft
         const res = await axios.put(`/api/draft/${currentDraft.id}`, draftData);
-
-        console.log(res);
       }
 
       // Reset
