@@ -12,7 +12,8 @@ import DraftsModal from "../../../components/Modals/DraftsModal";
 import QA from "../../../pages/Profile/QA/QA";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
-import translations from "../../../locales/translations"; // Импортируем переводы
+import translations from "../../../locales/translations";
+import ProfileConfirmDialog from "../../../components/Dialogs/ProfileConfirmDialog";
 import styles from "./Top.module.css";
 
 const Top = () => {
@@ -21,24 +22,36 @@ const Top = () => {
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
-  const { language } = useLanguage(); // Получение текущего языка из контекста
+  const { language } = useLanguage();
+  const showAlert = useAlert();
 
-  const t = (key) => translations[language][key] || key; // Функция перевода
+  // Translation helper
+  const t = (key) => translations[language][key] || key;
 
   if (userId !== 0 && userId) {
     id = userId;
   } else {
     id = studentId;
   }
-  const showAlert = useAlert();
 
+  // ---------------------
+  // Component state
+  // ---------------------
   const [student, setStudent] = useState(null);
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
+
+  // ** NEW STATE: controls visibility of the confirm dialog
+  const [confirmMode, setConfirmMode] = useState(false);
+
   const [newImages, setNewImages] = useState([]);
   const [deletedUrls, setDeletedUrls] = useState([]);
   const [deliverableImages, setDeliverableImages] = useState({});
+  const [subTabIndex, setSubTabIndex] = useState(0);
 
+  // ---------------------
+  // Fetch student data
+  // ---------------------
   const fetchStudent = async () => {
     try {
       const response = await axios.get(`/api/students/${id}`);
@@ -49,10 +62,34 @@ const Top = () => {
       showAlert("Error fetching student data", "error");
     }
   };
+
   useEffect(() => {
     fetchStudent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  // Function to structure incoming data into "draft"
+  const mapData = (data) => {
+    const draftKeys = [
+      "deliverables",
+      "gallery",
+      "self_introduction",
+      "hobbies",
+      "other_information",
+      "it_skills",
+      "skills",
+    ];
+
+    return {
+      ...data,
+      draft: draftKeys.reduce((acc, key) => {
+        acc[key] = data[key] || "";
+        return acc;
+      }, {}),
+    };
+  };
+
+  // Handlers for applying a previously saved draft / honban
   const setHonban = () => {
     fetchStudent();
   };
@@ -68,33 +105,22 @@ const Top = () => {
     });
   };
 
-  const mapData = (data) => {
-    // Keys that should be moved inside 'draft'
-    const draftKeys = [
-      "deliverables",
-      "gallery",
-      "self_introduction",
-      "hobbies",
-      "other_information",
-      "it_skills",
-      "skills",
-    ];
-
-    return {
-      ...data, // Keep existing data
-      draft: draftKeys.reduce((acc, key) => {
-        acc[key] = data[key] || ""; // Move keys inside 'draft', default to an empty string if undefined
-        return acc;
-      }, {}),
-    };
-  };
-
+  // ---------------------
+  // Edit data update
+  // ---------------------
   const handleUpdateEditData = (key, value) => {
     setEditData((prevEditData) => ({
       ...prevEditData,
-      ...{ draft: { ...prevEditData.draft, [key]: value } }, // Set inside 'draft'
+      draft: {
+        ...prevEditData.draft,
+        [key]: value,
+      },
     }));
   };
+
+  // ---------------------
+  // Gallery updates
+  // ---------------------
   const handleGalleryUpdate = (
     files,
     isNewFiles = false,
@@ -102,34 +128,35 @@ const Top = () => {
     parentKey = null
   ) => {
     if (isNewFiles && !isDelete) {
-      // Convert FileList to an array of files
+      // Add new images
       const newFiles = Array.from(files);
-      // Update the state with new files
-      setNewImages((prevImages) => {
-        // Create a new array with the existing images and the new files
-        return [...prevImages, ...newFiles];
-      });
+      setNewImages((prevImages) => [...prevImages, ...newFiles]);
     } else if (isDelete) {
+      // Deleting an image
       if (isNewFiles) {
-        setNewImages((prevImages) => {
-          return prevImages.filter((_, i) => i !== files);
-        });
+        // If we're deleting from the newImages array
+        setNewImages((prevImages) =>
+          prevImages.filter((_, i) => i !== files)
+        );
       } else {
+        // If we're deleting from existing images
+        const oldFiles = parentKey
+          ? [...editData[parentKey].gallery]
+          : [...editData.draft.gallery];
+
+        deletedUrls.push(oldFiles[files]);
+        oldFiles.splice(files, 1);
+
         if (parentKey) {
-          let oldFiles = editData[parentKey].gallery;
-          deletedUrls.push(oldFiles[files]);
-          oldFiles.splice(files, 1);
           handleUpdateEditData("gallery", oldFiles);
         } else {
-          let oldFiles = editData.gallery;
-          deletedUrls.push(oldFiles[files]);
-          oldFiles.splice(files, 1);
           handleUpdateEditData("gallery", oldFiles);
         }
       }
     }
   };
 
+  // Handle each deliverable image
   const handleImageUpload = (activeDeliverable, file) => {
     setDeliverableImages((prevImages) => ({
       ...prevImages,
@@ -137,53 +164,66 @@ const Top = () => {
     }));
   };
 
-  const handleUpdateEditMode = () => {
-    setEditMode(true);
+  // ---------------------
+  // Toggle states
+  // ---------------------
+  const toggleEditMode = () => setEditMode((prev) => !prev);
+  const toggleConfirmMode = () => setConfirmMode((prev) => !prev);
+
+  // ---------------------
+  // Confirm Profile Handler
+  // ---------------------
+  const handleConfirmProfile = async () => {
+    try {
+      // Example final confirmation logic:
+      // await axios.post(`/api/profile/confirm`, { studentId: id });
+      showAlert(t("profileConfirmed"), "success");
+    } catch (error) {
+      showAlert(t("errorConfirmingProfile"), "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
   };
 
-  const toggleEditMode = () => {
-    setEditMode(!editMode);
-  };
-
+  // ---------------------
+  // Save / Draft Handlers
+  // ---------------------
   const handleSave = async () => {
     try {
       const formData = new FormData();
-
-      // Append each file in the `newImages` array to the form data
       newImages.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
-      console.log(newImages);
-      // Append other necessary fields
       formData.append("role", role);
       formData.append("imageType", "Gallery");
       formData.append("id", id);
 
-      // Append the array of deleted URLs
       deletedUrls.forEach((url, index) => {
         formData.append(`oldFilePath[${index}]`, url);
       });
 
-      // Send the form data via POST request
+      // Upload new/deleted images
       const fileResponse = await axios.post("/api/files/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       let oldFiles = editData.draft.gallery;
 
+      // If multiple files
       if (Array.isArray(fileResponse.data)) {
         fileResponse.data.forEach((file) => {
           oldFiles.push(file.Location);
         });
-      } else if (fileResponse.data.Location) {
+      }
+      // If only one file
+      else if (fileResponse.data.Location) {
         oldFiles.push(fileResponse.data.Location);
       }
 
       await handleUpdateEditData("gallery", oldFiles);
 
-      // Process deliverable images
+      // Handle deliverable images
       for (const [index, file] of Object.entries(deliverableImages)) {
         if (file) {
           const deliverableFormData = new FormData();
@@ -199,63 +239,47 @@ const Top = () => {
           const deliverableFileResponse = await axios.post(
             "/api/files/upload",
             deliverableFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
+            { headers: { "Content-Type": "multipart/form-data" } }
           );
-
           const deliverableImageLink = deliverableFileResponse.data.Location;
-          // Update the deliverable's imageLink with the new file location
+          // Update the deliverable's imageLink
           editData.deliverables[index].imageLink = deliverableImageLink;
         }
       }
 
+      // Finally, update student data
       await axios.put(`/api/students/${id}`, editData);
+
+      // Reset states
       setStudent(editData);
       setNewImages([]);
       setDeletedUrls([]);
       setEditMode(false);
-      showAlert(
-        translations[language]?.changesSavedSuccessfully ||
-          translations.en.changesSavedSuccessfully,
-        "success"
-      );
+
+      showAlert(t("changesSavedSuccessfully"), "success");
     } catch (error) {
       console.error("Error saving student data:", error);
-      showAlert(
-        translations[language]?.errorSavingChanges ||
-          translations.en.errorSavingChanges,
-        "error"
-      );
+      showAlert(t("errorSavingChanges"), "error");
     }
   };
 
   const handleDraftSave = async () => {
     try {
       const formData = new FormData();
-
-      // Append each file in the `newImages` array to the form data
       newImages.forEach((file, index) => {
         formData.append(`files[${index}]`, file);
       });
-      console.log(newImages);
-      // Append other necessary fields
       formData.append("role", role);
       formData.append("imageType", "Gallery");
       formData.append("id", id);
 
-      // Append the array of deleted URLs
       deletedUrls.forEach((url, index) => {
         formData.append(`oldFilePath[${index}]`, url);
       });
 
-      // Send the form data via POST request
+      // Upload new/deleted images
       const fileResponse = await axios.post("/api/files/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       let oldFiles = editData.draft.gallery;
@@ -270,7 +294,7 @@ const Top = () => {
 
       await handleUpdateEditData("gallery", oldFiles);
 
-      // Process deliverable images
+      // Handle deliverable images
       for (const [index, file] of Object.entries(deliverableImages)) {
         if (file) {
           const deliverableFormData = new FormData();
@@ -286,53 +310,44 @@ const Top = () => {
           const deliverableFileResponse = await axios.post(
             "/api/files/upload",
             deliverableFormData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
+            { headers: { "Content-Type": "multipart/form-data" } }
           );
-
           const deliverableImageLink = deliverableFileResponse.data.Location;
-          // Update the deliverable's imageLink with the new file location
           editData.deliverables[index].imageLink = deliverableImageLink;
         }
       }
+
+      // Save draft
       const draftData = {
         student_id: editData.student_id,
         profile_data: editData.draft,
         status: "draft",
         submit_count: 0,
       };
-      const res = await axios.post(`/api/draft`, draftData);
-      console.log("draft saved");
+      await axios.post(`/api/draft`, draftData);
 
+      // Reset
       setStudent(editData);
       setNewImages([]);
       setDeletedUrls([]);
       setEditMode(false);
-      showAlert(
-        translations[language]?.changesSavedSuccessfully ||
-          translations.en.changesSavedSuccessfully,
-        "success"
-      );
+
+      showAlert(t("changesSavedSuccessfully"), "success");
     } catch (error) {
       console.error("Error saving student data:", error);
-      showAlert(
-        translations[language]?.errorSavingChanges ||
-          translations.en.errorSavingChanges,
-        "error"
-      );
+      showAlert(t("errorSavingChanges"), "error");
     }
   };
 
+  // Cancel editing
   const handleCancel = () => {
     setEditData(student);
-    setEditMode(!editMode);
+    setEditMode(false);
   };
 
-  const [subTabIndex, setSubTabIndex] = useState(0);
-
+  // ---------------------
+  // Tab handling
+  // ---------------------
   const handleSubTabChange = (event, newIndex) => {
     setSubTabIndex(newIndex);
   };
@@ -341,6 +356,9 @@ const Top = () => {
     return <div>{t("loading")}</div>;
   }
 
+  // ---------------------
+  // Button Portal Content
+  // ---------------------
   const portalContent = (
     <Box className={styles.buttonsContainer}>
       {role === "Student" && (
@@ -355,6 +373,7 @@ const Top = () => {
               >
                 {t("saveDraft")}
               </Button>
+
               <Button
                 onClick={handleSave}
                 variant="contained"
@@ -383,6 +402,16 @@ const Top = () => {
               {t("editProfile")}
             </Button>
           )}
+
+          {/* CONFIRM PROFILE BUTTON */}
+          <Button
+            onClick={toggleConfirmMode}
+            variant="contained"
+            color="warning"
+            size="small"
+          >
+            {t("confirmProfile")}
+          </Button>
         </>
       )}
     </Box>
@@ -390,13 +419,13 @@ const Top = () => {
 
   return (
     <Box my={2}>
-      <>
-        {subTabIndex !== 2 &&
-          ReactDOM.createPortal(
-            portalContent,
-            document.getElementById("saveButton")
-          )}
-      </>
+      {/* Render "portalContent" in your #saveButton div (like your existing code) */}
+      {subTabIndex !== 2 &&
+        ReactDOM.createPortal(
+          portalContent,
+          document.getElementById("saveButton")
+        )}
+
       <Box className={styles.TabsContainer}>
         <Tabs
           className={styles.Tabs}
@@ -407,6 +436,7 @@ const Top = () => {
           <Tab label={t("deliverables")} />
           <Tab label={t("qa")} />
         </Tabs>
+
         <DraftsModal
           id={editData.student_id}
           handleSettingtoHonban={setHonban}
@@ -414,6 +444,14 @@ const Top = () => {
         />
       </Box>
 
+      {/* ---- CONFIRM DIALOG ---- */}
+      <ProfileConfirmDialog
+        open={confirmMode}
+        onClose={toggleConfirmMode}
+        onConfirm={handleConfirmProfile}
+      />
+
+      {/* ---- TAB PANELS ---- */}
       {subTabIndex === 0 && (
         <Box my={2}>
           <TextField
@@ -486,6 +524,7 @@ const Top = () => {
           />
         </Box>
       )}
+
       {subTabIndex === 1 && (
         <Box my={2}>
           <Deliverables
@@ -493,14 +532,11 @@ const Top = () => {
             editMode={editMode}
             editData={editData.deliverables}
             updateEditData={handleUpdateEditData}
-            showAutocomplete={false}
-            showHeaders={false}
-            keyName="deliverables"
-            updateEditMode={handleUpdateEditMode}
-            onImageUpload={handleImageUpload} // Pass image upload handler
+            onImageUpload={handleImageUpload}
           />
         </Box>
       )}
+
       {subTabIndex === 2 && (
         <Box my={2}>
           <QA />
@@ -511,4 +547,3 @@ const Top = () => {
 };
 
 export default Top;
-
