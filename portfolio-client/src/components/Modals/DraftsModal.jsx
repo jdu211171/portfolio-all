@@ -153,4 +153,3 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
 };
 
 export default DraftsModal;
-

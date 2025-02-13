@@ -44,4 +44,12 @@
   top: -32px;
   gap: 8px;
 }
+/* /////////////////////////// MEDIA ///////////////////////////////////// */
 
+@media (max-width: 768px) {
+  .TabsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}
