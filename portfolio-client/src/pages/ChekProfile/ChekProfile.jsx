@@ -90,8 +90,8 @@ const Student = ({ OnlyBookmarked = false }) => {
 
   const navigate = useNavigate();
 
-  const navigateToProfile = (studentId) => {
-    navigate(`profile/${studentId}`);
+  const navigateToProfile = (student) => {
+    navigate(`profile/${student.id}/top`, { state: { student } });
   };
 
   const headers = [
@@ -132,6 +132,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     {
       id: "visibility",
       numeric: false,
+      type: "status",
       disablePadding: false,
       label: t("check_status"),
       minWidth: "110px",
@@ -142,6 +143,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       disablePadding: false,
       label: t("action"),
       isJSON: false,
+      type: "action",
       minWidth: "110px",
     },
   ];

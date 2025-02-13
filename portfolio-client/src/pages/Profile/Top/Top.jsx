@@ -13,7 +13,6 @@ import QA from "../../../pages/Profile/QA/QA";
 import { useAlert } from "../../../contexts/AlertContext";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import translations from "../../../locales/translations";
-import ProfileConfirmDialog from "../../../components/Dialogs/ProfileConfirmDialog";
 import styles from "./Top.module.css";
 
 const Top = () => {
@@ -22,6 +21,8 @@ const Top = () => {
   const { studentId } = useParams();
   const location = useLocation();
   const { userId } = location.state || {};
+  const statedata = location.state?.student;
+
   const { language } = useLanguage();
   const showAlert = useAlert();
 
@@ -57,14 +58,18 @@ const Top = () => {
   // Fetch student data
   // ---------------------
   const fetchStudent = async () => {
-    try {
-      const response = await axios.get(`/api/students/${id}`);
-      const mappedData = mapData(response.data);
-      setStudent(mappedData);
-      setEditData(mappedData);
-      SetUpdateQA(!updateQA);
-    } catch (error) {
-      showAlert("Error fetching student data", "error");
+    if (statedata) {
+      setDraft(statedata.drafts[0]);
+    } else {
+      try {
+        const response = await axios.get(`/api/students/${id}`);
+        const mappedData = mapData(response.data);
+        setStudent(mappedData);
+        setEditData(mappedData);
+        SetUpdateQA(!updateQA);
+      } catch (error) {
+        showAlert("Error fetching student data", "error");
+      }
     }
   };
 
@@ -123,6 +128,7 @@ const Top = () => {
   // Edit data update
   // ---------------------
   const handleUpdateEditData = (key, value) => {
+    console.log(key, value);
     setEditData((prevEditData) => ({
       ...prevEditData,
       draft: {
@@ -130,6 +136,7 @@ const Top = () => {
         [key]: value,
       },
     }));
+    console.log(editData);
   };
 
   // ---------------------
@@ -245,7 +252,7 @@ const Top = () => {
           deliverableFormData.append("id", id);
           deliverableFormData.append(
             "oldFilePath",
-            editData.deliverables[index]?.imageLink || ""
+            editData.draft.deliverables[index]?.imageLink || ""
           );
 
           const deliverableFileResponse = await axios.post(
@@ -254,8 +261,9 @@ const Top = () => {
             { headers: { "Content-Type": "multipart/form-data" } }
           );
           const deliverableImageLink = deliverableFileResponse.data.Location;
+          console.log(deliverableImageLink);
           // Update the deliverable's imageLink
-          editData.deliverables[index].imageLink = deliverableImageLink;
+          editData.draft.deliverables[index].imageLink = deliverableImageLink;
         }
       }
 
@@ -316,7 +324,7 @@ const Top = () => {
           deliverableFormData.append("id", id);
           deliverableFormData.append(
             "oldFilePath",
-            editData.deliverables[index]?.imageLink || ""
+            editData.draft.deliverables[index]?.imageLink || ""
           );
 
           const deliverableFileResponse = await axios.post(
@@ -325,7 +333,7 @@ const Top = () => {
             { headers: { "Content-Type": "multipart/form-data" } }
           );
           const deliverableImageLink = deliverableFileResponse.data.Location;
-          editData.deliverables[index].imageLink = deliverableImageLink;
+          editData.draft.deliverables[index].imageLink = deliverableImageLink;
         }
       }
 
@@ -542,9 +550,10 @@ const Top = () => {
           <Deliverables
             data={student.draft.deliverables}
             editMode={editMode}
-            editData={editData.deliverables}
+            editData={editData.draft.deliverables}
             updateEditData={handleUpdateEditData}
             onImageUpload={handleImageUpload}
+            keyName="deliverables"
           />
         </Box>
       )}

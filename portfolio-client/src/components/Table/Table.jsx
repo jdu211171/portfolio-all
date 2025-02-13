@@ -171,7 +171,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                             padding={header.disablePadding ? "none" : "normal"}
                             onClick={() =>
                               header.onClickAction
-                                ? header.onClickAction(row.id)
+                                ? header.onClickAction(row)
                                 : null
                             }
                             className={
@@ -227,10 +227,14 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 studentId={row.student_id}
                               />
                             ) : header.type === "status" ? (
-                              <Chip
-                                label={row[header.id] ? "○" : "×"}
-                                color={row[header.id] ? "primary" : "default"}
-                              />
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  fontSize: "16px",
+                                }}
+                              >
+                                {row[header.id] ? "○" : "×"}
+                              </div>
                             ) : header.type === "email" ? (
                               <a href={`mailto:${row[header.id]}`}>
                                 {row[header.id]}

@@ -12,9 +12,9 @@ const Recruiter = () => {
   const { language } = useLanguage();
   const t = (key) => translations[language][key] || key;
   const navigate = useNavigate();
-  const navigateToCompanyProfile = (recruiterId) => {
+  const navigateToCompanyProfile = (recruiter) => {
     navigate(`/companyprofile`, {
-      state: { recruiterId: recruiterId }, // passing state
+      state: { recruiterId: recruiter.id }, // passing state
     });
   };
 
@@ -49,7 +49,7 @@ const Recruiter = () => {
       label: t("email"),
       type: "email",
       minWidth: "220px",
-      visibleTo: ["Admin", "Staff"]
+      visibleTo: ["Admin", "Staff"],
     },
   ];
 
@@ -84,3 +84,4 @@ const Recruiter = () => {
 };
 
 export default Recruiter;
+

@@ -136,6 +136,7 @@ const QA = ({
       console.log(currentDraft);
       const res = await axios.put(`/api/draft/${currentDraft.id}`, {
         status: "submitted",
+        submit_count: Number(currentDraft.submit_count + 1),
       });
       console.log(res);
       showAlert(t["profileConfirmed"], "success");
@@ -340,15 +341,26 @@ const QA = ({
                   {t["updateDraft"]}
                 </Button>
               )}
-              <Button
-                onClick={() => handleDraftUpsert(false)}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                {t["saveDraft"]}
-              </Button>
-
+              {role == "Student" && (
+                <Button
+                  onClick={() => handleDraftUpsert(false)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t["saveDraft"]}
+                </Button>
+              )}
+              {role == "Admin" && (
+                <Button
+                  onClick={handleSave}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t["save"]}
+                </Button>
+              )}
               <Button
                 onClick={handleCancel}
                 variant="outlined"
@@ -360,15 +372,16 @@ const QA = ({
             </>
           ) : (
             <>
-              {/* CONFIRM PROFILE BUTTON */}
-              <Button
-                onClick={toggleConfirmMode}
-                variant="contained"
-                color="secondary"
-                size="small"
-              >
-                {t["submitAgree"]}
-              </Button>
+              {role == "Student" && (
+                <Button
+                  onClick={toggleConfirmMode}
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                >
+                  {t["submitAgree"]}
+                </Button>
+              )}
               <Button
                 onClick={toggleEditMode}
                 variant="contained"
