@@ -2,7 +2,7 @@
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const generatePassword = require('generate-password');
-const { Student, Bookmark, sequelize } = require('../models');
+const { Student, Draft, Bookmark, sequelize } = require('../models');
 const { EmailToStudent } = require('../utils/emailToStudent');
 
 class StudentService {

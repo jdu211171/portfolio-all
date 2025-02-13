@@ -153,6 +153,17 @@ class DraftService {
     }
     return draft.destroy();
   }
+
+  static async getLatestApprovedDraftByStudentId(studentId) {
+    return Draft.findOne({
+      where: {
+        student_id: studentId,
+        status: "approved", // Only fetch approved drafts
+      },
+      order: [["updated_at", "DESC"]], // Get the latest updated draft
+    });
+  }
+
 }
 
 module.exports = DraftService;
