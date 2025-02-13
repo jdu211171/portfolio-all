@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const StudentService = require('../services/studentService');
 const DraftService = require('../services/draftServie');
+const QAService = require('../services/qaService');
+
 const generatePassword = require('generate-password');
 const { EmailToStudent } = require('../utils/emailToStudent');
 
@@ -165,11 +167,17 @@ class StudentController {
 
           // Extract profile data from the draft
           const profileData = latestApprovedDraft.profile_data || {};
-
+          console.log(profileData)
           // Update the student with the draft data
           await StudentService.updateStudent(id, {
             ...profileData, // Apply profile data from the draft
             visibility: true, // Ensure visibility is enabled after approval
+          });
+
+          const draftQAData = latestApprovedDraft.profile_data?.qa || {};
+
+          Object.entries(draftQAData.idList).forEach(async ([key, category]) => {
+            const updatedQA = await QAService.updateQA(key, draftQAData[category]);
           });
         }
       }
