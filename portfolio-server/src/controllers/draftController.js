@@ -64,12 +64,20 @@ class DraftController {
     }
   }
 
-  static async getAllDrafts(req, res) {
+  // Controller method to get all students
+  static async getAllDrafts(req, res, next) {
     try {
-      const drafts = await DraftService.getAll();
-      return res.status(200).json(drafts);
+      let filter
+      if (req.query.filter) {
+        filter = req.query.filter
+      } else {
+        filter = {}
+      }
+
+      const students = await DraftService.getAll(filter);
+      res.status(200).json(students);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      next(error);
     }
   }
 }

@@ -112,10 +112,13 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
             <TableRow>
               {tableProps.headers.map(
                 (header) =>
-                  ((header.role == undefined || header.role == role) && (header.visibleTo ?  header.visibleTo.includes(role) : true)) && (
+                  (header.role == undefined || header.role == role) &&
+                  (header.visibleTo
+                    ? header.visibleTo.includes(role)
+                    : true) && (
                     <TableCell
                       sx={{ borderBottom: "1px solid #aaa" }}
-                      key={"header" + header.id}
+                      key={"header" + header.id + header.subkey ?? ""}
                       align={header.numeric ? "right" : "left"}
                       padding={"normal"}
                       sortDirection={orderBy === header.id ? order : false}
@@ -158,9 +161,12 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                   >
                     {tableProps.headers.map(
                       (header) =>
-                        ((header.role == undefined || header.role == role) && (header.visibleTo ?  header.visibleTo.includes(role) : true)) && (
+                        (header.role == undefined || header.role == role) &&
+                        (header.visibleTo
+                          ? header.visibleTo.includes(role)
+                          : true) && (
                           <TableCell
-                            key={"data" + header.id}
+                            key={"data" + header.id + header.subkey ?? ""}
                             align={header.numeric ? "right" : "left"}
                             padding={header.disablePadding ? "none" : "normal"}
                             onClick={() =>
@@ -229,6 +235,12 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               <a href={`mailto:${row[header.id]}`}>
                                 {row[header.id]}
                               </a>
+                            ) : header.type === "date" ? (
+                              header.subkey ? (
+                                row[header.id][0][header.subkey].split("T")[0]
+                              ) : (
+                                row[header.id].split("T")[0]
+                              )
                             ) : header.isJSON ? (
                               JSON.parse(row[header.id])?.highest ? (
                                 JSON.parse(row[header.id])?.highest
@@ -236,7 +248,11 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 "未提出"
                               )
                             ) : row[header.id] ? (
-                              row[header.id]
+                              header.subkey ? (
+                                row[header.id][0][header.subkey]
+                              ) : (
+                                row[header.id]
+                              )
                             ) : (
                               "N/A"
                             )}
@@ -275,12 +291,13 @@ EnhancedTable.propTypes = {
     headers: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string.isRequired,
+        subquery: PropTypes.string,
         label: PropTypes.string.isRequired,
         numeric: PropTypes.bool,
         disablePadding: PropTypes.bool,
         type: PropTypes.string,
         role: PropTypes.string,
-        visibleTo: PropTypes.array
+        visibleTo: PropTypes.array,
       })
     ).isRequired,
     filter: PropTypes.object.isRequired, // Assuming filter is an object
@@ -288,3 +305,4 @@ EnhancedTable.propTypes = {
 };
 
 export default EnhancedTable;
+

@@ -94,31 +94,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     navigate(`profile/${studentId}`);
   };
 
-  const addToBookmark = async (studentId) => {
-    try {
-      const response = await axios.post("/api/bookmarks/toggle", {
-        studentId,
-        recruiterId,
-      });
-      setUpdatedBookmark({
-        studentId: response.data.studentId,
-        timestamp: new Date().getTime(),
-      });
-    } catch (error) {
-      console.error("Error bookmarking student:", error);
-    }
-  };
-
   const headers = [
-    {
-      id: "bookmark",
-      numeric: false,
-      disablePadding: true,
-      label: "",
-      type: "bookmark",
-      role: "Recruiter",
-      onClickAction: addToBookmark,
-    },
     {
       id: "first_name",
       numeric: false,
@@ -129,34 +105,50 @@ const Student = ({ OnlyBookmarked = false }) => {
       onClickAction: navigateToProfile,
     },
     {
-      id: "email",
-      numeric: false,
+      id: "drafts",
+      subkey: "updated_at",
+      numeric: true,
+      type: "date",
       disablePadding: false,
-      label: t("email"),
-      type: "email",
-      minWidth: "160px",
-      visibleTo: ["Admin", "Staff"],
+      label: t("submit_date"),
+      minWidth: "110px",
     },
     {
-      id: "jlpt",
+      id: "drafts",
+      subkey: "submit_count",
       numeric: true,
       disablePadding: false,
-      label: t("jlpt"),
-      minWidth: "160px",
-      isJSON: true,
+      label: t("submit_count"),
+      minWidth: "80px",
     },
     {
-      id: "partner_university",
+      id: "drafts",
+      subkey: "status",
       numeric: false,
       disablePadding: false,
-      label: t("partner_university"),
+      label: t("check_status"),
+      minWidth: "80px",
+    },
+    {
+      id: "visibility",
+      numeric: false,
+      disablePadding: false,
+      label: t("check_status"),
+      minWidth: "110px",
+    },
+    {
+      id: "action",
+      numeric: false,
+      disablePadding: false,
+      label: t("action"),
       isJSON: false,
+      minWidth: "110px",
     },
   ];
 
   const tableProps = {
     headers: headers,
-    dataLink: "/api/students",
+    dataLink: "/api/draft",
     filter: filterState,
     recruiterId: recruiterId,
     OnlyBookmarked: OnlyBookmarked,
