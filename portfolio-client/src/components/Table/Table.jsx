@@ -118,7 +118,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                     : true) && (
                     <TableCell
                       sx={{ borderBottom: "1px solid #aaa" }}
-                      key={"header" + header.id + header.subkey ?? ""}
+                      key={"header" + header.id + (header.subkey ?? "")}
                       align={header.numeric ? "right" : "left"}
                       padding={"normal"}
                       sortDirection={orderBy === header.id ? order : false}
@@ -166,7 +166,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                           ? header.visibleTo.includes(role)
                           : true) && (
                           <TableCell
-                            key={"data" + header.id + header.subkey ?? ""}
+                            key={"data" + header.id + (header.subkey ?? "")}
                             align={header.numeric ? "right" : "left"}
                             padding={header.disablePadding ? "none" : "normal"}
                             onClick={() =>
