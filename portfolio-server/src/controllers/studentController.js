@@ -148,7 +148,7 @@ class StudentController {
     try {
       const { id } = req.params;
       const studentData = req.body;
-
+      console.log(studentData)
       const { currentPassword, password, ...updateData } = req.body;
       if (password) {
         const student = await StudentService.getStudentById(req.params.id, true);

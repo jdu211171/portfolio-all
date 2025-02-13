@@ -4,6 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import styles from "./QA.module.css";
 import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
+import TextField from "../../../components/TextField/TextField";
 import ProfileConfirmDialog from "../../../components/Dialogs/ProfileConfirmDialog";
 
 import {
@@ -60,7 +61,11 @@ const QA = ({
   const [isFirstTime, setIsFirstTime] = useState(false);
 
   const [confirmMode, setConfirmMode] = useState(false);
-
+  const [comment, setComment] = useState("test");
+  const [reviewMode, setReviewMode] = useState(
+    !currentDraft || Object.keys(currentDraft).length === 0
+  );
+  const [passedDraft, setPassedDraft] = useState(currentDraft);
   const fetchStudent = async () => {
     try {
       if (!(Object.keys(data).length > 0)) {
@@ -118,6 +123,12 @@ const QA = ({
     }
   };
 
+  const updateComment = (key, value) => {
+    setComment(() => ({
+      [key]: value,
+    }));
+  };
+
   const toggleEditMode = () => {
     setEditMode((prev) => !prev);
     console.log(!editMode);
@@ -133,10 +144,43 @@ const QA = ({
   const handleConfirmProfile = async () => {
     try {
       // Example final confirmation logic:
-      console.log(currentDraft);
       const res = await axios.put(`/api/draft/${currentDraft.id}`, {
         status: "submitted",
         submit_count: Number(currentDraft.submit_count + 1),
+      });
+      console.log(res);
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
+  };
+
+  const approveProfile = async (value) => {
+    try {
+      // Example final confirmation logic:
+      const res = await axios.put(`/api/draft/${currentDraft.id}`, {
+        status: value,
+        comments: comment.comment,
+      });
+      console.log(res);
+      console.log(userId);
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
+  };
+
+  const setProfileVisible = async (visibility) => {
+    try {
+      // Example final confirmation logic:
+      const res = await axios.put(`/api/students/${id}`, {
+        visibility: visibility,
       });
       console.log(res);
       showAlert(t["profileConfirmed"], "success");
@@ -486,6 +530,78 @@ const QA = ({
         onClose={toggleConfirmMode}
         onConfirm={handleConfirmProfile}
       />
+      {(role == "Staff" || role == "Admin") && !reviewMode && (
+        <Box
+          sx={{
+            borderRadius: "10px",
+            background: "#ffe",
+            padding: 2,
+          }}
+        >
+          {passedDraft.status != "approved" ? (
+            <>
+              <TextField
+                title="コメント"
+                data={comment}
+                editData={comment}
+                editMode={true}
+                updateEditData={updateComment}
+                keyName="comments"
+              />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <Button
+                  onClick={() => approveProfile("approved")}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  承認済み
+                </Button>
+                <Button
+                  onClick={() => approveProfile("resubmission_required")}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  要修正
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 10,
+              }}
+            >
+              <Button
+                onClick={() => setProfileVisible(false)}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                非公開
+              </Button>
+              <Button
+                onClick={() => setProfileVisible(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                公開
+              </Button>
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
