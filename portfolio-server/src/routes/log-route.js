@@ -12,5 +12,6 @@ router.put('/:id', LogController.updateLog);
 router.delete('/:id', LogController.deleteLog);
 
 router.get('/', LogController.getAllLogs);
+console.log("");
 
 module.exports = router;

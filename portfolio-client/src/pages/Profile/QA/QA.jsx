@@ -4,6 +4,9 @@ import { useLocation, useParams } from "react-router-dom";
 import styles from "./QA.module.css";
 import QATextField from "../../../components/QATextField/QATextField";
 import QAAccordion from "../../../components/QAAccordion/QAAccordion";
+import TextField from "../../../components/TextField/TextField";
+import ProfileConfirmDialog from "../../../components/Dialogs/ProfileConfirmDialog";
+
 import {
   School,
   AutoStories,
@@ -12,12 +15,30 @@ import {
   TrendingUp,
 } from "@mui/icons-material";
 import axios from "../../../utils/axiosUtils";
-import { Box, Tabs, Tab, Button, Snackbar, Alert, IconButton } from "@mui/material";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Button,
+  Snackbar,
+  Alert,
+  IconButton,
+} from "@mui/material";
 
 import translations from "../../../locales/translations";
 import { UserContext } from "../../../contexts/UserContext";
 
-const QA = () => {
+const QA = ({
+  data = {},
+  handleQAUpdate,
+  isFromTopPage = false,
+  topEditMode = false,
+  updateQA = false,
+  currentDraft = {},
+  isHonban = false,
+  handleDraftUpsert = () => {},
+  setTopEditMode = () => {},
+}) => {
   const role = sessionStorage.getItem("role");
   const labels = ["学生成績", "専門知識", "個性", "実務経験", "キャリア目標"];
   let id;
@@ -34,31 +55,38 @@ const QA = () => {
     id = studentId;
   }
 
-  const [studentQA, setStudentQA] = useState(null);
-  const [editData, setEditData] = useState({});
-  const [editMode, setEditMode] = useState(false);
+  const [studentQA, setStudentQA] = useState(isFromTopPage ? data : {});
+  const [editData, setEditData] = useState(isFromTopPage ? data : {});
+  const [editMode, setEditMode] = useState(topEditMode);
   const [isFirstTime, setIsFirstTime] = useState(false);
 
+  const [confirmMode, setConfirmMode] = useState(false);
+  const [comment, setComment] = useState("test");
+  const [reviewMode, setReviewMode] = useState(
+    !currentDraft || Object.keys(currentDraft).length === 0
+  );
+  const [passedDraft, setPassedDraft] = useState(currentDraft);
   const fetchStudent = async () => {
     try {
-      let answers
-      if (id) {
-        answers = (await axios.get(`/api/qa/student/${id}`)).data;
-      }      
+      if (!(Object.keys(data).length > 0)) {
+        let answers;
+        if (id) {
+          answers = (await axios.get(`/api/qa/student/${id}`)).data;
+        }
 
-      const questions = JSON.parse(
-        (await axios.get("/api/settings/studentQA")).data.value
-      );
-      let response
-      if (answers) {
-         response = combineQuestionsAndAnswers(questions, answers);
-      } else {
-         response = questions
+        const questions = JSON.parse(
+          (await axios.get("/api/settings/studentQA")).data.value
+        );
+        let response;
+        if (answers) {
+          response = combineQuestionsAndAnswers(questions, answers);
+        } else {
+          response = questions;
+        }
+
+        setStudentQA(response);
+        setEditData(response);
       }
-
-      setStudentQA(response);
-
-      setEditData(response);
     } catch (error) {
       console.error("Error fetching student data:", error);
     }
@@ -66,7 +94,15 @@ const QA = () => {
 
   useEffect(() => {
     fetchStudent();
-  }, [id]);
+  }, [id, updateQA]);
+
+  useEffect(() => {
+    setEditData(isFromTopPage ? data : {});
+  }, [updateQA]);
+
+  useEffect(() => {
+    setEditMode(topEditMode);
+  }, [topEditMode]);
 
   const handleUpdate = (category, keyName, value, qa) => {
     setEditData((prevEditData) => {
@@ -82,10 +118,78 @@ const QA = () => {
       }
       return updatedEditData;
     });
+    if (isFromTopPage) {
+      handleQAUpdate(editData);
+    }
+  };
+
+  const updateComment = (key, value) => {
+    setComment(() => ({
+      [key]: value,
+    }));
   };
 
   const toggleEditMode = () => {
     setEditMode((prev) => !prev);
+    console.log(!editMode);
+    setTopEditMode(!editMode);
+  };
+  const toggleConfirmMode = () => {
+    setConfirmMode((prev) => !prev);
+  };
+
+  // ---------------------
+  // Confirm Profile Handler
+  // ---------------------
+  const handleConfirmProfile = async () => {
+    try {
+      // Example final confirmation logic:
+      const res = await axios.put(`/api/draft/${currentDraft.id}`, {
+        status: "submitted",
+        submit_count: Number(currentDraft.submit_count + 1),
+      });
+      console.log(res);
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
+  };
+
+  const approveProfile = async (value) => {
+    try {
+      // Example final confirmation logic:
+      const res = await axios.put(`/api/draft/${currentDraft.id}`, {
+        status: value,
+        comments: comment.comment,
+      });
+      console.log(res);
+      console.log(userId);
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
+  };
+
+  const setProfileVisible = async (visibility) => {
+    try {
+      // Example final confirmation logic:
+      const res = await axios.put(`/api/students/${id}`, {
+        visibility: visibility,
+      });
+      console.log(res);
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    } finally {
+      // Always close the dialog
+      setConfirmMode(false);
+    }
   };
 
   const handleSave = async () => {
@@ -101,6 +205,7 @@ const QA = () => {
         });
         showAlert("Changes saved successfully!", "success");
         setEditMode(false);
+        setTopEditMode(false);
       } else {
         let answers = removeKey(editData, "question");
         let res;
@@ -111,6 +216,7 @@ const QA = () => {
         }
         setStudentQA(res.data);
         setEditMode(false);
+        setTopEditMode(false);
       }
 
       showAlert("Changes saved successfully!", "success");
@@ -123,6 +229,7 @@ const QA = () => {
   const handleCancel = () => {
     fetchStudent();
     setEditMode(false);
+    setTopEditMode(false);
   };
 
   const handleAdd = async () => {
@@ -258,23 +365,46 @@ const QA = () => {
         <>
           {editMode ? (
             <>
-              <Button
-                onClick={handleAdd}
-                variant="outlined"
-                color="primary"
-                size="small"
-              >
-               {t["add"]}
-              </Button>
-              <Button
-                onClick={handleSave}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                {t["save"]}
-              </Button>
-
+              {role == "Admin" && (
+                <Button
+                  onClick={handleAdd}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                >
+                  {t["add"]}
+                </Button>
+              )}
+              {!isHonban && (
+                <Button
+                  onClick={() => handleDraftUpsert(true)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t["updateDraft"]}
+                </Button>
+              )}
+              {role == "Student" && (
+                <Button
+                  onClick={() => handleDraftUpsert(false)}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t["saveDraft"]}
+                </Button>
+              )}
+              {role == "Admin" && (
+                <Button
+                  onClick={handleSave}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  {t["save"]}
+                </Button>
+              )}
               <Button
                 onClick={handleCancel}
                 variant="outlined"
@@ -285,15 +415,27 @@ const QA = () => {
               </Button>
             </>
           ) : (
-            <Button
-              onClick={toggleEditMode}
-              variant="contained"
-              color="primary"
-              size="small"
-            >
-              {role == "Student" ? t["qa_edit"]: ""}
-              {role == "Admin" ? t["q_edit"] : ""}
-            </Button>
+            <>
+              {role == "Student" && (
+                <Button
+                  onClick={toggleConfirmMode}
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                >
+                  {t["submitAgree"]}
+                </Button>
+              )}
+              <Button
+                onClick={toggleEditMode}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                {role == "Student" ? t["editProfile"] : ""}
+                {role == "Admin" ? t["q_edit"] : ""}
+              </Button>
+            </>
           )}
         </>
       )}
@@ -301,21 +443,19 @@ const QA = () => {
   );
 
   return (
-    <Box my={2}>
+    <Box mb={2}>
       {!id && (
-        <Box className={styles.topControlButtons}>
-        
-        <Box id="saveButton">
-          {portalContent}
+        <Box className={styles.topControlButtons} mb={2} px={2}>
+          <Box id="saveButton">{portalContent}</Box>
         </Box>
-      </Box>
       )}
-      
+
       <>
-        {id && ReactDOM.createPortal(
-          portalContent,
-          document.getElementById("saveButton")
-        )}
+        {id &&
+          ReactDOM.createPortal(
+            portalContent,
+            document.getElementById("saveButton")
+          )}
       </>
 
       <Tabs
@@ -364,7 +504,7 @@ const QA = () => {
                   key={key}
                   question={question.split("]")[1]}
                   answer={answer ? answer : "回答なし"}
-                  notExpand = {id ? false : true}
+                  notExpand={id ? false : true}
                 />
               )
           )}
@@ -384,8 +524,87 @@ const QA = () => {
           {alert.message}
         </Alert>
       </Snackbar>
+      {/* ---- CONFIRM DIALOG ---- */}
+      <ProfileConfirmDialog
+        open={confirmMode}
+        onClose={toggleConfirmMode}
+        onConfirm={handleConfirmProfile}
+      />
+      {(role == "Staff" || role == "Admin") && !reviewMode && (
+        <Box
+          sx={{
+            borderRadius: "10px",
+            background: "#ffe",
+            padding: 2,
+          }}
+        >
+          {passedDraft.status != "approved" ? (
+            <>
+              <TextField
+                title="コメント"
+                data={comment}
+                editData={comment}
+                editMode={true}
+                updateEditData={updateComment}
+                keyName="comments"
+              />
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <Button
+                  onClick={() => approveProfile("approved")}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  承認済み
+                </Button>
+                <Button
+                  onClick={() => approveProfile("resubmission_required")}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                >
+                  要修正
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 10,
+              }}
+            >
+              <Button
+                onClick={() => setProfileVisible(false)}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                非公開
+              </Button>
+              <Button
+                onClick={() => setProfileVisible(true)}
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                公開
+              </Button>
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
 
 export default QA;
+

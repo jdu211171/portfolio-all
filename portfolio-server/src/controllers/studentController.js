@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const StudentService = require('../services/studentService');
+const DraftService = require('../services/draftServie');
+const QAService = require('../services/qaService');
+
 const generatePassword = require('generate-password');
 const { EmailToStudent } = require('../utils/emailToStudent');
 
@@ -148,20 +151,51 @@ class StudentController {
     try {
       const { id } = req.params;
       const studentData = req.body;
-
       const { currentPassword, password, ...updateData } = req.body;
-      if (password) {
-        const student = await StudentService.getStudentById(req.params.id, true);
 
-        if (!student || !(await bcrypt.compare(currentPassword, student.password))) {
-          return res.status(400).json({ error: '現在のパスワードを入力してください' });
+      // Fetch student
+      const student = await StudentService.getStudentById(id);
+      if (!student) {
+        return res.status(404).json({ error: "Student not found" });
+      }
+      if (studentData.visibility) {
+        // Fetch the latest approved draft
+        let latestApprovedDraft = await DraftService.getLatestApprovedDraftByStudentId(student.student_id);
+
+        if (latestApprovedDraft) {
+          console.log("Applying latest approved draft to student profile...");
+
+          // Extract profile data from the draft
+          const profileData = latestApprovedDraft.profile_data || {};
+          console.log(profileData)
+          // Update the student with the draft data
+          await StudentService.updateStudent(id, {
+            ...profileData, // Apply profile data from the draft
+            visibility: true, // Ensure visibility is enabled after approval
+          });
+
+          const draftQAData = latestApprovedDraft.profile_data?.qa || {};
+
+          Object.entries(draftQAData.idList).forEach(async ([key, category]) => {
+            const updatedQA = await QAService.updateQA(key, draftQAData[category]);
+          });
         }
       }
 
+      // Password validation
+      if (password) {
+        const studentWithPassword = await StudentService.getStudentById(req.params.id, true);
+        if (!studentWithPassword || !(await bcrypt.compare(currentPassword, studentWithPassword.password))) {
+          return res.status(400).json({ error: "現在のパスワードを入力してください" });
+        }
+      }
+
+      // Update student with new data
       const updatedStudent = await StudentService.updateStudent(id, {
         ...studentData,
         password: password || undefined,
       });
+
       res.status(200).json(updatedStudent);
     } catch (error) {
       next(error);

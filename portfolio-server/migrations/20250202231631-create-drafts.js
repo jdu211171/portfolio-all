@@ -14,7 +14,8 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'Students',
-          key: 'student_id',
+          tableName: 'Students',
+          key: 'student_id'
         },
       },
       profile_data: {

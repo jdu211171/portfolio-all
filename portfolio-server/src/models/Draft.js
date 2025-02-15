@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             references: {
                 model: 'Students',
-                key: 'id',
+                key: 'student_id',
             },
         },
         profile_data: {

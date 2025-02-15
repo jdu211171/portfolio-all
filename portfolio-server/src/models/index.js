@@ -11,7 +11,10 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config[config.use_env_variable]);
 } else {
-  sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, config[env]);
+  sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, {
+    ...config[env],
+    logging: console.log,
+  });
 }
 
 const db = {};
@@ -35,8 +38,19 @@ db.Notification = require('./Notification')(sequelize, Sequelize);
 // Example:
 db.Recruiter.hasMany(db.Bookmark, { foreignKey: 'recruiterId', as: 'bookmarks' });
 db.Student.hasMany(db.Bookmark, { foreignKey: 'studentId', as: 'bookmarks' });
+db.Student.hasMany(db.Draft, {
+  foreignKey: "student_id",  // Tells Sequelize Drafts should refer to Student.student_id
+  sourceKey: "student_id",   // Explicitly set source key on Student table
+  as: "drafts",
+});
+
 db.Bookmark.belongsTo(db.Recruiter, { foreignKey: 'recruiterId', as: 'recruiter' });
 db.Bookmark.belongsTo(db.Student, { foreignKey: 'studentId', as: 'student' });
+db.Draft.belongsTo(db.Student, {
+  foreignKey: "student_id",  // This tells Drafts how to reference Student
+  targetKey: "student_id",   // Ensures it joins using Student.student_id, not Student.id
+  as: "student",
+});
 
 module.exports = {
   sequelize,

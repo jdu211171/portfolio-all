@@ -49,7 +49,11 @@ const StudentProfile = ({ userId = 0 }) => {
   const handleBackClick = () => {
     const isRootPath = location.pathname.endsWith("/top");
     if (isRootPath) {
-      navigate("/student");
+      if (location.pathname.startsWith("/checkprofile")) {
+        navigate("/checkprofile");
+      } else {
+        navigate("/student");
+      }
     } else {
       navigate(-1);
     }
@@ -80,7 +84,7 @@ const StudentProfile = ({ userId = 0 }) => {
       <Grid container>
         <Grid></Grid>
       </Grid>
-  
+
       <Box className={styles.topControlButtons}>
         <Box
           display="flex"
@@ -119,12 +123,12 @@ const StudentProfile = ({ userId = 0 }) => {
               </Typography>
             </Box>
             {["Admin", "Staff", "Student"].includes(role) && (
-            <Box>
-              <a href={`mailto:${student.email}`} className={styles.email}>
-                <EmailIcon className={styles.emailIcon} />
-                {student.email}
-              </a>
-            </Box>
+              <Box>
+                <a href={`mailto:${student.email}`} className={styles.email}>
+                  <EmailIcon className={styles.emailIcon} />
+                  {student.email}
+                </a>
+              </Box>
             )}
           </Box>
           <Box className={styles.chipContainer}>
@@ -179,7 +183,8 @@ const StudentProfile = ({ userId = 0 }) => {
       </Box>
       <Outlet />
     </Box>
-  );  
+  );
 };
 
 export default StudentProfile;
+

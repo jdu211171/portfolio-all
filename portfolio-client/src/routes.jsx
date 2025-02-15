@@ -9,6 +9,7 @@ import Login from "./pages/Login/Login";
 import FirstLoginPage from "./pages/FirstLoginPage/FirstLoginPage";
 import Home from "./pages/Home/Home";
 import Student from "./pages/Student/Student";
+import ChekProfile from "./pages/ChekProfile/ChekProfile";
 import Recruiter from "./pages/Recruiter/Recruiter";
 import Staff from "./pages/Staff/Staff";
 import CompanyProfile from "./pages/Profile/CompanyProfile/CompanyProfile";
@@ -37,6 +38,19 @@ const AppRoutes = () => {
               element={<ProtectedLayout allowedRoles={["Admin", "Staff", "Recruiter"]} />}
             >
               <Route index element={<Student key="students" />} />
+              <Route path="profile/:studentId/*" element={<StudentProfile />}>
+                <Route index element={<Navigate to="top" />} />{" "}
+                {/* Redirect index to top */}
+                <Route path="top" element={<Top />} />
+                <Route path="stats" element={<Stats />} />
+              </Route>
+            </Route>
+
+            <Route
+              path="/checkprofile"
+              element={<ProtectedLayout allowedRoles={["Admin", "Staff"]} />}
+            >
+              <Route index element={<ChekProfile key="checkprofile" />} />
               <Route path="profile/:studentId/*" element={<StudentProfile />}>
                 <Route index element={<Navigate to="top" />} />{" "}
                 {/* Redirect index to top */}

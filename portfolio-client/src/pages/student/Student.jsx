@@ -90,14 +90,14 @@ const Student = ({ OnlyBookmarked = false }) => {
 
   const navigate = useNavigate();
 
-  const navigateToProfile = (studentId) => {
-    navigate(`profile/${studentId}`);
+  const navigateToProfile = (student) => {
+    navigate(`profile/${student.id}`);
   };
 
-  const addToBookmark = async (studentId) => {
+  const addToBookmark = async (student) => {
     try {
       const response = await axios.post("/api/bookmarks/toggle", {
-        studentId,
+        studentId: student.id,
         recruiterId,
       });
       setUpdatedBookmark({
@@ -135,7 +135,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       label: t("email"),
       type: "email",
       minWidth: "160px",
-      visibleTo: ["Admin", "Staff"]
+      visibleTo: ["Admin", "Staff"],
     },
     {
       id: "jlpt",
@@ -163,7 +163,9 @@ const Student = ({ OnlyBookmarked = false }) => {
   };
 
   return (
-    <div key={language}> {/* Перерендеринг при смене языка */}
+    <div key={language}>
+      {" "}
+      {/* Перерендеринг при смене языка */}
       <Box sx={{ width: "100%", height: "100px" }}>
         <Filter
           fields={filterProps}
@@ -177,3 +179,4 @@ const Student = ({ OnlyBookmarked = false }) => {
 };
 
 export default Student;
+

@@ -2,7 +2,7 @@
 const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const generatePassword = require('generate-password');
-const { Student, Bookmark, sequelize } = require('../models');
+const { Student, Draft, Bookmark, sequelize } = require('../models');
 const { EmailToStudent } = require('../utils/emailToStudent');
 
 class StudentService {
@@ -100,7 +100,7 @@ class StudentService {
         query[Op.and] = [];
       }
 
-      query[Op.and].push(querySearch, queryOther, { active: true })
+      query[Op.and].push(querySearch, queryOther, { active: true }, { visibility: true })
       if (onlyBookmarked == "true") {
 
         query[Op.and].push(
