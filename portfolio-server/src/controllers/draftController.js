@@ -1,4 +1,7 @@
 const DraftService = require('../services/draftServie');
+const { Draft, Staff, Notification } = require('../models');
+const NotificationService = require('../services/notificationService');
+
 
 class DraftController {
   static async createDraft(req, res) {
@@ -44,13 +47,110 @@ class DraftController {
     }
   }
 
-  static async updateDraft(req, res) {
+  // static async updateDraft(req, res) {
+  //   try {
+  //     const { id } = req.params;
+  //     const draft = await DraftService.update(id, req.body);
+  //     return res.status(200).json(draft);
+  //   } catch (error) {
+  //     return res.status(400).json({ error: error.message });
+  //   }
+  // }
+
+  static async submitDraft(req, res) {
+    try {
+        const { id } = req.params;
+        const { staff_id } = req.body;
+        const draft = await Draft.findByPk(id);
+
+        if (!draft) {
+            return res.status(404).json({ error: 'Draft not found' });
+        }
+        draft.submit_count += 1;
+        draft.status = 'submitted';
+        await draft.save();
+        if (staff_id) {
+          // Agar faqat bitta staff uchun jo‘natilsa
+          const staff = await Staff.findByPk(staff_id);
+          if (!staff) {
+              return res.status(404).json({ error: 'Staff not found' });
+          }
+          await Notification.create({
+              user_id: staff.id,
+              user_role: 'staff',
+              type: 'draft_submitted',
+              message: `Student ${draft.profile_data?.name || "Unknown"} tomonidan profil ma'lumotlari jo'natildi`,
+              status: 'unread',
+              related_id: draft.id
+          });
+        } else {
+          // Agar barcha stafflar uchun jo‘natilsa
+          const staffMembers = await Staff.findAll();
+          for (const staff of staffMembers) {
+              await Notification.create({
+                  user_id: staff.id,
+                  user_role: 'staff',
+                  type: 'draft_submitted',
+                  message: `Student ${draft.profile_data?.name || "Unknown"} tomonidan profil ma'lumotlari jo'natildi`,
+                  status: 'unread',
+                  related_id: draft.id
+              });
+          }
+      }
+        return res.status(200).json({ message: 'Draft successfully submitted', draft });
+
+    } catch (error) {
+        console.error('Error in submitDraft:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+  static async updateStatus(req, res) {
     try {
       const { id } = req.params;
-      const draft = await DraftService.update(id, req.body);
-      return res.status(200).json(draft);
+      console.log("User information:", req.user);
+
+      console.log(id )
+      const { status, comments } = req.body;
+      const reviewed_by = req.user.id; 
+      const usertype = req.user.userType;
+
+      if (usertype.toLowerCase() !== 'staff') {
+        return res.status(403).json({ error: 'Permission denied. Only staff can update status.' });
+      }
+      if (!status) {
+        return res.status(400).json({ error: 'Status is required' });
+      }
+      const draft = await Draft.findOne({ where: { id: id } });
+      console.log(draft);
+      if (!draft) {
+        return res.status(404).json({ error: 'Draft not found' });
+      }   
+      
+
+      if (draft.status === status) {
+        return res.status(400).json({ error: 'Status is already set to this value' });
+      }
+      draft.status = status;
+      draft.reviewed_by = reviewed_by;
+      if (comments) {
+        draft.comments = comments;
+      }
+      await draft.save();
+
+      await NotificationService.create({
+        message: ` Sizning malumotlaringiz "${status}" holatga o'tdi.`,
+        status: 'unread',
+        user_id: draft.student_id, 
+        user_role:'student',
+        type: 'etc', 
+        related_id: draft.id,  
+      });
+      return res.json({ message: 'Draft status updated successfully and notification sent', draft});
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+        console.error(error);
+        return res.status(500).json({ error: 'Internal server error' });
     }
   }
 
@@ -63,6 +163,7 @@ class DraftController {
       return res.status(400).json({ error: error.message });
     }
   }
+
 
   // Controller method to get all students
   static async getAllDrafts(req, res, next) {

@@ -5,8 +5,15 @@ class NotificationService {
     return Notification.create(data);
   }
 
-  static async getById(id) {
-    return Notification.findByPk(id);
+  // static async getById(id) {
+  //   return Notification.findByPk(id);
+  // }
+
+  static async getByUserId(user_id, filter = {}) {
+    return Notification.findAll({
+      where: { user_id, ...filter },
+      order: [['createdAt', 'DESC']]  
+    });
   }
 
   static async update(id, data) {
@@ -28,6 +35,20 @@ class NotificationService {
   static async getAll() {
     return Notification.findAll();
   }
+
+  static async markOneAsRead(notificationId, user_id) {
+    const notification = await Notification.findOne({
+        where: { id: notificationId, user_id, status: "unread" }
+    });
+
+    if (!notification) return null;
+
+    await notification.update({ status: "read" });
+
+    return notification;
+  }
+
+
 }
 
 module.exports = NotificationService;

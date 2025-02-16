@@ -33,9 +33,9 @@ const configureRoutes = (app) => {
   app.use('/api/kintone', kintoneRoutes);
   app.use('/api/webhook', webhookRoutes);
   app.use('/api/settings', settingRoute);
-  app.use('/api/draft', draftRoute);
+  app.use('/api/draft', authMiddleware,draftRoute);
   app.use('/api/log', logRoute);
-  app.use('/api/notification', notificationRoute);
+  app.use('/api/notification', authMiddleware, notificationRoute);
 };
 
 module.exports = configureRoutes;
