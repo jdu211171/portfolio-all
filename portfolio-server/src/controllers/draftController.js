@@ -1,7 +1,8 @@
-const DraftService = require('../services/draftServie');
+const { Student } = require('../models');
 const { Draft, Staff, Notification } = require('../models');
+const DraftService = require('../services/draftServie');
 const NotificationService = require('../services/notificationService');
-
+const emailService = require('../utils/emailService');
 
 class DraftController {
   static async createDraft(req, res) {
@@ -28,7 +29,7 @@ class DraftController {
 
   static async getDraftByStudentId(req, res) {
     try {
-      const { student_id } = req.params; // Get student_id from URL params
+      const { student_id } = req.params; 
 
       if (!student_id) {
         return res.status(400).json({ error: "student_id is required" });
@@ -47,15 +48,45 @@ class DraftController {
     }
   }
 
-  // static async updateDraft(req, res) {
-  //   try {
-  //     const { id } = req.params;
-  //     const draft = await DraftService.update(id, req.body);
-  //     return res.status(200).json(draft);
-  //   } catch (error) {
-  //     return res.status(400).json({ error: error.message });
-  //   }
-  // }
+  static async updateDraft(req, res) {
+    try {
+        const { id } = req.params;
+        console.log(req.user);
+
+        const draft = await Draft.findByPk(id);
+        console.log(id);
+
+        if (!draft) {
+            return res.status(404).json({ error: 'Draft not found' });
+        }
+
+        // `Students` jadvalidan foydalanuvchining student_id sini topamiz
+        const student = await Student.findOne({ where: { id: req.user.id } });
+
+        if (!student) {
+            return res.status(403).json({ error: 'Permission denied. You are not a student.' });
+        }
+
+        // Agar studentning student_id si draftdagi student_id ga mos kelmasa
+        if (student.student_id !== draft.student_id) {
+            return res.status(403).json({ error: 'Permission denied. You can only update your own draft.' });
+        }
+
+        // Faqat `profile_data` yangilanishi kerak
+        if (!req.body.profile_data) {
+            return res.status(400).json({ error: 'Only profile_data can be updated.' });
+        }
+
+        draft.profile_data = req.body.profile_data;
+        await draft.save();
+
+        return res.status(200).json({ message: 'Draft updated successfully', draft });
+
+      } catch (error) {
+        return res.status(400).json({ error: error.message });
+      }
+  }
+
 
   static async submitDraft(req, res) {
     try {
@@ -69,6 +100,7 @@ class DraftController {
         draft.submit_count += 1;
         draft.status = 'submitted';
         await draft.save();
+        const studentName = draft.profile_data?.name || "Unknown";
         if (staff_id) {
           // Agar faqat bitta staff uchun jo‘natilsa
           const staff = await Staff.findByPk(staff_id);
@@ -96,7 +128,15 @@ class DraftController {
                   related_id: draft.id
               });
           }
-      }
+        }
+
+        await emailService.sendEmail(
+          'tillayevx1@gmail.com',  // Hozircha shu emailga yuboramiz
+          'Profil Malumotlari',
+          `Student ${studentName} tomonidan profil malumotlari yangilandi.`,
+          `<p>Student <strong>${studentName}</strong> tomonidan yangi malumotlar jo'natildi.</p>`
+        );
+
         return res.status(200).json({ message: 'Draft successfully submitted', draft });
 
     } catch (error) {
@@ -169,6 +209,7 @@ class DraftController {
   static async getAllDrafts(req, res, next) {
     try {
       let filter
+      console.log(req.query);
       if (req.query.filter) {
         filter = req.query.filter
       } else {
@@ -184,3 +225,6 @@ class DraftController {
 }
 
 module.exports = DraftController;
+
+
+
