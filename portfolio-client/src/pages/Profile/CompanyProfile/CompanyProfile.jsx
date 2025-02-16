@@ -177,7 +177,7 @@ const CompanyProfile = ({ userId = 0 }) => {
           <IconButton onClick={handleBackClick}>
             <ArrowBackIcon />
           </IconButton>
-          | {t["back"]}
+          {/* | {t["back"]} */}
         </Box>
         <Box id="saveButton">
           <Box my={2} className={styles.buttonsContainer}>
