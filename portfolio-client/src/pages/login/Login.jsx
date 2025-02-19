@@ -101,7 +101,7 @@ const Login = () => {
                 <LockOutlinedIcon />
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="パスポートをご入力ください"
+                  placeholder="パスワードをご入力ください"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
