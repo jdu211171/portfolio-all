@@ -44,4 +44,27 @@
   top: -32px;
   gap: 8px;
 }
+/* /////////////////////////// MEDIA ///////////////////////////////////// */
+@media only screen and (max-width: 941px) {
+  .TabsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .TabsContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+}
 
+@media only screen and (max-width: 440px) {
+  .buttonsContainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    gap: 8px;
+  }
+}
