@@ -264,6 +264,14 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               ) : (
                                 row[header.id].split("T")[0]
                               )
+                            ) : header.type === "mapped" ? (
+                              header.subkey ? (
+                                header.map[
+                                  row[header.id][0][header.subkey].split("T")[0]
+                                ]
+                              ) : (
+                                header.map[row[header.id].split("T")[0]]
+                              )
                             ) : header.type === "action" ? (
                               <div
                                 style={{

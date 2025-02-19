@@ -150,10 +150,17 @@ const Student = ({ OnlyBookmarked = false }) => {
     {
       id: "drafts",
       subkey: "status",
+      type: "mapped",
       numeric: false,
       disablePadding: false,
       label: t("check_status"),
       minWidth: "70px",
+      map: {
+        submitted: "未確認",
+        checking: "確認中",
+        resubmission_required: "要修正",
+        approved: "確認済",
+      },
     },
     {
       id: "visibility",
