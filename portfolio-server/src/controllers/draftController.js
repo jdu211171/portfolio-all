@@ -2,7 +2,7 @@ const { Student } = require('../models');
 const { Draft, Staff, Notification } = require('../models');
 const DraftService = require('../services/draftServie');
 const NotificationService = require('../services/notificationService');
-const emailService = require('../utils/emailService');
+// const emailService = require('../utils/emailService');
 
 class DraftController {
   static async createDraft(req, res) {
@@ -116,7 +116,6 @@ class DraftController {
               related_id: draft.id
           });
         } else {
-          // Agar barcha stafflar uchun jo‘natilsa
           const staffMembers = await Staff.findAll();
           for (const staff of staffMembers) {
               await Notification.create({
@@ -130,12 +129,12 @@ class DraftController {
           }
         }
 
-        await emailService.sendEmail(
-          'tillayevx1@gmail.com',  // Hozircha shu emailga yuboramiz
-          'Profil Malumotlari',
-          `Student ${studentName} tomonidan profil malumotlari yangilandi.`,
-          `<p>Student <strong>${studentName}</strong> tomonidan yangi malumotlar jo'natildi.</p>`
-        );
+        // await emailService.sendEmail(
+        //   'tillayevx1@gmail.com',  
+        //   'Profil Malumotlari',
+        //   `Student ${studentName} tomonidan profil malumotlari yangilandi.`,
+        //   `<p>Student <strong>${studentName}</strong> tomonidan yangi malumotlar jo'natildi.</p>`
+        // );
 
         return res.status(200).json({ message: 'Draft successfully submitted', draft });
 
@@ -184,7 +183,7 @@ class DraftController {
         status: 'unread',
         user_id: draft.student_id, 
         user_role:'student',
-        type: 'etc', 
+        type: status.toLowerCase() === 'approved' ? 'approved' : 'etc', 
         related_id: draft.id,  
       });
       return res.json({ message: 'Draft status updated successfully and notification sent', draft});
@@ -225,6 +224,16 @@ class DraftController {
 }
 
 module.exports = DraftController;
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 // Load environment variables from .env file
 dotenv.config();
-
+const CronService = require('./services/cronService');
 const app = express();
 
 // Use cookie-parser middleware
@@ -37,6 +37,8 @@ cron.schedule('0 4 * * *', async () => {
   console.log('syncing with kintone');
   await KintoneService.syncData();
 });
+
+CronService.scheduleJobs();
 
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, "../../portfolio-client/dist/index.html"));
