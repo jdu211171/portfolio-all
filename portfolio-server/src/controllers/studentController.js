@@ -182,6 +182,12 @@ class StudentController {
         }
       }
 
+      if (studentData.visibility === false) {
+        await StudentService.updateStudent(id, {
+          visibility: false,
+        });
+      }
+
       // Password validation
       if (password) {
         const studentWithPassword = await StudentService.getStudentById(req.params.id, true);

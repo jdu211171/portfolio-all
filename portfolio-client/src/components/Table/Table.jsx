@@ -305,12 +305,18 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                   {header.options.map((option) => (
                                     <MenuItem
                                       key={option.label}
-                                      selected={option === "Pyxis"}
                                       onClick={() =>
                                         handleClose(
-                                          row.drafts[0].id,
+                                          option.visibleTo == "Admin"
+                                            ? row.id
+                                            : row.drafts[0].id,
                                           option.action
                                         )
+                                      }
+                                      sx={
+                                        option.visibleTo !== role
+                                          ? { display: "none" }
+                                          : {}
                                       }
                                     >
                                       {option.label}

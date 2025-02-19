@@ -96,6 +96,18 @@ const Student = ({ OnlyBookmarked = false }) => {
     console.log(res);
   };
 
+  const setProfileVisibility = async (id, visibility) => {
+    try {
+      // Example final confirmation logic:
+      const res = await axios.put(`/api/students/${id}`, {
+        visibility: visibility,
+      });
+      showAlert(t["profileConfirmed"], "success");
+    } catch (error) {
+      showAlert(t["errorConfirmingProfile"], "error");
+    }
+  };
+
   const headers = [
     {
       id: "first_name",
@@ -121,7 +133,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       numeric: true,
       disablePadding: false,
       label: t("submit_count"),
-      minWidth: "80px",
+      minWidth: "60px",
     },
     {
       id: "drafts",
@@ -129,7 +141,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       numeric: false,
       disablePadding: false,
       label: t("check_status"),
-      minWidth: "80px",
+      minWidth: "70px",
     },
     {
       id: "visibility",
@@ -137,7 +149,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       type: "status",
       disablePadding: false,
       label: t("check_status"),
-      minWidth: "110px",
+      minWidth: "60px",
     },
     {
       id: "action",
@@ -149,21 +161,38 @@ const Student = ({ OnlyBookmarked = false }) => {
       minWidth: "20px",
       options: [
         {
+          visibleTo: "Staff",
           label: "確認開始",
           action: (id) => {
             updateDraftStatus(id, "checking");
           },
         },
         {
+          visibleTo: "Staff",
           label: "要修正",
           action: (id) => {
             updateDraftStatus(id, "resubmission_required");
           },
         },
         {
+          visibleTo: "Staff",
           label: "確認済",
           action: (id) => {
             updateDraftStatus(id, "approved");
+          },
+        },
+        {
+          visibleTo: "Admin",
+          label: "公開",
+          action: (id) => {
+            setProfileVisibility(id, true);
+          },
+        },
+        {
+          visibleTo: "Admin",
+          label: "非公開",
+          action: (id) => {
+            setProfileVisibility(id, false);
           },
         },
       ],
