@@ -6,11 +6,19 @@ class DraftService {
   // Service method to retrieve all students
   static async getAll(filter) {
     try {
+      console.log(filter)
       const semesterMapping = {
         '1年生': ['1', '2'],
         '2年生': ['3', '4'],
         '3年生': ['5', '6'],
         '4年生': ['7', '8', '9'],
+      }
+
+      const statusMapping = {
+        '未確認': "submitted",
+        '確認中': 'checking',
+        '要修正': 'resubmission_required',
+        '確認済': 'approved',
       }
       const getSemesterNumbers = (term) => {
         return semesterMapping[term] || []; // Return an empty array if term is not found in the mapping
@@ -25,10 +33,10 @@ class DraftService {
       queryOther[Op.and] = [];
 
       const searchableColumns = ['email', 'first_name', 'last_name', 'self_introduction', 'hobbies', 'skills', 'it_skills', 'jlpt']; // Example list of searchable columns
-
+      let statusFilter = ""
       // Iterate through filter keys
       Object.keys(filter).forEach(key => {
-        if (filter[key]) {
+        if (filter[key] && key != "draft_status") {
           // Handle different types of filter values
           if (key === 'search') {
             // Search across all searchable columns
@@ -81,6 +89,13 @@ class DraftService {
             queryOther[key] = filter[key];
           }
         }
+        if (filter[key] && key == "draft_status") {
+          const filteredStatuses = filter[key].map((status) => statusMapping[status]);
+
+          statusFilter = filteredStatuses.length
+            ? `AND d.status IN (${filteredStatuses.map((s) => `'${s}'`).join(", ")})`
+            : "";
+        }
       });
 
       if (!query[Op.and]) {
@@ -105,7 +120,7 @@ class DraftService {
                   (SELECT MAX("updated_at") 
                    FROM "Drafts" AS d
                    WHERE d.student_id = "Student".student_id
-                   AND d.status != 'draft')
+                   AND d.status != 'draft' ${statusFilter})
                 `),
               },
             },

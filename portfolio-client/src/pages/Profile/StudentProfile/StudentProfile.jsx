@@ -128,6 +128,32 @@ const StudentProfile = ({ userId = 0 }) => {
                   <EmailIcon className={styles.emailIcon} />
                   {student.email}
                 </a>
+                <Box className={styles.statusChipContainer}>
+                  <Chip
+                    label={`${t.published}`}
+                    variant="outlined"
+                    color={student.visibility ? "secondary" : "default"}
+                    sx={{
+                      fontSize: "12px",
+                      padding: "2px 6px",
+                      height: "auto",
+                      lineHeight: 1,
+                      width: "80px",
+                    }}
+                  />
+                  <Chip
+                    label={`${t.private}`}
+                    variant="outlined"
+                    color={!student.visibility ? "error" : "default"}
+                    sx={{
+                      fontSize: "12px",
+                      padding: "2px 6px",
+                      height: "auto",
+                      lineHeight: 1,
+                      width: "80px",
+                    }}
+                  />
+                </Box>
               </Box>
             )}
           </Box>

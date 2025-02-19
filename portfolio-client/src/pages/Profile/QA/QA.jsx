@@ -411,7 +411,7 @@ const QA = ({
             </>
           ) : (
             <>
-              {role == "Student" && (
+              {role == "Student" && !isHonban && (
                 <Button
                   onClick={toggleConfirmMode}
                   variant="contained"

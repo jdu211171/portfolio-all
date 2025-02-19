@@ -75,6 +75,18 @@ const Student = ({ OnlyBookmarked = false }) => {
       options: [t("yes"), t("no")],
       minWidth: "160px",
     },
+    {
+      key: "draft_status",
+      label: t("confirmationStatus"),
+      type: "checkbox",
+      options: [
+        t("submitted"),
+        t("checking"),
+        t("resubmission_required"),
+        t("approved"),
+      ],
+      minWidth: "160px",
+    },
   ];
 
   const handleFilterChange = (newFilterState) => {

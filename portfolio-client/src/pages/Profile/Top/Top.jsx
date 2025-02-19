@@ -44,10 +44,10 @@ const Top = () => {
   const [isHonban, setIsHonban] = useState(true);
   const [currentDraft, setCurrentDraft] = useState({});
 
+  const [currentProfileType, setCurrentProfileType] = useState(
+    "本番（承認済み）のプロフィールを閲覧中です。"
+  );
   const [updateQA, SetUpdateQA] = useState(true);
-
-  // ** NEW STATE: controls visibility of the confirm dialog
-  const [confirmMode, setConfirmMode] = useState(false);
 
   const [newImages, setNewImages] = useState([]);
   const [deletedUrls, setDeletedUrls] = useState([]);
@@ -101,6 +101,7 @@ const Top = () => {
 
   // Handlers for applying a previously saved draft / honban
   const setHonban = () => {
+    setCurrentProfileType("本番（承認済み）のプロフィールを閲覧中です。");
     setIsHonban(true);
     setCurrentDraft({});
     fetchStudent();
@@ -111,7 +112,13 @@ const Top = () => {
   };
 
   const setDraft = (draft) => {
-    setIsHonban(false);
+    if (draft.status != "approved") {
+      setCurrentProfileType("下書きのプロフィールを閲覧中です。");
+      setIsHonban(false);
+    } else {
+      setIsHonban(true);
+      setCurrentProfileType("本番（承認済み）のプロフィールを閲覧中です。");
+    }
     setCurrentDraft(draft);
     setEditData((prevEditData) => {
       const updatedEditData = {
@@ -468,7 +475,17 @@ const Top = () => {
         )}
       </Box>
 
-      {/* ---- TAB PANELS ---- */}
+      {role == "Student" && (
+        <Box
+          sx={{
+            mt: "8px",
+            textAlign: "center",
+            color: isHonban ? "green" : "red",
+          }}
+        >
+          {currentProfileType}
+        </Box>
+      )}
       {subTabIndex === 0 && (
         <Box my={2}>
           <TextField
@@ -575,3 +592,4 @@ const Top = () => {
 };
 
 export default Top;
+

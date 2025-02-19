@@ -119,6 +119,7 @@ class StudentController {
   static async getAllStudents(req, res, next) {
     try {
       let filter
+      const userType = req.user.userType;
       if (req.query.filter) {
         filter = req.query.filter
       } else {
@@ -128,7 +129,7 @@ class StudentController {
       const recruiterId = req.query.recruiterId;
       const onlyBookmarked = req.query.onlyBookmarked
 
-      const students = await StudentService.getAllStudents(filter, recruiterId, onlyBookmarked);
+      const students = await StudentService.getAllStudents(filter, recruiterId, onlyBookmarked, userType);
       res.status(200).json(students);
     } catch (error) {
       next(error);

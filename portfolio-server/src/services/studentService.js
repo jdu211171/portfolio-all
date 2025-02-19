@@ -17,7 +17,7 @@ class StudentService {
   }
 
   // Service method to retrieve all students
-  static async getAllStudents(filter, recruiterId, onlyBookmarked) {
+  static async getAllStudents(filter, recruiterId, onlyBookmarked, userType) {
     try {
       const semesterMapping = {
         '1年生': ['1', '2'],
@@ -100,7 +100,10 @@ class StudentService {
         query[Op.and] = [];
       }
 
-      query[Op.and].push(querySearch, queryOther, { active: true }, { visibility: true })
+      query[Op.and].push(querySearch, queryOther, { active: true })
+      if (userType == "Recruiter") {
+        query[Op.and].push({ visibility: true })
+      }
       if (onlyBookmarked == "true") {
 
         query[Op.and].push(

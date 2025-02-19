@@ -151,6 +151,14 @@ const translations = {
     },
   },
   ja: {
+    confirmationStatus: "確認状況",
+    published: "公開中",
+    private: "非公開",
+    submitted: "未確認",
+    checking: "確認中",
+    resubmission_required: "要修正",
+    approved: "確認済",
+
     general: "一般",
     home: "ホーム",
     profile: "プロフィール",
