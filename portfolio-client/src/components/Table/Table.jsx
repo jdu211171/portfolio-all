@@ -16,7 +16,12 @@ import {
   TableSortLabel,
   Chip,
   LinearProgress,
+  Menu,
+  MenuItem,
+  IconButton,
 } from "@mui/material";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { stableSort, getComparator } from "./TableUtils"; // Import sorting utilities
 import { useLanguage } from "../../contexts/LanguageContext"; // Используем контекст языка
@@ -35,6 +40,16 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false); // Initialize loading state
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = (id, action) => {
+    action(id);
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -123,18 +138,13 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                       padding={"normal"}
                       sortDirection={orderBy === header.id ? order : false}
                     >
-                      <TableSortLabel
+                      {/* <TableSortLabel
                         active={orderBy === header.id}
                         direction={orderBy === header.id ? order : "asc"}
                         onClick={() => handleRequestSort(header.id)}
-                      >
-                        {header.label}
-                        {orderBy === header.id ? (
-                          <Box component="span" sx={{ visuallyHidden: true }}>
-                            {order === "desc" ? "" : ""}
-                          </Box>
-                        ) : null}
-                      </TableSortLabel>
+                      > */}
+                      {header.label}
+                      {/* </TableSortLabel> */}
                     </TableCell>
                   )
               )}
@@ -179,11 +189,20 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 ? style.hoverEffect
                                 : style.default
                             }
-                            style={
-                              header.type === "avatar"
-                                ? { minWidth: header.minWidth, padding: "4px" }
-                                : { minWidth: header.minWidth }
-                            }
+                            style={{
+                              minWidth: header.minWidth,
+                              padding:
+                                header.type === "avatar" ? "4px" : undefined,
+                              ...(header.type === "action"
+                                ? {
+                                    position: "sticky",
+                                    right: 0,
+                                    background: "#fff",
+                                    zIndex: 10,
+                                    width: "20px",
+                                  }
+                                : {}),
+                            }}
                           >
                             {header.type === "bookmark" ? (
                               <>
@@ -245,6 +264,60 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               ) : (
                                 row[header.id].split("T")[0]
                               )
+                            ) : header.type === "action" ? (
+                              <div
+                                style={{
+                                  borderLeft:
+                                    "1px solid rgba(224, 224, 224, 1)",
+                                  display: "flex",
+                                  justifyContent: "flex-end",
+                                }}
+                              >
+                                <IconButton
+                                  aria-label="more"
+                                  id="long-button"
+                                  aria-controls={open ? "long-menu" : undefined}
+                                  aria-expanded={open ? "true" : undefined}
+                                  aria-haspopup="true"
+                                  onClick={handleClick}
+                                >
+                                  <MoreVertIcon />
+                                </IconButton>
+                                <Menu
+                                  id="long-menu"
+                                  MenuListProps={{
+                                    "aria-labelledby": "long-button",
+                                  }}
+                                  anchorOrigin={{
+                                    vertical: "bottom",
+                                    horizontal: "right",
+                                  }}
+                                  transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                  }}
+                                  anchorEl={anchorEl}
+                                  open={open}
+                                  onClose={() => {
+                                    setAnchorEl(null);
+                                  }}
+                                >
+                                  {header.options.map((option) => (
+                                    <MenuItem
+                                      key={option.label}
+                                      selected={option === "Pyxis"}
+                                      onClick={() =>
+                                        handleClose(
+                                          row.drafts[0].id,
+                                          option.action
+                                        )
+                                      }
+                                    >
+                                      {option.label}
+                                    </MenuItem>
+                                  ))}
+                                </Menu>
+                              </div>
                             ) : header.isJSON ? (
                               JSON.parse(row[header.id])?.highest ? (
                                 JSON.parse(row[header.id])?.highest

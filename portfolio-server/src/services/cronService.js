@@ -64,7 +64,7 @@ class CronService {
             // Har bir staff xodimiga email jo‘natish
             for (const email of staffEmails) {
                 await emailService.sendEmail(
-                    email,
+                    "botirovs03@gmail.com",
                     '📩 本日提出された学生の情報',
                     `本日提出された学生情報の一覧`,
                     emailBody
@@ -81,7 +81,7 @@ class CronService {
 
     static scheduleJobs() {
         console.log('📌 Cron job started at 13:14 (UTC+5)');
-        cron.schedule('14 13 * * *', CronService.sendDraftEmails);
+        cron.schedule('34 21 * * *', CronService.sendDraftEmails);
     }
 }
 

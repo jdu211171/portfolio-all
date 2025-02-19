@@ -111,7 +111,6 @@ class DraftService {
             },
           },
         ],
-        logging: console.log, // Log SQL query
       });
 
 

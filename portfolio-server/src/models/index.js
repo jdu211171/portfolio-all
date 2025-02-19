@@ -13,7 +13,6 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, {
     ...config[env],
-    logging: console.log,
   });
 }
 

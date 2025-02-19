@@ -131,7 +131,6 @@ const QA = ({
 
   const toggleEditMode = () => {
     setEditMode((prev) => !prev);
-    console.log(!editMode);
     setTopEditMode(!editMode);
   };
   const toggleConfirmMode = () => {
@@ -148,7 +147,6 @@ const QA = ({
         status: "submitted",
         submit_count: Number(currentDraft.submit_count + 1),
       });
-      console.log(res);
       showAlert(t["profileConfirmed"], "success");
     } catch (error) {
       showAlert(t["errorConfirmingProfile"], "error");
@@ -165,8 +163,6 @@ const QA = ({
         status: value,
         comments: comment.comment,
       });
-      console.log(res);
-      console.log(userId);
       showAlert(t["profileConfirmed"], "success");
     } catch (error) {
       showAlert(t["errorConfirmingProfile"], "error");
@@ -182,7 +178,6 @@ const QA = ({
       const res = await axios.put(`/api/students/${id}`, {
         visibility: visibility,
       });
-      console.log(res);
       showAlert(t["profileConfirmed"], "success");
     } catch (error) {
       showAlert(t["errorConfirmingProfile"], "error");

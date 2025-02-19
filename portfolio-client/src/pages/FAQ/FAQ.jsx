@@ -128,7 +128,6 @@ const FAQ = () => {
   const handleDelete = (indexToDelete) => {
     setEditData((prevEditData) =>
       prevEditData.filter((_, index) => {
-        console.log(_, index);
         return index != indexToDelete;
       })
     );

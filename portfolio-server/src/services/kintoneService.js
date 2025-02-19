@@ -171,7 +171,7 @@ class KintoneService {
   static async syncData() {
     try {
       let students = (await this.getAllRecords("students")).records
-      console.log(students.length)
+      
       let certificate_jlpt = (await this.getAllRecords("certificate_jlpt")).records
       let certificate_jdu_jlpt = (await this.getAllRecords("certificate_jdu_jlpt")).records
       let certificate_ielts = (await this.getAllRecords("certificate_ielts")).records

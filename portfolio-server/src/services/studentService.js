@@ -154,6 +154,29 @@ class StudentService {
     }
   }
 
+  // Service method to retrieve a student by student_id
+  static async getStudentByStudentId(studentId, password = false) {
+    try {
+      let excluded = ['createdAt', 'updatedAt'];
+      if (!password) {
+        excluded.push('password');
+      }
+
+      const student = await Student.findOne({
+        where: { student_id: studentId }, // Search by student_id instead of id
+        attributes: { exclude: excluded },
+      });
+
+      if (!student) {
+        throw new Error('Student not found');
+      }
+
+      return student;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // Service method to update a student
   static async updateStudent(studentId, studentData) {
     try {

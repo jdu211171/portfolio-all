@@ -128,7 +128,6 @@ const Top = () => {
   // Edit data update
   // ---------------------
   const handleUpdateEditData = (key, value) => {
-    console.log(key, value);
     setEditData((prevEditData) => ({
       ...prevEditData,
       draft: {
@@ -136,7 +135,6 @@ const Top = () => {
         [key]: value,
       },
     }));
-    console.log(editData);
   };
 
   // ---------------------
@@ -261,7 +259,6 @@ const Top = () => {
             { headers: { "Content-Type": "multipart/form-data" } }
           );
           const deliverableImageLink = deliverableFileResponse.data.Location;
-          console.log(deliverableImageLink);
           // Update the deliverable's imageLink
           editData.draft.deliverables[index].imageLink = deliverableImageLink;
         }

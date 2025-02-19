@@ -16,7 +16,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     studentId: null,
     timestamp: new Date().getTime(),
   });
-  const recruiterId = JSON.parse(sessionStorage.getItem("loginUser")).id;
+  const userId = JSON.parse(sessionStorage.getItem("loginUser")).id;
 
   const filterProps = [
     {
@@ -40,13 +40,6 @@ const Student = ({ OnlyBookmarked = false }) => {
       options: ["N1", "N2", "N3", "N4", "N5"],
       minWidth: "160px",
     },
-    // {  //deleted from table // todo, disscuss, whether it is managed by student?
-    //   key: "ielts",
-    //   label: t("ielts"),
-    //   type: "checkbox",
-    //   options: ["6.0", "6.5", "7.0", "7.5", "8.0"],
-    //   minWidth: "160px",
-    // },
     {
       key: "jdu_japanese_certification",
       label: t("jdu_certification"),
@@ -92,6 +85,15 @@ const Student = ({ OnlyBookmarked = false }) => {
 
   const navigateToProfile = (student) => {
     navigate(`profile/${student.id}/top`, { state: { student } });
+  };
+
+  const updateDraftStatus = async (draftId, status) => {
+    console.log(draftId, status);
+    const res = await axios.put(`/api/draft/status/${draftId}`, {
+      status: status,
+      reviewed_by: userId,
+    });
+    console.log(res);
   };
 
   const headers = [
@@ -140,11 +142,31 @@ const Student = ({ OnlyBookmarked = false }) => {
     {
       id: "action",
       numeric: false,
-      disablePadding: false,
-      label: t("action"),
+      disablePadding: true,
+      label: t(""),
       isJSON: false,
       type: "action",
-      minWidth: "110px",
+      minWidth: "20px",
+      options: [
+        {
+          label: "確認開始",
+          action: (id) => {
+            updateDraftStatus(id, "checking");
+          },
+        },
+        {
+          label: "要修正",
+          action: (id) => {
+            updateDraftStatus(id, "resubmission_required");
+          },
+        },
+        {
+          label: "確認済",
+          action: (id) => {
+            updateDraftStatus(id, "approved");
+          },
+        },
+      ],
     },
   ];
 
@@ -152,7 +174,7 @@ const Student = ({ OnlyBookmarked = false }) => {
     headers: headers,
     dataLink: "/api/draft",
     filter: filterState,
-    recruiterId: recruiterId,
+    recruiterId: userId,
     OnlyBookmarked: OnlyBookmarked,
   };
 
