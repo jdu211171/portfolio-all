@@ -46,31 +46,34 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = (id, action) => {
-    action(id);
+  const handleClose = async (id, action) => {
+    let res = await action(id);
+    if (res) {
+      fetchUserData();
+    }
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true); // Start loading indicator
-      try {
-        const response = await axios.get(tableProps.dataLink, {
-          params: {
-            filter: tableProps.filter,
-            recruiterId: tableProps.recruiterId,
-            onlyBookmarked: tableProps.OnlyBookmarked, // Assuming you add recruiterId to the filter
-          },
-        });
-        setRows(response.data);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-        // Handle error: Set error state, display error message, etc.
-      } finally {
-        setLoading(false); // Stop loading indicator regardless of success or failure
-      }
-    };
+  const fetchUserData = async () => {
+    setLoading(true); // Start loading indicator
+    try {
+      const response = await axios.get(tableProps.dataLink, {
+        params: {
+          filter: tableProps.filter,
+          recruiterId: tableProps.recruiterId,
+          onlyBookmarked: tableProps.OnlyBookmarked, // Assuming you add recruiterId to the filter
+        },
+      });
+      setRows(response.data);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      // Handle error: Set error state, display error message, etc.
+    } finally {
+      setLoading(false); // Stop loading indicator regardless of success or failure
+    }
+  };
 
+  useEffect(() => {
     fetchUserData();
   }, [tableProps.dataLink, tableProps.filter]);
 

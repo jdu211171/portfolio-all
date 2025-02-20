@@ -168,7 +168,6 @@ class StudentController {
 
           // Extract profile data from the draft
           const profileData = latestApprovedDraft.profile_data || {};
-          console.log(profileData)
           // Update the student with the draft data
           await StudentService.updateStudent(id, {
             ...profileData, // Apply profile data from the draft
@@ -176,10 +175,11 @@ class StudentController {
           });
 
           const draftQAData = latestApprovedDraft.profile_data?.qa || {};
-
-          Object.entries(draftQAData.idList).forEach(async ([key, category]) => {
-            const updatedQA = await QAService.updateQA(key, draftQAData[category]);
-          });
+          if (draftQAData.idList) {
+            Object.entries(draftQAData.idList).forEach(async ([key, category]) => {
+              const updatedQA = await QAService.updateQA(key, draftQAData[category]);
+            });
+          }
         }
       }
 

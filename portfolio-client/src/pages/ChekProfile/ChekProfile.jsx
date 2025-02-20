@@ -5,6 +5,7 @@ import Table from "../../components/Table/Table";
 import Filter from "../../components/Filter/Filter";
 
 import axios from "../../utils/axiosUtils";
+import { useAlert } from "../../contexts/AlertContext";
 import { useLanguage } from "../../contexts/LanguageContext"; // Подключение контекста языка
 import translations from "../../locales/translations"; // Подключение переводов
 
@@ -12,6 +13,9 @@ const Student = ({ OnlyBookmarked = false }) => {
   const { language } = useLanguage(); // Получение текущего языка из контекста
   const t = (key) => translations[language][key] || key; // Функция перевода
   const [filterState, setFilterState] = useState({});
+
+  const showAlert = useAlert();
+
   const [updatedBookmark, setUpdatedBookmark] = useState({
     studentId: null,
     timestamp: new Date().getTime(),
@@ -105,7 +109,12 @@ const Student = ({ OnlyBookmarked = false }) => {
       status: status,
       reviewed_by: userId,
     });
-    console.log(res);
+    if (res.status == 200) {
+      showAlert(t["profileConfirmed"], "success");
+      return true;
+    } else {
+      return false;
+    }
   };
 
   const setProfileVisibility = async (id, visibility) => {
@@ -114,7 +123,13 @@ const Student = ({ OnlyBookmarked = false }) => {
       const res = await axios.put(`/api/students/${id}`, {
         visibility: visibility,
       });
-      showAlert(t["profileConfirmed"], "success");
+
+      if (res.status == 200) {
+        showAlert(t["profileConfirmed"], "success");
+        return true;
+      } else {
+        return false;
+      }
     } catch (error) {
       showAlert(t["errorConfirmingProfile"], "error");
     }
