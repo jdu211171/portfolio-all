@@ -57,15 +57,23 @@ class CronService {
             emailBody += `
                         </tbody>
                     </table>
-                    <p style="margin-top: 20px; color: #777;">📧 ここで情報を確認できます. http://localhost:4000.</p>
+                    <p style="margin-top: 20px; color: #777;">📧 ここで情報を確認できます: <a href="https://portfolio.jdu.uz">https://portfolio.jdu.uz</a></p>
+                    <hr style="margin-top: 20px; border: none; border-top: 1px solid #ddd;">
+                    <p style="color: #888; font-size: 12px;">⚠ このメールはシステムによって自動的に送信されました。返信しないでください。</p>
                 </div>
             `;
+
+            const today = new Date().toLocaleDateString("ja-JP", {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+            }); // Format: YYYY/MM/DD (Japanese format)
 
             // Har bir staff xodimiga email jo‘natish
             for (const email of staffEmails) {
                 await emailService.sendEmail(
-                    "botirovs03@gmail.com",
-                    '📩 本日提出された学生の情報',
+                    email,
+                    `📩 本日提出された学生の情報 (${today})`,
                     `本日提出された学生情報の一覧`,
                     emailBody
                 );
@@ -81,7 +89,7 @@ class CronService {
 
     static scheduleJobs() {
         console.log('📌 Cron job started at 13:14 (UTC+5)');
-        cron.schedule('34 21 * * *', CronService.sendDraftEmails);
+        cron.schedule('00 06 * * *', CronService.sendDraftEmails);
     }
 }
 
