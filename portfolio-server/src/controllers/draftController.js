@@ -99,7 +99,7 @@ class DraftController {
       draft.submit_count += 1;
       draft.status = 'submitted';
       await draft.save();
-      const studentName = draft.profile_data?.name || "Unknown";
+      const studentID = draft.student_id || "Unknown";
       if (staff_id) {
         // Agar faqat bitta staff uchun jo‘natilsa
         const staff = await Staff.findByPk(staff_id);
@@ -110,7 +110,7 @@ class DraftController {
           user_id: staff.id,
           user_role: 'staff',
           type: 'draft_submitted',
-          message: `Student ${draft.profile_data?.name || "Unknown"} tomonidan profil ma'lumotlari jo'natildi`,
+          message: `Student ${studentID} tomonidan profil ma'lumotlari jo'natildi`,
           status: 'unread',
           related_id: draft.id
         });
@@ -121,7 +121,7 @@ class DraftController {
             user_id: staff.id,
             user_role: 'staff',
             type: 'draft_submitted',
-            message: `Student ${draft.profile_data?.name || "Unknown"} tomonidan profil ma'lumotlari jo'natildi`,
+            message: `Student ${studentID} tomonidan profil ma'lumotlari jo'natildi`,
             status: 'unread',
             related_id: draft.id
           });

@@ -158,6 +158,8 @@ const translations = {
     checking: "確認中",
     resubmission_required: "要修正",
     approved: "確認済",
+    start_checking: "確認開始",
+    setToChecking: "ステータスが確認中に更新されました",
 
     general: "一般",
     home: "ホーム",

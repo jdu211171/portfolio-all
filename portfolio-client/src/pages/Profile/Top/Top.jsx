@@ -42,6 +42,7 @@ const Top = () => {
   const [editData, setEditData] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [isHonban, setIsHonban] = useState(true);
+  const [isChecking, setIsChecking] = useState(false);
   const [currentDraft, setCurrentDraft] = useState({});
 
   const [currentProfileType, setCurrentProfileType] = useState(
@@ -60,6 +61,14 @@ const Top = () => {
   const fetchStudent = async () => {
     if (statedata) {
       setDraft(statedata.drafts[0]);
+      if (
+        statedata.drafts[0].status == "checking" ||
+        statedata.drafts[0].status == "approved"
+      ) {
+        setIsChecking(true);
+      } else {
+        setIsChecking(false);
+      }
     } else {
       try {
         const response = await axios.get(`/api/students/${id}`);
@@ -129,6 +138,17 @@ const Top = () => {
       return updatedEditData;
     });
     SetUpdateQA(!updateQA);
+  };
+
+  const updateDraftStatus = async (draftId) => {
+    const res = await axios.put(`/api/draft/status/${draftId}`, {
+      status: "checking",
+      reviewed_by: userId,
+    });
+    if (res.status == 200) {
+      showAlert(t("setToChecking"), "success");
+      setIsChecking(true);
+    }
   };
 
   // ---------------------
@@ -474,7 +494,25 @@ const Top = () => {
           />
         )}
       </Box>
-
+      {role == "Staff" && !isChecking && (
+        <Box
+          sx={{
+            my: 2,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            onClick={() => updateDraftStatus(currentDraft.id)}
+            variant="contained"
+            color="warning"
+            size="small"
+            sx={{ width: "80%", height: "36px", fontSize: "18px" }}
+          >
+            {t("start_checking")}
+          </Button>
+        </Box>
+      )}
       {role == "Student" && (
         <Box
           sx={{

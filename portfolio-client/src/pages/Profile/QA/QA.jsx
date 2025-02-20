@@ -143,11 +143,10 @@ const QA = ({
   const handleConfirmProfile = async () => {
     try {
       // Example final confirmation logic:
-      const res = await axios.put(`/api/draft/${currentDraft.id}`, {
-        status: "submitted",
-        submit_count: Number(currentDraft.submit_count + 1),
-      });
-      showAlert(t["profileConfirmed"], "success");
+      const res = await axios.put(`/api/draft/${currentDraft.id}/submit`);
+      if (res.status == 200) {
+        showAlert(t["profileConfirmed"], "success");
+      }
     } catch (error) {
       showAlert(t["errorConfirmingProfile"], "error");
     } finally {
@@ -159,7 +158,7 @@ const QA = ({
   const approveProfile = async (value) => {
     try {
       // Example final confirmation logic:
-      const res = await axios.put(`/api/draft/${currentDraft.id}`, {
+      const res = await axios.put(`/api/draft/status/${currentDraft.id}`, {
         status: value,
         comments: comment.comment,
       });
@@ -570,30 +569,34 @@ const QA = ({
               </Box>
             </>
           ) : (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 10,
-              }}
-            >
-              <Button
-                onClick={() => setProfileVisible(false)}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                非公開
-              </Button>
-              <Button
-                onClick={() => setProfileVisible(true)}
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                公開
-              </Button>
-            </Box>
+            <>
+              {role == "Admin" && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 10,
+                  }}
+                >
+                  <Button
+                    onClick={() => setProfileVisible(false)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    非公開
+                  </Button>
+                  <Button
+                    onClick={() => setProfileVisible(true)}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                  >
+                    公開
+                  </Button>
+                </Box>
+              )}
+            </>
           )}
         </Box>
       )}
