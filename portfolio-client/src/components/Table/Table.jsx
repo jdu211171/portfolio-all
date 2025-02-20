@@ -40,18 +40,27 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false); // Initialize loading state
+  const [refresher, setRefresher] = useState(0);
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [anchorEls, setAnchorEls] = useState({});
+
+  const open = Boolean(anchorEls);
+  const handleClick = (event, rowId) => {
+    setAnchorEls((prev) => ({
+      ...prev,
+      [rowId]: event.currentTarget, // Store anchor element for this row
+    }));
   };
   const handleClose = async (id, action) => {
-    let res = await action(id);
-    if (res) {
-      fetchUserData();
+    let res = false;
+    res = await action(id);
+    if (res == undefined) {
+      setRefresher(refresher + 1);
     }
-    setAnchorEl(null);
+    setAnchorEls((prev) => ({
+      ...prev,
+      [id]: null, // Reset the anchor for this row
+    }));
   };
 
   const fetchUserData = async () => {
@@ -75,7 +84,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
 
   useEffect(() => {
     fetchUserData();
-  }, [tableProps.dataLink, tableProps.filter]);
+  }, [tableProps.dataLink, tableProps.filter, refresher]);
 
   useEffect(() => {
     if (updatedBookmark?.studentId) {
@@ -121,7 +130,6 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
-
   return (
     <Box sx={{ width: "100%", border: "1px solid #eee", borderRadius: "10px" }}>
       <TableContainer>
@@ -286,16 +294,16 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                               >
                                 <IconButton
                                   aria-label="more"
-                                  id="long-button"
+                                  id={"icon-button-" + row.id}
                                   aria-controls={open ? "long-menu" : undefined}
                                   aria-expanded={open ? "true" : undefined}
                                   aria-haspopup="true"
-                                  onClick={handleClick}
+                                  onClick={(e) => handleClick(e, row.id)}
                                 >
                                   <MoreVertIcon />
                                 </IconButton>
                                 <Menu
-                                  id="long-menu"
+                                  id={"long-menu" + row.id}
                                   MenuListProps={{
                                     "aria-labelledby": "long-button",
                                   }}
@@ -307,15 +315,20 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                     vertical: "top",
                                     horizontal: "right",
                                   }}
-                                  anchorEl={anchorEl}
-                                  open={open}
+                                  anchorEl={anchorEls[row.id] || null} // Use row-specific anchorEl
+                                  open={Boolean(anchorEls[row.id])} // Only open if this row's menu is clicked
                                   onClose={() => {
-                                    setAnchorEl(null);
-                                  }}
+                                    setAnchorEls((prev) => ({
+                                      ...prev,
+                                      [row.id]: null, // Reset the anchor for this row
+                                    }));
+                                  }} // Close only this row's menu
                                 >
-                                  {header.options.map((option) => (
+                                  {header.options.map((option, key) => (
                                     <MenuItem
-                                      key={option.label}
+                                      key={
+                                        option.label + "-" + row.id + "-" + key
+                                      }
                                       onClick={() =>
                                         handleClose(
                                           option.visibleTo == "Admin"
