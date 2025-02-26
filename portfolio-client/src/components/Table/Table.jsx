@@ -263,7 +263,7 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                   fontSize: "16px",
                                 }}
                               >
-                                {row[header.id] ? "○" : "×"}
+                                {row[header.id] ? "公開" : "非公開"}
                               </div>
                             ) : header.type === "email" ? (
                               <a href={`mailto:${row[header.id]}`}>
@@ -355,11 +355,12 @@ const EnhancedTable = ({ tableProps, updatedBookmark }) => {
                                 "未提出"
                               )
                             ) : row[header.id] ? (
-                              header.subkey ? (
-                                row[header.id][0][header.subkey]
-                              ) : (
-                                row[header.id]
-                              )
+                              <>
+                                {header.subkey ? 
+                                (row[header.id][0][header.subkey] ) : 
+                                (row[header.id] )}
+                                {header.suffix ? header.suffix : ""}
+                              </>
                             ) : (
                               "N/A"
                             )}

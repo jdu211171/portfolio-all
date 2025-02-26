@@ -161,6 +161,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       disablePadding: false,
       label: t("submit_count"),
       minWidth: "60px",
+      suffix: '回',
     },
     {
       id: "drafts",
@@ -183,6 +184,14 @@ const Student = ({ OnlyBookmarked = false }) => {
       type: "status",
       disablePadding: false,
       label: t("check_status"),
+      minWidth: "60px",
+    },
+    {
+      id: "email",
+      numeric: false,
+      type: "email",
+      disablePadding: false,
+      label: t("email"),
       minWidth: "60px",
     },
     {
