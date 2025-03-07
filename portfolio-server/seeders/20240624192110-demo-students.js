@@ -7,6 +7,44 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const studentsData = [];
 
+    studentsData.push({
+  email: 'your.custom.email@example.com',
+  password: await bcrypt.hash('yourSecurePassword', await bcrypt.genSalt(10)),
+  student_id: '12345678',
+  first_name: 'Custom',
+  last_name: 'User',
+  date_of_birth: new Date('1995-01-01'),
+  photo: "https://randomuser.me/api/portraits/med/men/1.jpg",
+  self_introduction: 'This is a custom user added for testing purposes.',
+  hobbies: 'Reading, Coding',
+  gallery: JSON.stringify(["https://example.com/image1.jpg", "https://example.com/image2.jpg"]),
+  skills: JSON.stringify({
+    "上級": [{ "name": "Leadership", "color": "#4285F4" }],
+    "中級": [{ "name": "Teamwork", "color": "#FBBC05" }]
+  }),
+  it_skills: JSON.stringify({
+    "上級": [{ "name": "Python", "color": "#34A853" }],
+    "初級": [{ "name": "Docker", "color": "#EA4335" }]
+  }),
+  other_information: 'Other custom information.',
+  semester: '4',
+  partner_university: 'Example University',
+  partner_university_credits: 60,
+  deliverables: JSON.stringify([
+    { title: 'Custom Project', link: 'https://example.com', description: 'Description here.' }
+  ]),
+  jlpt: JSON.stringify({ highest: 'N2', jlptlist: [] }),
+  ielts: JSON.stringify({ highest: '7.5', ieltslist: [] }),
+  jdu_japanese_certification: JSON.stringify({ highest: 'N2' }),
+  japanese_speech_contest: 'First Place',
+  it_contest: 'Champion',
+  active: true,
+  kintone_id: 12345,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+});
+
+
     for (let i = 0; i < 10; i++) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('password123', salt);
