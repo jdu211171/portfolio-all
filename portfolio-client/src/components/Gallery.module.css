@@ -58,3 +58,14 @@
   font-size: 24px;
   color: #ccc;
 }
+
+/* MEDIA */
+/* @media only screen and (max-width: 440px) {
+  .galleryContainer {
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+  .galleryImage {
+    min-width: 145px;
+  }
+} */

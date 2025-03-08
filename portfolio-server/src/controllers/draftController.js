@@ -1,30 +1,33 @@
-const { Student } = require('../models');
-const { Draft, Staff, Notification } = require('../models');
-const DraftService = require('../services/draftServie');
-const NotificationService = require('../services/notificationService');
-const StudentService = require('../services/studentService');
+const { Student } = require("../models");
+const { Draft, Staff, Notification } = require("../models");
+const DraftService = require("../services/draftServie");
+const NotificationService = require("../services/notificationService");
+const StudentService = require("../services/studentService");
 // const emailService = require('../utils/emailService');
 
 class DraftController {
   static async createOrUpdateDraft(req, res) {
     try {
       const student_id = req.body.student_id;
-      const { profile_data, status,comments, reviewed_by } = req.body;
+      const { profile_data, status, comments, reviewed_by } = req.body;
 
       if (!student_id || !profile_data || !status) {
-        return res.status(400).json({ error: 'student_id, profile_data, and status are required' });
+        return res
+          .status(400)
+          .json({ error: "student_id, profile_data, and status are required" });
       }
 
       const draft = await DraftService.createOrUpdate(
         student_id,
         profile_data,
         status,
-        comments || null,  
-        reviewed_by || null 
+        comments || null,
+        reviewed_by || null
       );
 
-      return res.status(200).json({ message: 'Draft saved successfully', draft });
-
+      return res
+        .status(200)
+        .json({ message: "Draft saved successfully", draft });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
@@ -35,7 +38,7 @@ class DraftController {
       const { id } = req.params;
       const draft = await DraftService.getById(id);
       if (!draft) {
-        return res.status(404).json({ error: 'Draft not found' });
+        return res.status(404).json({ error: "Draft not found" });
       }
       return res.status(200).json(draft);
     } catch (error) {
@@ -54,7 +57,9 @@ class DraftController {
       const drafts = await DraftService.getByStudentId(student_id);
 
       if (!drafts || drafts.length === 0) {
-        return res.status(404).json({ message: "No drafts found for this student" });
+        return res
+          .status(404)
+          .json({ message: "No drafts found for this student" });
       }
 
       return res.status(200).json(drafts);
@@ -101,7 +106,6 @@ class DraftController {
   //   }
   // }
 
-
   static async submitDraft(req, res) {
     try {
       const { id } = req.params;
@@ -109,55 +113,55 @@ class DraftController {
       const draft = await Draft.findByPk(id);
 
       if (!draft) {
-        return res.status(404).json({ error: 'Draft not found' });
+        return res.status(404).json({ error: "Draft not found" });
       }
       draft.submit_count += 1;
-      draft.status = 'submitted';
+      draft.status = "submitted";
       await draft.save();
       const studentID = draft.student_id || "Unknown";
       if (staff_id) {
         // Agar faqat bitta staff uchun jo‘natilsa
         const staff = await Staff.findByPk(staff_id);
         if (!staff) {
-          return res.status(404).json({ error: 'Staff not found' });
+          return res.status(404).json({ error: "Staff not found" });
         }
         await Notification.create({
           user_id: staff.id,
-          user_role: 'staff',
-          type: 'draft_submitted',
+          user_role: "staff",
+          type: "draft_submitted",
           message: `Student ${studentID} tomonidan profil ma'lumotlari jo'natildi`,
-          status: 'unread',
-          related_id: draft.id
+          status: "unread",
+          related_id: draft.id,
         });
       } else {
         const staffMembers = await Staff.findAll();
         for (const staff of staffMembers) {
           await Notification.create({
             user_id: staff.id,
-            user_role: 'staff',
-            type: 'draft_submitted',
+            user_role: "staff",
+            type: "draft_submitted",
             message: `Student ${studentID} tomonidan profil ma'lumotlari jo'natildi`,
-            status: 'unread',
-            related_id: draft.id
+            status: "unread",
+            related_id: draft.id,
           });
         }
       }
 
       // await emailService.sendEmail(
-      //   'tillayevx1@gmail.com',  
+      //   'tillayevx1@gmail.com',
       //   'Profil Malumotlari',
       //   `Student ${studentName} tomonidan profil malumotlari yangilandi.`,
       //   `<p>Student <strong>${studentName}</strong> tomonidan yangi malumotlar jo'natildi.</p>`
       // );
 
-      return res.status(200).json({ message: 'Draft successfully submitted', draft });
-
+      return res
+        .status(200)
+        .json({ message: "Draft successfully submitted", draft });
     } catch (error) {
-      console.error('Error in submitDraft:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
+      console.error("Error in submitDraft:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   }
-
 
   static async updateStatus(req, res) {
     try {
@@ -171,16 +175,17 @@ class DraftController {
       //   return res.status(403).json({ error: 'Permission denied. Only staff can update status.' });
       // }
       if (!status) {
-        return res.status(400).json({ error: 'Status is required' });
+        return res.status(400).json({ error: "Status is required" });
       }
       const draft = await Draft.findOne({ where: { id: id } });
       if (!draft) {
-        return res.status(404).json({ error: 'Draft not found' });
+        return res.status(404).json({ error: "Draft not found" });
       }
 
-
       if (draft.status === status) {
-        return res.status(200).json({ error: 'Status is already set to this value' });
+        return res
+          .status(200)
+          .json({ error: "Status is already set to this value" });
       }
       draft.status = status;
       draft.reviewed_by = reviewed_by;
@@ -188,20 +193,25 @@ class DraftController {
         draft.comments = comments;
       }
       await draft.save();
-      let student = await StudentService.getStudentByStudentId(draft.student_id)
+      let student = await StudentService.getStudentByStudentId(
+        draft.student_id
+      );
 
       await NotificationService.create({
         message: ` Sizning malumotlaringiz "${status}" holatga o'tdi.`,
-        status: 'unread',
+        status: "unread",
         user_id: student.id,
-        user_role: 'student',
-        type: status.toLowerCase() === 'approved' ? 'approved' : 'etc',
+        user_role: "student",
+        type: status.toLowerCase() === "approved" ? "approved" : "etc",
         related_id: draft.id,
       });
-      return res.json({ message: 'Draft status updated successfully and notification sent', draft });
+      return res.json({
+        message: "Draft status updated successfully and notification sent",
+        draft,
+      });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: "Internal server error" });
     }
   }
 
@@ -209,21 +219,22 @@ class DraftController {
     try {
       const { id } = req.params;
       const draft = await DraftService.delete(id);
-      return res.status(200).json({ message: 'Draft deleted successfully', draft });
+      return res
+        .status(200)
+        .json({ message: "Draft deleted successfully", draft });
     } catch (error) {
       return res.status(400).json({ error: error.message });
     }
   }
 
-
   // Controller method to get all students
   static async getAllDrafts(req, res, next) {
     try {
-      let filter
+      let filter;
       if (req.query.filter) {
-        filter = req.query.filter
+        filter = req.query.filter;
       } else {
-        filter = {}
+        filter = {};
       }
 
       const students = await DraftService.getAll(filter);
@@ -235,16 +246,3 @@ class DraftController {
 }
 
 module.exports = DraftController;
-
-
-
-
-
-
-
-
-
-
-
-
-

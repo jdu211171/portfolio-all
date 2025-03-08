@@ -316,6 +316,7 @@ const Top = () => {
       formData.append("role", role);
       formData.append("imageType", "Gallery");
       formData.append("id", id);
+      formData.append("reviewed_by", 1);
 
       deletedUrls.forEach((url, index) => {
         formData.append(`oldFilePath[${index}]`, url);
@@ -630,4 +631,3 @@ const Top = () => {
 };
 
 export default Top;
-
