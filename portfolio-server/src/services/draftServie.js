@@ -135,8 +135,19 @@ class DraftService {
     }
   }
   // Create draft
-  static async create(data) {
-    return Draft.create(data);
+  static async createOrUpdate(student_id, profile_data, status, comments, reviewed_by) {
+    try {
+      const existingDraft = await Draft.findOne({ where: {student_id}});
+      if (existingDraft){
+        await existingDraft.update({profile_data, status, comments, reviewed_by});
+        return existingDraft;
+      } else {
+        const newDraft = await Draft.create({ student_id, profile_data, status, comments, reviewed_by});
+        return newDraft;
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   // get draft for ID
