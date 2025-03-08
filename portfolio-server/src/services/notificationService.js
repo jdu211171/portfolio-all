@@ -9,9 +9,9 @@ class NotificationService {
   //   return Notification.findByPk(id);
   // }
 
-  static async getByUserId(user_id, filter = {}) {
+  static async getByUserId(user_id, user_role, filter = {}) {
     return Notification.findAll({
-      where: { user_id, ...filter },
+      where: { user_id, user_role, ...filter },
       order: [['createdAt', 'DESC']]  
     });
   }
@@ -36,9 +36,9 @@ class NotificationService {
     return Notification.findAll();
   }
 
-  static async markOneAsRead(notificationId, user_id) {
+  static async markOneAsRead(notificationId, user_id, user_role) {
     const notification = await Notification.findOne({
-        where: { id: notificationId, user_id, status: "unread" }
+        where: { id: notificationId, user_id, status: "unread", user_role }
     });
 
     if (!notification) return null;

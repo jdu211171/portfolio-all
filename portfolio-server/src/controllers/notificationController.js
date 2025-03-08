@@ -15,22 +15,15 @@ class NotificationController {
   static async getNotificationsByUserId(req, res) {
     try {
         const { id, userType } = req.user;
-
+        console.log(req.user);
         if (!id || !userType) {
             return res.status(400).json({ error: "User ID and user type are required" });
         }
 
         let user_id = id; 
-        if (userType === 'Student') {
-            const student = await getStudentById(id); 
-            if (!student) {
-                return res.status(404).json({ error: "Student not found" });
-            }
-            user_id = student.student_id; 
-        }
-
-        // const notifications = await NotificationService.getByUserId(user_id);
-        const notifications = await NotificationService.getByUserId(user_id, { 
+        let user_role = userType.toLowerCase();
+    
+        const notifications = await NotificationService.getByUserId(user_id, user_role, { 
           status: { [Op.ne]: 'read' } 
         });
 
@@ -45,19 +38,6 @@ class NotificationController {
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
-
-  // static async getNotificationById(req, res) {
-  //   try {
-  //     const { id } = req.params;
-  //     const notification = await NotificationService.getById(id);
-  //     if (!notification) {
-  //       return res.status(404).json({ error: 'Notification not found' });
-  //     }
-  //     return res.status(200).json(notification);
-  //   } catch (error) {
-  //     return res.status(400).json({ error: error.message });
-  //   }
-  // }
 
   static async updateNotification(req, res) {
     try {
@@ -81,6 +61,9 @@ class NotificationController {
 
   static async getAllNotifications(req, res) {
     try {
+      if (req.user.userType !== 'Admin'){
+        return res.status(401).json({message: "Access denied "})
+      }
       const notifications = await NotificationService.getAll();
       return res.status(200).json(notifications);
     } catch (error) {
@@ -97,16 +80,9 @@ class NotificationController {
         }
 
         let user_id = id; 
+        let user_role = userType.toLowerCase();
 
-        if (userType === 'Student') {
-            const student = await getStudentById(id);
-            if (!student) {
-                return res.status(404).json({ error: "Student not found" });
-            }
-            user_id = student.student_id;
-        }
-
-        const notifications = await NotificationService.getByUserId(user_id, { status: "read" });
+        const notifications = await NotificationService.getByUserId(user_id, user_role,  { status: "read" });
 
         return res.status(200).json({ 
             message: notifications.length ? "History notifications found" : "No history notifications found",
@@ -129,16 +105,9 @@ class NotificationController {
         }
 
         let user_id = id; 
+        let user_role = userType.toLowerCase();
 
-        if (userType === 'Student') {
-            const student = await getStudentById(id);
-            if (!student) {
-                return res.status(404).json({ error: "Student not found" });
-            }
-            user_id = student.student_id;
-        }
-
-        const updatedNotification = await NotificationService.markOneAsRead(notificationId, user_id);
+        const updatedNotification = await NotificationService.markOneAsRead(notificationId, user_id, user_role);
 
         if (!updatedNotification) {
             return res.status(404).json({ error: "Notification not found or access denied" });

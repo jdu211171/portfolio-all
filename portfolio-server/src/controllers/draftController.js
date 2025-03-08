@@ -6,12 +6,27 @@ const StudentService = require('../services/studentService');
 // const emailService = require('../utils/emailService');
 
 class DraftController {
-  static async createDraft(req, res) {
+  static async createOrUpdateDraft(req, res) {
     try {
-      const draft = await DraftService.create(req.body);
-      return res.status(201).json(draft);
+      const student_id = req.body.student_id;
+      const { profile_data, status,comments, reviewed_by } = req.body;
+
+      if (!student_id || !profile_data || !status) {
+        return res.status(400).json({ error: 'student_id, profile_data, and status are required' });
+      }
+
+      const draft = await DraftService.createOrUpdate(
+        student_id,
+        profile_data,
+        status,
+        comments || null,  
+        reviewed_by || null 
+      );
+
+      return res.status(200).json({ message: 'Draft saved successfully', draft });
+
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   }
 
@@ -49,42 +64,42 @@ class DraftController {
     }
   }
 
-  static async updateDraft(req, res) {
-    try {
-      const { id } = req.params;
+  // static async updateDraft(req, res) {
+  //   try {
+  //     const { id } = req.params;
 
-      const draft = await Draft.findByPk(id);
+  //     const draft = await Draft.findByPk(id);
 
-      if (!draft) {
-        return res.status(404).json({ error: 'Draft not found' });
-      }
+  //     if (!draft) {
+  //       return res.status(404).json({ error: 'Draft not found' });
+  //     }
 
-      // `Students` jadvalidan foydalanuvchining student_id sini topamiz
-      const student = await Student.findOne({ where: { id: req.user.id } });
+  //     // `Students` jadvalidan foydalanuvchining student_id sini topamiz
+  //     const student = await Student.findOne({ where: { id: req.user.id } });
 
-      if (!student) {
-        return res.status(403).json({ error: 'Permission denied. You are not a student.' });
-      }
+  //     if (!student) {
+  //       return res.status(403).json({ error: 'Permission denied. You are not a student.' });
+  //     }
 
-      // Agar studentning student_id si draftdagi student_id ga mos kelmasa
-      if (student.student_id !== draft.student_id) {
-        return res.status(403).json({ error: 'Permission denied. You can only update your own draft.' });
-      }
+  //     // Agar studentning student_id si draftdagi student_id ga mos kelmasa
+  //     if (student.student_id !== draft.student_id) {
+  //       return res.status(403).json({ error: 'Permission denied. You can only update your own draft.' });
+  //     }
 
-      // Faqat `profile_data` yangilanishi kerak
-      if (!req.body.profile_data) {
-        return res.status(400).json({ error: 'Only profile_data can be updated.' });
-      }
+  //     // Faqat `profile_data` yangilanishi kerak
+  //     if (!req.body.profile_data) {
+  //       return res.status(400).json({ error: 'Only profile_data can be updated.' });
+  //     }
 
-      draft.profile_data = req.body.profile_data;
-      await draft.save();
+  //     draft.profile_data = req.body.profile_data;
+  //     await draft.save();
 
-      return res.status(200).json({ message: 'Draft updated successfully', draft });
+  //     return res.status(200).json({ message: 'Draft updated successfully', draft });
 
-    } catch (error) {
-      return res.status(400).json({ error: error.message });
-    }
-  }
+  //   } catch (error) {
+  //     return res.status(400).json({ error: error.message });
+  //   }
+  // }
 
 
   static async submitDraft(req, res) {
