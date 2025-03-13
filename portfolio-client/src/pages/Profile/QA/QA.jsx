@@ -556,7 +556,7 @@ const QA = ({
                   color="primary"
                   size="small"
                 >
-                  承認済み
+                  承認する
                 </Button>
                 <Button
                   onClick={() => approveProfile("resubmission_required")}
@@ -564,7 +564,7 @@ const QA = ({
                   color="primary"
                   size="small"
                 >
-                  要修正
+                  承認しない
                 </Button>
               </Box>
             </>

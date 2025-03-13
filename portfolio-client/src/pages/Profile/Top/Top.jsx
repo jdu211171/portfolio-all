@@ -46,7 +46,7 @@ const Top = () => {
   const [currentDraft, setCurrentDraft] = useState({});
 
   const [currentProfileType, setCurrentProfileType] = useState(
-    "本番（承認済み）のプロフィールを閲覧中です。"
+    "本番（承認済み）のプロフィールを閲覧中です。",
   );
   const [updateQA, SetUpdateQA] = useState(true);
 
@@ -188,7 +188,7 @@ const Top = () => {
     files,
     isNewFiles = false,
     isDelete = false,
-    parentKey = null
+    parentKey = null,
   ) => {
     if (isNewFiles && !isDelete) {
       // Add new images
@@ -277,13 +277,13 @@ const Top = () => {
           deliverableFormData.append("id", id);
           deliverableFormData.append(
             "oldFilePath",
-            editData.draft.deliverables[index]?.imageLink || ""
+            editData.draft.deliverables[index]?.imageLink || "",
           );
 
           const deliverableFileResponse = await axios.post(
             "/api/files/upload",
             deliverableFormData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { "Content-Type": "multipart/form-data" } },
           );
           const deliverableImageLink = deliverableFileResponse.data.Location;
           // Update the deliverable's imageLink
@@ -348,13 +348,13 @@ const Top = () => {
           deliverableFormData.append("id", id);
           deliverableFormData.append(
             "oldFilePath",
-            editData.draft.deliverables[index]?.imageLink || ""
+            editData.draft.deliverables[index]?.imageLink || "",
           );
 
           const deliverableFileResponse = await axios.post(
             "/api/files/upload",
             deliverableFormData,
-            { headers: { "Content-Type": "multipart/form-data" } }
+            { headers: { "Content-Type": "multipart/form-data" } },
           );
           const deliverableImageLink = deliverableFileResponse.data.Location;
           editData.draft.deliverables[index].imageLink = deliverableImageLink;
@@ -472,7 +472,7 @@ const Top = () => {
         {subTabIndex !== 2 &&
           ReactDOM.createPortal(
             portalContent,
-            document.getElementById("saveButton")
+            document.getElementById("saveButton"),
           )}
       </>
 
@@ -630,4 +630,3 @@ const Top = () => {
 };
 
 export default Top;
-

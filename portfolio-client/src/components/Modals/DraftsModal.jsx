@@ -13,6 +13,10 @@ const DraftsModal = ({ id, handleSettingtoHonban, handleSettingDraft }) => {
     try {
       const response = await axios.get(`/api/draft/student/${id}`);
       setDrafts(response.data);
+    // if (response.data.length > 0) {
+    //     const latestDraft = response.data[response.data.length - 1];
+    //     draftClick(latestDraft);
+    // }
     } catch (error) {
       console.error("Error fetching drafts:", error);
     }

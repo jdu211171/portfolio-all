@@ -149,6 +149,7 @@ const translations = {
       日本語弁論大会学内: "Japanese Speech Contest",
       ITコンテスト学内: "IT contest"
     },
+    confirm_status: "Confirmation Status",
   },
   ja: {
     confirmationStatus: "確認状況",
@@ -232,6 +233,7 @@ const translations = {
     submit_date: "申請日",
     submit_count: "申請回数",
     check_status: "確認状況",
+    open_status: "公開状況",
     visible_status: "公開状況",
     action: "アクション",
     change_password: "パスワードの変更",
@@ -312,6 +314,7 @@ const translations = {
       日本語弁論大会学内: "日本語弁論大会学内",
       ITコンテスト学内: "ITコンテスト学内"
     },
+    confirm_status: "承認状況"
   },
   uz: {
     general: "Umumiy",
@@ -467,6 +470,7 @@ const translations = {
       ITコンテスト学内: "IT tanlov"
     },
   },
+  confirm_status: "Tasdiq holati",
 };
 
 export default translations;

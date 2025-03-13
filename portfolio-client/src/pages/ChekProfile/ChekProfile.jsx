@@ -161,7 +161,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       disablePadding: false,
       label: t("submit_count"),
       minWidth: "60px",
-      suffix: '回',
+      suffix: "回",
     },
     {
       id: "drafts",
@@ -170,7 +170,7 @@ const Student = ({ OnlyBookmarked = false }) => {
       numeric: false,
       disablePadding: false,
       label: t("check_status"),
-      minWidth: "70px",
+      minWidth: "30px",
       map: {
         submitted: "未確認",
         checking: "確認中",
@@ -179,12 +179,29 @@ const Student = ({ OnlyBookmarked = false }) => {
       },
     },
     {
+      id: "drafts",
+      subkey: "status",
+      type: "mapped",
+      numeric: false,
+      disablePadding: false,
+      label: "承認状況",
+      minWidth: "30px",
+      map: {
+        draft: "未承認",
+        submitted: "未承認",
+        checking: "未承認",
+        resubmission_required: "戻された",
+        disapproved: "戻された",
+        approved: "承認済み",
+      },
+    },
+    {
       id: "visibility",
       numeric: false,
       type: "status",
       disablePadding: false,
-      label: t("check_status"),
-      minWidth: "60px",
+      label: t("open_status"),
+      minWidth: "30px",
     },
     {
       id: "email",
@@ -210,20 +227,20 @@ const Student = ({ OnlyBookmarked = false }) => {
             updateDraftStatus(id, "checking");
           },
         },
-        {
-          visibleTo: "Staff",
-          label: "要修正",
-          action: (id) => {
-            updateDraftStatus(id, "resubmission_required");
-          },
-        },
-        {
-          visibleTo: "Staff",
-          label: "確認済",
-          action: (id) => {
-            updateDraftStatus(id, "approved");
-          },
-        },
+        // {
+        //   visibleTo: "Staff",
+        //   label: "要修正",
+        //   action: (id) => {
+        //     updateDraftStatus(id, "resubmission_required");
+        //   },
+        // },
+        // {
+        //   visibleTo: "Staff",
+        //   label: "確認済",
+        //   action: (id) => {
+        //     updateDraftStatus(id, "approved");
+        //   },
+        // },
         {
           visibleTo: "Admin",
           label: "公開",
@@ -252,8 +269,6 @@ const Student = ({ OnlyBookmarked = false }) => {
 
   return (
     <div key={language}>
-      {" "}
-      {/* Перерендеринг при смене языка */}
       <Box sx={{ width: "100%", height: "100px" }}>
         <Filter
           fields={filterProps}
@@ -267,4 +282,3 @@ const Student = ({ OnlyBookmarked = false }) => {
 };
 
 export default Student;
-
